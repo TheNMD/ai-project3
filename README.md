@@ -1,3 +1,2 @@
-py -m venv venv
-
-./venv/scripts/activate
+### Dataset
+To generate the images, go to Drive and run the 
