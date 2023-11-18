@@ -17,7 +17,7 @@
      - Doppler velocity.
 
 2.2. What are the data format (image, csv, binary, text, json,…), data units, and precision of these?
-    - Image: (độ phân giải) 
+    - Image: 224x224
     - CSV:
 
 2.3. Are there any aggregate functions (e.g., sum, average, max, min)?
