@@ -50,10 +50,10 @@
 7.1. What platform are you going to deploy/demonstrate weather forecast models?
      Jupyter Notebook
 
-Can our data warehouse provide weather data for models through a BI application or APIs?
+7.2. Can our data warehouse provide weather data for models through a BI application or APIs?
 
 
-In case of using API, what types of APIs or interfaces are needed for seamless data exchange?
+7.3. In case of using API, what types of APIs or interfaces are needed for seamless data exchange?
 
 
-Are there specific visualization features or tools that would be beneficial for your team?
+7.4. Are there specific visualization features or tools that would be beneficial for your team?
