@@ -9,6 +9,7 @@
      Historical data
 
 1.4. What is the frequency of updates? What is the data scope?
+     No need to update with the latest weather data because we only need historial data to train the model.
      
 
 2. Data Description:
@@ -18,7 +19,7 @@
 
 2.2. What are the data format (image, csv, binary, text, json,…), data units, and precision of these?
     - Image: 224x224
-    - CSV: other parameters
+    - CSV: other parameters, 4 numbers after decimal point.
 
 2.3. Are there any aggregate functions (e.g., sum, average, max, min)?
      
@@ -43,14 +44,14 @@
 
 6. Advanced Analytics and Modeling:
 6.1. What types of statistical analysis and modeling techniques are currently used for weather prediction?
-     Jupyter Notebook or Google Colab
+
 
 6.2. Are there specific machine learning algorithms or models you would like to integrate? Can weather data be grouped by each model/algorithm?
 
 
 7. Integration and Communication:
 7.1. What platform are you going to deploy/demonstrate weather forecast models?
-     Jupyter Notebook
+     Jupyter Notebook or Google Colab
 
 7.2. Can our data warehouse provide weather data for models through a BI application or APIs?
 
