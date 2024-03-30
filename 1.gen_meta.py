@@ -21,6 +21,20 @@ elif ENV == "colab":
     # %cd drive/MyDrive/Coding/
     data_path = "data/NhaBe"
 
+# Create the folder structure
+def initialize():
+  metadata_folder = "metadata"
+  image_folder = "image"
+  result_folder = "result"
+  
+  if not os.path.exists(metadata_folder): os.makedirs(metadata_folder)
+  if not os.path.exists(image_folder): 
+    os.makedirs(image_folder)
+    os.makedirs(image_folder + "/labeled")
+    os.makedirs(image_folder + "unlabeled")
+  if not os.path.exists(result_folder): os.makedirs(result_folder)
+  
+
 # Iterate over all years -> months -> days -> files
 # Create a df to contain paths and timestamps for all files
 def metadata_creating(year):
@@ -50,7 +64,9 @@ def metadata_creating(year):
     metadata = metadata.sort_values(by='timestamp').reset_index(drop=True)
     metadata.to_csv(f"metadata/metadata_{year}_{month}.csv", index=False)
 
-if __name__ == '__main__':  
+if __name__ == '__main__':
+  initialize()
+    
   years = [2020]
   num_processes = len(years)
   
@@ -70,7 +86,7 @@ if __name__ == '__main__':
         print("Out of memory - Resetting")
         break
 
-  filenames = sorted(os.listdir(f"metadata"))
+  filenames = sorted(os.listdir("metadata"))
   metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames]
   metadata = pd.concat(metadata_list)
   metadata = metadata.sort_values(by='timestamp').reset_index(drop=True)
