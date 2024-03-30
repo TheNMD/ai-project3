@@ -14,7 +14,7 @@ ENV = "local".lower()
 if ENV == "local":
   data_path = "data/NhaBe"
 elif ENV == "server":
-  data_path = "data/NhaBe"
+  data_path = "/data/data_WF/NhaBe"
 elif ENV == "colab":
     from google.colab import drive
     drive.mount('/content/drive')
@@ -68,6 +68,7 @@ if __name__ == '__main__':
         # If crash due to lack of memory, restart the process (progress is saved)
         print(e)
         print("Out of memory - Resetting")
+        break
 
   filenames = sorted(os.listdir(f"{data_path}/Metadata"))
   metadata_list = [pd.read_csv(f"{data_path}/Metadata/{name}") for name in filenames]
