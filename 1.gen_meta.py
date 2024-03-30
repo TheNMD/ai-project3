@@ -13,6 +13,8 @@ ENV = "local".lower()
 
 if ENV == "local":
   data_path = "data/NhaBe"
+elif ENV == "server":
+  data_path = "data/NhaBe"
 elif ENV == "colab":
     from google.colab import drive
     drive.mount('/content/drive')
@@ -49,7 +51,7 @@ def metadata_creating(year):
     metadata.to_csv(f"metadata/metadata_{year}_{month}.csv", index=False)
 
 if __name__ == '__main__':  
-  years = ["2020", "2021", "2022", "2023"]
+  years = [2023]
   num_processes = len(years)
   
   while True:

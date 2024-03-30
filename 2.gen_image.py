@@ -15,6 +15,8 @@ ENV = "local".lower()
 
 if ENV == "local":
     data_path = "data/NhaBe"
+elif ENV == "server":
+    data_path = "data/NhaBe"
 elif ENV == "colab":
     from google.colab import drive
     drive.mount('/content/drive')
