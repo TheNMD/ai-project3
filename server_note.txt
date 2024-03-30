@@ -5,10 +5,10 @@ Code: cd /data/DanHoangThu
 # Docker
 # Create image
 docker build -t dataric-server .
-# List containers
-docker ps -a
 # Run image
 docker run --name srv dataric-server
+# Find container id
+docker ps -aqf "ancestor=dataric-server"
 # Stop container
 docker stop <container_id>
 # Remove container

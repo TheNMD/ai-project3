@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 import pyart
 
-# Set ENV to be 'local' or 'colab'
-ENV = "local".lower()
+# Set ENV to be 'local', 'server' or 'colab'
+ENV = "server".lower()
 
 if ENV == "local":
   data_path = "data/NhaBe"
@@ -51,7 +51,7 @@ def metadata_creating(year):
     metadata.to_csv(f"metadata/metadata_{year}_{month}.csv", index=False)
 
 if __name__ == '__main__':  
-  years = [2023]
+  years = [2020]
   num_processes = len(years)
   
   while True:
