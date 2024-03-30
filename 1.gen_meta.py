@@ -24,14 +24,14 @@ elif ENV == "colab":
 # Iterate over all years -> months -> days -> files
 # Create a df to contain paths and timestamps for all files
 def metadata_creating(year):
-  for month in sorted(os.listdir(f"{data_path}/Raw/{year}")):
+  for month in sorted(os.listdir(f"{data_path}/{year}")):
     if os.path.exists(f"metadata/metadata_{year}_{month}.csv"): continue
     
     paths = []
     timestamps = []
-    for day in sorted(os.listdir(f"{data_path}/Raw/{year}/{month}")):
-      for file in sorted(os.listdir(f"{data_path}/Raw/{year}/{month}/{day}")):
-        path =  f"Raw/{year}/{month}/{day}/{file}"
+    for day in sorted(os.listdir(f"{data_path}/{year}/{month}")):
+      for file in sorted(os.listdir(f"{data_path}/{year}/{month}/{day}")):
+        path =  f"{year}/{month}/{day}/{file}"
         paths += [path]
         
         data = pyart.io.read_sigmet(f"{data_path}/{path}")
@@ -70,8 +70,8 @@ if __name__ == '__main__':
         print("Out of memory - Resetting")
         break
 
-  filenames = sorted(os.listdir(f"{data_path}/Metadata"))
-  metadata_list = [pd.read_csv(f"{data_path}/Metadata/{name}") for name in filenames]
+  filenames = sorted(os.listdir(f"metadata"))
+  metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames]
   metadata = pd.concat(metadata_list)
   metadata = metadata.sort_values(by='timestamp').reset_index(drop=True)
   metadata.to_csv("metadata.csv", index=False)

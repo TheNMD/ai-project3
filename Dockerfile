@@ -4,7 +4,8 @@ WORKDIR /usr/src/app
 # cp the current directory contents into the container at /usr/src/app
 COPY . .
 
-RUN pip install --no-cache-dir -r requirements.txt
+# RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
-CMD ["python3", "./1.gen_meta.py"]
+# CMD ["python3", "./1.gen_meta.py"]
+CMD ["python3", "testing.py"]
