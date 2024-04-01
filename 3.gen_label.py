@@ -16,7 +16,7 @@ from memory_profiler import profile
 # Set ENV to be 'local', 'server' or 'colab'
 ENV = "local".lower()
 
-if ENV == "local":
+if ENV == "server":
   data_path = "data/NhaBe"
 elif ENV == "server":
   data_path = "data"
