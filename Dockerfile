@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-WORKDIR /data/DanHoangThu
+WORKDIR /app
 # de cai path dan toi image la ../data_WF/NhaBe
 
 # cp the current directory contents into the container at /usr/src/app
@@ -12,4 +12,4 @@ RUN chmod +x entrypoint.sh
 
 EXPOSE 5000
 
-ENTRYPOINT ["./entrypoint.sh" ]
+ENTRYPOINT ["sh", "./entrypoint.sh" ]
