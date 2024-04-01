@@ -40,7 +40,7 @@ def metadata_creating(year):
         data = pyart.io.read_sigmet(f"{data_path}/{path}")
         timestamp = str(pyart.util.datetime_from_radar(data)).replace(':', '-')
         timestamps += [timestamp]
-        
+
      	print(f"{timestamp}")
 
     metadata = pd.DataFrame(list(zip(paths, timestamps)), columns=['path', 'timestamp'])
