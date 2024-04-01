@@ -14,9 +14,9 @@ import pyart
 from memory_profiler import profile
 
 # Set ENV to be 'local', 'server' or 'colab'
-ENV = "local".lower()
+ENV = "server".lower()
 
-if ENV == "server":
+if ENV == "local":
   data_path = "data/NhaBe"
 elif ENV == "server":
   data_path = "data"
