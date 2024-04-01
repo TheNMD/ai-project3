@@ -16,6 +16,8 @@ docker ps -aqf "ancestor=dht-image"
 docker stop dht-cont
 ## Remove container
 docker rm -f dht-cont
+## Copy file from container to host
+docker cp dht-cont:/app/metadata.csv ./
 
 # Out server
 logout
