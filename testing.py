@@ -1,7 +1,12 @@
-import os
+import pandas as pd
 
-folder_path = r'data'
+# Sample DataFrame
+df = pd.read_csv("metadata.csv")
 
-files = os.listdir(folder_path)
+# Column name to check for duplicates
+column_name = 'timestamp'
 
-print(files)
+duplicate_mask = df.duplicated(subset=[column_name], keep=False)
+duplicate_indices = df[duplicate_mask].index.tolist()
+
+print("Duplicate indices:", len(duplicate_indices))

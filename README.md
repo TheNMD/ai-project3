@@ -23,3 +23,6 @@ docker rm -f dht-cont
 
 # Out server
 exit
+
+# Other
+Total RAW files: 259999

@@ -70,7 +70,12 @@ if __name__ == '__main__':
       metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames]
       metadata = pd.concat(metadata_list)
       metadata = metadata.sort_values(by='timestamp').reset_index(drop=True)
-      metadata.to_csv("metadata.csv", index=False)
+      
+      duplicate_mask = metadata.duplicated(subset=['timestamp'], keep=False)
+      duplicate_indices = metadata[duplicate_mask].index.tolist()
+      metadata_cleaned = metadata.drop(duplicate_indices).reset_index(drop=True)
+      
+      metadata_cleaned.to_csv("metadata.csv", index=False)
   except Exception as e:
       # If crash due to lack of memory, restart the process (progress is saved)
       print(e)
