@@ -6,10 +6,10 @@ WORKDIR /data/DanHoangThu
 # cp the current directory contents into the container at /usr/src/app
 COPY . .
 
-RUN chmod +x /entrypoint.sh
+RUN chmod +x entrypoint.sh
 
-RUN pip install --no-cache-dir -r requirements.txt
+# RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
-# CMD ["python3", "./1.gen_meta.py"]
-ENTRYPOINT [ "/entrypoint.sh" ]
+
+ENTRYPOINT ["sh", "entrypoint.sh" ]
