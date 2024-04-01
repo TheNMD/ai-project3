@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import pyart
 from memory_profiler import profile
 
-# Set ENV to be 'local' or 'colab'
+# Set ENV to be 'local', 'server' or 'colab'
 ENV = "local".lower()
 
 if ENV == "local":
