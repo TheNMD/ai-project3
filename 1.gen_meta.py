@@ -41,7 +41,7 @@ def metadata_creating(year):
         timestamp = str(pyart.util.datetime_from_radar(data)).replace(':', '-')
         timestamps += [timestamp]
         
-      print(f"{month} - {day}")
+     	print(f"{timestamp}")
 
     metadata = pd.DataFrame(list(zip(paths, timestamps)), columns=['path', 'timestamp'])
     metadata['generated'] = False
@@ -54,7 +54,7 @@ def metadata_creating(year):
     metadata.to_csv(f"metadata/metadata_{year}_{month}.csv", index=False)
 
 if __name__ == '__main__':
-  years = [2020, 2021, 2022, 2023]
+  years = [2020]
   num_processes = len(years)
   
   counter = 0
