@@ -91,7 +91,7 @@ def image_generating(metadata_chunk):
         plt.axis('off')
         plt.savefig(f"image/unlabeled/{row['timestamp']}.jpg", dpi=150, bbox_inches='tight')
         
-        # print(f"{row['timestamp']} - Done")
+        print(f"{row['timestamp']} - Done")
         
         # Close and delete to release memory
         plt.close()
