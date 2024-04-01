@@ -13,7 +13,7 @@ docker rmi -f dht-image
 ## Edit file inside container
 docker exec -it dht-cont nano file.py
 ## Copy file from container to host
-docker cp dht-cont:/app/metadata.csv ./
+docker cp dht-cont:/app/metadata.csv .
 ## Find container id
 docker ps -aqf "ancestor=dht-image"
 ## Stop container
