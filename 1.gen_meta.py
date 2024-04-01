@@ -54,7 +54,7 @@ def metadata_creating(year):
     metadata.to_csv(f"metadata/metadata_{year}_{month}.csv", index=False)
 
 if __name__ == '__main__':
-  years = [2020]
+  years = [2023]
   num_processes = len(years)
   
   counter = 0
