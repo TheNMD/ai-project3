@@ -114,7 +114,7 @@ if __name__ == '__main__':
     # view_sample_images()
     
     num_processes = 16
-    chunk_size = 100 * num_processes
+    chunk_size = 10 * num_processes
     
     counter = 0
     try:
