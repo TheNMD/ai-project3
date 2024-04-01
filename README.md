@@ -5,9 +5,8 @@ Code: cd /data/DanHoangThu
 
 ## Create image
 docker build -t dataric-server .
-
 ## Remove image
-docker rmi dataric-server
+docker rmi -f dataric-server
 ## Run image (Mount NhaBe folder from host to container)
 docker run -v /data/data_WF/NhaBe:/app/data --name srv dataric-server
 ## Find container id
