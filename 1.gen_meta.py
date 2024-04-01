@@ -41,7 +41,7 @@ def metadata_creating(year):
         timestamp = str(pyart.util.datetime_from_radar(data)).replace(':', '-')
         timestamps += [timestamp]
         
-        print(f"{timestamp}")
+        print(f"{timestamps}")
 
     metadata = pd.DataFrame(list(zip(paths, timestamps)), columns=['path', 'timestamp'])
     metadata['generated'] = False
