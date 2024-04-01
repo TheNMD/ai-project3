@@ -12,7 +12,7 @@ docker run -v /data/data_WF/NhaBe:/app/data --name srv dataric-server
 ## Find container id
 docker ps -aqf "ancestor=dataric-server"
 ## Stop container
-docker stop -f srv
+docker stop srv
 ## Remove container
 docker rm -f srv
 

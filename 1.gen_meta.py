@@ -17,7 +17,7 @@ ENV = "server".lower()
 if ENV == "local":
   data_path = "data/NhaBe"
 elif ENV == "server":
-  data_path = "/data/NhaBe"
+  data_path = "data"
 elif ENV == "colab":
     from google.colab import drive
     drive.mount('/content/drive')
@@ -65,12 +65,13 @@ if __name__ == '__main__':
         pool.map(metadata_creating, years)
         end_time = time.time() - start_time
         print(f"Time: {end_time}")
+        
+      filenames = sorted(os.listdir("metadata"))
+      metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames]
+      metadata = pd.concat(metadata_list)
+      metadata = metadata.sort_values(by='timestamp').reset_index(drop=True)
+      metadata.to_csv("metadata.csv", index=False)
   except Exception as e:
       # If crash due to lack of memory, restart the process (progress is saved)
       print(e)
-
-  filenames = sorted(os.listdir("metadata"))
-  metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames]
-  metadata = pd.concat(metadata_list)
-  metadata = metadata.sort_values(by='timestamp').reset_index(drop=True)
-  metadata.to_csv("metadata.csv", index=False)
+      logging.error(e, exc_info=True)

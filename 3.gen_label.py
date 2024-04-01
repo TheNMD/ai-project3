@@ -17,9 +17,9 @@ from memory_profiler import profile
 ENV = "local".lower()
 
 if ENV == "local":
-    data_path = "data/NhaBe"
+  data_path = "data/NhaBe"
 elif ENV == "server":
-    data_path = "data/NhaBe"
+  data_path = "data"
 elif ENV == "colab":
     from google.colab import drive
     drive.mount('/content/drive')
@@ -166,6 +166,7 @@ if __name__ == '__main__':
     except Exception as e:
         # If crash due to lack of memory, restart the process (progress is saved)
         print(e)
+        logging.error(e, exc_info=True)
         
         
         
