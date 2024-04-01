@@ -20,4 +20,4 @@ docker rm -f dht-cont
 docker cp dht-cont:/app/metadata.csv ./
 
 # Out server
-logout
+exit
