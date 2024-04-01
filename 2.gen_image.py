@@ -74,7 +74,7 @@ def image_generating(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         if row['generated'] == "True":
             continue
-        
+        timestamp = row['timestamp']
         try:
             data = pyart.io.read_sigmet(f"{data_path}/{row['path']}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
@@ -90,15 +90,15 @@ def image_generating(metadata_chunk):
 
             plt.title('')
             plt.axis('off')
-            plt.savefig(f"image/unlabeled/{row['timestamp']}.jpg", dpi=150, bbox_inches='tight')
+            plt.savefig(f"image/unlabeled/{timestamp}.jpg", dpi=150, bbox_inches='tight')
             
-            print(f"{row['timestamp']} - Done")
+            print(f"{timestamp} - Done")
             
             # Close and delete to release memory
             plt.close()
             del display, grid_data, data
         except Exception as e:
-            with open(f'image/unlabeled/{row['timestamp']}.txt', 'w') as f: 
+            with open(f'image/unlabeled/{timestamp}.txt', 'w') as f: 
                 f.write('error')
             logging.error(e, exc_info=True)
             continue
