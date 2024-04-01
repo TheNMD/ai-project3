@@ -98,7 +98,8 @@ def image_generating(metadata_chunk):
             plt.close()
             del display, grid_data, data
         except Exception as e:
-            with open(f'image/unlabeled/{row['timestamp']}_error.txt', 'w') as f: pass
+            with open(f'image/unlabeled/{row['timestamp']}.txt', 'w') as f: 
+                f.write('error')
             logging.error(e, exc_info=True)
             continue
 
