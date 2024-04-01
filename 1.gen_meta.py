@@ -14,26 +14,12 @@ ENV = "server".lower()
 if ENV == "local":
   data_path = "data/NhaBe"
 elif ENV == "server":
-  data_path = "/data/data_WF/NhaBe"
+  data_path = "/data/NhaBe"
 elif ENV == "colab":
     from google.colab import drive
     drive.mount('/content/drive')
     # %cd drive/MyDrive/Coding/
     data_path = "data/NhaBe"
-
-# Create the folder structure
-def initialize():
-  metadata_folder = "metadata"
-  image_folder = "image"
-  result_folder = "result"
-  
-  if not os.path.exists(metadata_folder): os.makedirs(metadata_folder)
-  if not os.path.exists(image_folder): 
-    os.makedirs(image_folder)
-    os.makedirs(image_folder + "/labeled")
-    os.makedirs(image_folder + "unlabeled")
-  if not os.path.exists(result_folder): os.makedirs(result_folder)
-  
 
 # Iterate over all years -> months -> days -> files
 # Create a df to contain paths and timestamps for all files
@@ -65,26 +51,20 @@ def metadata_creating(year):
     metadata.to_csv(f"metadata/metadata_{year}_{month}.csv", index=False)
 
 if __name__ == '__main__':
-  initialize()
-    
   years = [2020]
   num_processes = len(years)
   
-  while True:
-    counter = 0
-    try:
-        # Use multiprocessing to iterate over the metadata 
-        with mp.Pool(processes=num_processes) as pool:
-          start_time = time.time()
-          pool.map(metadata_creating, years)
-          end_time = time.time() - start_time
-          print(f"Time: {end_time}")
-          break
-    except Exception as e:
-        # If crash due to lack of memory, restart the process (progress is saved)
-        print(e)
-        print("Out of memory - Resetting")
-        break
+  counter = 0
+  try:
+      # Use multiprocessing to iterate over the metadata 
+      with mp.Pool(processes=num_processes) as pool:
+        start_time = time.time()
+        pool.map(metadata_creating, years)
+        end_time = time.time() - start_time
+        print(f"Time: {end_time}")
+  except Exception as e:
+      # If crash due to lack of memory, restart the process (progress is saved)
+      print(e)
 
   filenames = sorted(os.listdir("metadata"))
   metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames]

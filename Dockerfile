@@ -1,10 +1,13 @@
 FROM python:3.10-slim
 
-WORKDIR /app
-# de cai path dan toi image la ../data_WF/NhaBe
-
-# cp the current directory contents into the container at /usr/src/app
+# Copy the current directory contents into the container at /usr/src/app
 COPY . .
+
+# Make some required folders inside the container
+RUN mkdir data
+RUN mkdir metadata
+RUN mkdir image
+RUN mkdir result
 
 RUN chmod +x entrypoint.sh
 
@@ -12,4 +15,4 @@ RUN chmod +x entrypoint.sh
 
 EXPOSE 5000
 
-ENTRYPOINT ["sh", "./entrypoint.sh" ]
+ENTRYPOINT ["sh", "./entrypoint.sh"]
