@@ -109,10 +109,8 @@ def update_metadata():
     if 'generated' in old_metadata.columns:
         old_metadata.drop(columns="generated", inplace=True)
     
-    image_files = [file[:-4] for file in os.listdir(f"image/unlabeled") if file.endswith('.jpg')]
-    generated = ["True" for _ in image_files]
-    error_files = [file[:-4] for file in os.listdir(f"image/unlabeled") if file.endswith('.txt')]
-    generated = ["Error" for _ in error_files]
+    image_files = [file for file in os.listdir("image/unlabeled")]
+    generated = ["True" if file.endswith('.jpg') else "Error" for file in image_files]
     new_metadata = pd.DataFrame({'timestamp': image_files, 'generated': generated})
     
     updated_metadata = pd.merge(old_metadata, new_metadata, on='timestamp', how='outer')

@@ -1,12 +1,6 @@
-import pandas as pd
+import os
 
-# Sample DataFrame
-df = pd.read_csv("metadata.csv")
+image_files = [file for file in os.listdir("image/unlabeled")]
+generated = ["True" if file.endswith('.jpg') else "Error" for file in image_files]
 
-# Column name to check for duplicates
-column_name = 'timestamp'
-
-duplicate_mask = df.duplicated(subset=[column_name], keep=False)
-duplicate_indices = df[duplicate_mask].index.tolist()
-
-print("Duplicate indices:", len(duplicate_indices))
+print(generated[:10])
