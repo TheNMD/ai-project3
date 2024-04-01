@@ -72,30 +72,35 @@ def view_sample_images():
 # @profile
 def image_generating(metadata_chunk):    
     for _, row in metadata_chunk.iterrows():
-        if row['generated'] == True:
+        if row['generated'] == "True":
             continue
         
-        data = pyart.io.read_sigmet(f"{data_path}/{row['path']}")
-        data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
-        
-        grid_data = pyart.map.grid_from_radars(
-            data,
-            grid_shape=(1, 500, 500),
-            grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
-        )
+        try:
+            data = pyart.io.read_sigmet(f"{data_path}/{row['path']}")
+            data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
+            
+            grid_data = pyart.map.grid_from_radars(
+                data,
+                grid_shape=(1, 500, 500),
+                grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
+            )
 
-        display = pyart.graph.GridMapDisplay(grid_data)
-        display.plot_grid('reflectivity', cmap='pyart_HomeyerRainbow', colorbar_flag=False)
+            display = pyart.graph.GridMapDisplay(grid_data)
+            display.plot_grid('reflectivity', cmap='pyart_HomeyerRainbow', colorbar_flag=False)
 
-        plt.title('')
-        plt.axis('off')
-        plt.savefig(f"image/unlabeled/{row['timestamp']}.jpg", dpi=150, bbox_inches='tight')
-        
-        print(f"{row['timestamp']} - Done")
-        
-        # Close and delete to release memory
-        plt.close()
-        del display, grid_data, data
+            plt.title('')
+            plt.axis('off')
+            plt.savefig(f"image/unlabeled/{row['timestamp']}.jpg", dpi=150, bbox_inches='tight')
+            
+            print(f"{row['timestamp']} - Done")
+            
+            # Close and delete to release memory
+            plt.close()
+            del display, grid_data, data
+        except Exception as e:
+            with open(f'image/unlabeled/{row['timestamp']}_error.txt', 'w') as f: pass
+            logging.error(e, exc_info=True)
+            continue
 
 def update_metadata():
     old_metadata = pd.read_csv("metadata.csv")
@@ -104,7 +109,7 @@ def update_metadata():
         old_metadata.drop(columns="generated", inplace=True)
     
     image_files = [file[:-4] for file in os.listdir(f"image/unlabeled") if file.endswith('.jpg')]
-    generated = [True for _ in image_files]
+    generated = ["True" for _ in image_files]
     new_metadata = pd.DataFrame({'timestamp': image_files, 'generated': generated})
     
     updated_metadata = pd.merge(old_metadata, new_metadata, on='timestamp', how='outer')
@@ -133,6 +138,7 @@ if __name__ == '__main__':
                 print(f"### Chunk: {counter} | Time: {end_time} ###")    
     except Exception as e:
         # If crash due to lack of memory, restart the process (progress is saved)
+        update_metadata()
         print(e)
         logging.error(e, exc_info=True)
         
