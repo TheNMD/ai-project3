@@ -161,7 +161,7 @@ def move_to_label(metadata_chunk):
         shutil.copy(f"image/unlabeled/{timestamp}.jpg", f"image/labeled/{label}/{timestamp}.jpg")
 
 def plot_distribution():
-    metadata = pd.read_csv(f"{data_path}/metadata.csv")
+    metadata = pd.read_csv("metadata.csv")
     
     frequency = metadata['future_label'].value_counts()
     print(frequency)

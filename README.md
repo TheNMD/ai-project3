@@ -28,3 +28,5 @@ exit
 
 # Other
 Total RAW files: 259999
+Total images files: 251507
+Total non-error images files: 251487
