@@ -90,15 +90,21 @@ def find_future_images(interval=7200):
 
 def calculate_avg_reflectivity(reflectivity, weight_set):
     weights = []
+    
+    num_clear = sum(1 for ele in reflectivity if ele < 30)
+    num_light_rain = sum(1 for ele in reflectivity if ele >= 30 and ele < 52)
+    num_heavy_rain = sum(1 for ele in reflectivity if ele >= 52 and ele < 63)
+    num_storm = sum(1 for ele in reflectivity if ele > 63)
+    
     for ele in reflectivity:
         if ele < 30:
-            weights += [weight_set[0]]
+            weights += [weight_set[0] / num_clear]
         elif ele < 52:
-            weights += [weight_set[1]]
+            weights += [weight_set[1] / num_light_rain]
         elif ele < 63:
-            weights += [weight_set[2]]
+            weights += [weight_set[2] / num_heavy_rain]
         else:
-            weights += [weight_set[3]]
+            weights += [weight_set[3] / num_storm]
     
     avg_reflectivity = np.average(reflectivity, weights=weights)
     if avg_reflectivity < 30:
@@ -118,27 +124,32 @@ def image_labeling(metadata_chunk, weight_set=[0.001, 0.333, 0.333, 0.333]):
     for idx, row in metadata_chunk.iterrows():
         if type(row['future_label']) is str or row['future_path'] == "NotAvail":
             continue
-        
-        data = pyart.io.read_sigmet(f"{data_path}/{row['future_path']}")
-        data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
-        
-        grid_data = pyart.map.grid_from_radars(
-            data,
-            grid_shape=(1, 500, 500),
-            grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
-        )
-        
-        reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
-        avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, weight_set)
+        try:
+            data = pyart.io.read_sigmet(f"{data_path}/{row['future_path']}")
+            data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
             
-        print(f"{row['timestamp']} - Average reflectivity: {avg_reflectivity} | Label: {label}")
-        
-        metadata_chunk.loc[idx, ['future_avg_reflectivity']] = avg_reflectivity
-        metadata_chunk.loc[idx, ['future_label']] = label
-        
-        # Close and delete to release memory
-        del grid_data
-        del data
+            grid_data = pyart.map.grid_from_radars(
+                data,
+                grid_shape=(1, 500, 500),
+                grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
+            )
+            
+            reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
+            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, weight_set)
+                
+            print(f"{row['timestamp']} - Average reflectivity: {avg_reflectivity} | Label: {label}")
+            
+            metadata_chunk.loc[idx, ['future_avg_reflectivity']] = avg_reflectivity
+            metadata_chunk.loc[idx, ['future_label']] = label
+            
+            # Close and delete to release memory
+            del grid_data
+            del data
+        except Exception as e:
+            metadata_chunk.loc[idx, ['future_avg_reflectivity']] = np.nan
+            metadata_chunk.loc[idx, ['future_label']] = "NotAvail"
+            logging.error(e, exc_info=True)
+            continue
         
     metadata_chunk['timestamp'] = metadata_chunk['timestamp'].astype(str).str.replace(':', '-')
     return metadata_chunk
@@ -181,7 +192,6 @@ def plot_distribution():
     plt.title('Avg reflectivity distribution')
     plt.savefig('image/3.Avg reflectivity distribution.png')
     plt.clf()
-    
     
 if __name__ == '__main__':
     # find_future_images(interval=7200)

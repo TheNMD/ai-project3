@@ -1,19 +1,44 @@
-import os
-import pandas as pd
+import pyart
+import numpy as np
 
-def update_metadata():
-    old_metadata = pd.read_csv("metadata.csv")
+def calculate_avg_reflectivity(reflectivity, weight_set):
+    weights = []
     
-    if 'generated' in old_metadata.columns:
-        old_metadata.drop(columns="generated", inplace=True)
+    num_clear = sum(1 for ele in reflectivity if ele < 30)
+    num_light_rain = sum(1 for ele in reflectivity if ele >= 30 and ele < 52)
+    num_heavy_rain = sum(1 for ele in reflectivity if ele >= 52 and ele < 63)
+    num_storm = sum(1 for ele in reflectivity if ele > 63)
     
-    files = [file for file in os.listdir("image/unlabeled")]
-    timestamps = [file[:-4] for file in files]
-    generated = ["True" if file.endswith('.jpg') else "Error" for file in files]
-    new_metadata = pd.DataFrame({'timestamp': timestamps, 'generated': generated})
+    for ele in reflectivity:
+        if ele < 30:
+            weights += [weight_set[0] / num_clear]
+        elif ele < 52:
+            weights += [weight_set[1] / num_light_rain]
+        elif ele < 63:
+            weights += [weight_set[2] / num_heavy_rain]
+        else:
+            weights += [weight_set[3] / num_storm]
     
-    updated_metadata = pd.merge(old_metadata, new_metadata, on='timestamp', how='outer')
-    updated_metadata.to_csv("metadata.csv", index=False)
-    
-    
-update_metadata()
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+    if avg_reflectivity < 30:
+        label = "clear"
+    elif avg_reflectivity < 52:
+        label = "light_rain"
+    elif avg_reflectivity < 63:
+        label = "heavy_rain"
+    else:
+        label = "storm"
+        
+    return avg_reflectivity, label
+
+data = pyart.io.read_sigmet(r"/data/data_WF/NhaBe/2020/Pro-Raw(1-8)T7-2020/01/2020-07-01T02:03")
+data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
+
+grid_data = pyart.map.grid_from_radars(
+    data,
+    grid_shape=(1, 500, 500),
+    grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
+)
+
+reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
+avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, [0.1, 0.3, 0.3, 0.3])
