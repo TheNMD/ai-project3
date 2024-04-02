@@ -72,7 +72,7 @@ def view_sample_images():
 # @profile
 def image_generating(metadata_chunk):    
     for _, row in metadata_chunk.iterrows():
-        if row['generated'] == "True":
+        if row['generated'] == "True" or row['generated'] == "Error":
             continue
         timestamp = row['timestamp']
         try:
