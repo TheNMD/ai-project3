@@ -1,3 +1,4 @@
+import os
 import shutil
 import time
 import multiprocessing as mp
@@ -65,18 +66,23 @@ def view_sample_image():
 def find_future_images(interval=7200):
     metadata = pd.read_csv("metadata.csv")
     metadata['timestamp'] = pd.to_datetime(metadata['timestamp'], format="%Y-%m-%d %H-%M-%S")
+    metadata = metadata[metadata['generated'] != 'Error']
 
-    for idx, row in metadata.iterrows():
+    for idx, row in metadata.iterrows():        
         current_time = row['timestamp']
         future_metadata = metadata[(metadata['timestamp'] - current_time > pd.Timedelta(interval, "s")) &
-                                     (metadata['timestamp'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
-
-        if future_metadata.empty or future_metadata['generated'].tolist()[0] == "Error":
+                                   (metadata['timestamp'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
+        
+        if future_metadata.empty:
             metadata.loc[idx, ['future_path']] = "NotAvail"
             metadata.loc[idx, ['future_timestamp']] = "NotAvail"
+            metadata.loc[idx, ['future_label']] = "NotAvail"
+            metadata.loc[idx, ['future_avg_reflectivity']] = "NotAvail"
         else:
             metadata.loc[idx, ['future_path']] = future_metadata['path'].tolist()[0]
             metadata.loc[idx, ['future_timestamp']] = future_metadata['timestamp'].tolist()[0]
+        
+        print(current_time)
 
     metadata['timestamp'] = metadata['timestamp'].astype(str).str.replace(':', '-')
     metadata['future_timestamp'] = metadata['future_timestamp'].astype(str).str.replace(':', '-')
@@ -178,32 +184,38 @@ def plot_distribution():
     
     
 if __name__ == '__main__':
-    # find_future_images(interval=7200)
+    find_future_images(interval=7200)
     
-    num_processes = 20
-    chunk_size = 1000 * num_processes 
-    
-    counter = 0
-    try:
-        # Use multiprocessing to iterate over the metadata 
-        with mp.Pool(processes=num_processes) as pool:
-            metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
-            for chunk in metadata_chunks:
-                start_time = time.time()
-                results = pool.map(image_labeling, np.array_split(chunk, num_processes))
-                new_metadata = pd.concat(results)
-                update_metadata(new_metadata)
-                end_time = time.time() - start_time
-
-                counter += 1
-                print(f"### Chunk: {counter} | Time: {end_time} ###")
-    except Exception as e:
-        # If crash due to lack of memory, restart the process (progress is saved)
-        print(e)
-        logging.error(e, exc_info=True)
+    # num_processes = 20
+    # chunk_size = 1000 * num_processes 
     
     # counter = 0
     # try:
+    #     # Use multiprocessing to iterate over the metadata 
+    #     with mp.Pool(processes=num_processes) as pool:
+    #         metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
+    #         for chunk in metadata_chunks:
+    #             start_time = time.time()
+    #             results = pool.map(image_labeling, np.array_split(chunk, num_processes))
+    #             new_metadata = pd.concat(results)
+    #             update_metadata(new_metadata)
+    #             end_time = time.time() - start_time
+
+    #             counter += 1
+    #             print(f"### Chunk: {counter} | Time: {end_time} ###")
+    # except Exception as e:
+    #     # If crash due to lack of memory, restart the process (progress is saved)
+    #     print(e)
+    #     logging.error(e, exc_info=True)
+    
+    # counter = 0
+    # try:
+    #     if not os.path.exists("image/labeled"):
+    #         os.makedirs("image/labeled")
+    #         os.makedirs("image/labeled/clear")
+    #         os.makedirs("image/labeled/light_rain")
+    #         os.makedirs("image/labeled/heavy_rain")
+    #         os.makedirs("image/labeled/storm")
     #     # Use multiprocessing to iterate over the metadata 
     #     with mp.Pool(processes=num_processes) as pool:
     #         labeled_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
@@ -219,7 +231,7 @@ if __name__ == '__main__':
     #     print(e)
     #     logging.error(e, exc_info=True)
     
-    plot_distribution()
+    # plot_distribution()
         
 
         
