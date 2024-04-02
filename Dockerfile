@@ -19,4 +19,4 @@ EXPOSE 5000
 
 # CMD ["ls"]
 
-ENTRYPOINT [ "/docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "docker-entrypoint.sh"]
