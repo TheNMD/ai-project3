@@ -120,8 +120,8 @@ def update_metadata():
 if __name__ == '__main__':    
     # view_sample_images()
     
-    num_processes = 16
-    chunk_size = 50 * num_processes
+    num_processes = 20
+    chunk_size = 100 * num_processes
     
     counter = 0
     try:
