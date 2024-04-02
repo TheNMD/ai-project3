@@ -153,7 +153,30 @@ def move_to_label(metadata_chunk):
         label = row['label']
         timestamp = row['timestamp']
         shutil.copy(f"image/unlabeled/{timestamp}.jpg", f"image/labeled/{label}/{timestamp}.jpg")
-        
+
+def plot_distribution():
+    metadata = pd.read_csv(f"{data_path}/metadata.csv")
+    
+    frequency = metadata['future_label'].value_counts()
+    print(frequency)
+    
+    plt.figure(figsize=(6, 6))
+    
+    plt.bar(frequency.index, frequency.values, color='skyblue', edgecolor='black')
+    plt.xlabel('Label')
+    plt.ylabel('Frequency')
+    plt.title('Label distribution')
+    plt.savefig('image/3.Label distribution.png')
+    plt.clf()
+    
+    _, _, _ = plt.hist(metadata['future_avg_reflectivity'], color='skyblue', edgecolor='black')
+    plt.xlabel('Avg reflectivity')
+    plt.ylabel('Frequency')
+    plt.title('Avg reflectivity distribution')
+    plt.savefig('image/3.Avg reflectivity distribution.png')
+    plt.clf()
+    
+    
 if __name__ == '__main__':
     # find_future_images(interval=7200)
     
@@ -178,7 +201,7 @@ if __name__ == '__main__':
         # If crash due to lack of memory, restart the process (progress is saved)
         print(e)
         logging.error(e, exc_info=True)
-        
+    
     # counter = 0
     # try:
     #     # Use multiprocessing to iterate over the metadata 
@@ -195,6 +218,8 @@ if __name__ == '__main__':
     #     # If crash due to lack of memory, restart the process (progress is saved)
     #     print(e)
     #     logging.error(e, exc_info=True)
+    
+    plot_distribution()
         
 
         
