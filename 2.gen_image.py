@@ -120,7 +120,7 @@ if __name__ == '__main__':
     # view_sample_images()
     
     num_processes = 16
-    chunk_size = 10 * num_processes
+    chunk_size = 50 * num_processes
     
     counter = 0
     try:
@@ -129,6 +129,9 @@ if __name__ == '__main__':
         with mp.Pool(processes=num_processes) as pool:
             metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
             for chunk in metadata_chunks:
+                chunk = chunk[(chunk['generated'] != 'True') & (chunk['generated'] != 'Error')]
+                if len(chunk) == 0:
+                    continue
                 sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
                 start_time = time.time()
@@ -136,7 +139,8 @@ if __name__ == '__main__':
                 end_time = time.time() - start_time
                 
                 counter += 1
-                print(f"### Chunk: {counter} | Time: {end_time} ###")    
+                print(f"### Chunk: {counter} | Time: {end_time} ###")
+                break    
     except Exception as e:
         # If crash due to lack of memory, restart the process (progress is saved)
         update_metadata()
