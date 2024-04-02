@@ -140,8 +140,7 @@ if __name__ == '__main__':
                 end_time = time.time() - start_time
                 
                 counter += 1
-                print(f"### Chunk: {counter} | Time: {end_time} ###")
-                break    
+                print(f"### Chunk: {counter} | Time: {end_time} ###")    
     except Exception as e:
         # If crash due to lack of memory, restart the process (progress is saved)
         update_metadata()
