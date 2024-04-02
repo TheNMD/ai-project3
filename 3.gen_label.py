@@ -231,7 +231,7 @@ if __name__ == '__main__':
     #     print(e)
     #     logging.error(e, exc_info=True)
     
-    # plot_distribution()
+    plot_distribution()
         
 
         
