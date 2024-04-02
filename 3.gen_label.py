@@ -137,7 +137,6 @@ def image_labeling(metadata_chunk, weight_set=[0.001, 0.333, 0.333, 0.333]):
         metadata_chunk.loc[idx, ['future_label']] = label
         
         # Close and delete to release memory
-        del weights
         del grid_data
         del data
         
@@ -162,6 +161,7 @@ def move_to_label(metadata_chunk):
 
 def plot_distribution():
     metadata = pd.read_csv("metadata.csv")
+    metadata = metadata[metadata['future_path' != "NotAvail"]]
     
     frequency = metadata['future_label'].value_counts()
     print(frequency)
@@ -189,6 +189,13 @@ if __name__ == '__main__':
     num_processes = 20
     chunk_size = 1000 * num_processes 
     
+    if not os.path.exists("image/labeled"):
+        os.makedirs("image/labeled")
+        os.makedirs("image/labeled/clear")
+        os.makedirs("image/labeled/light_rain")
+        os.makedirs("image/labeled/heavy_rain")
+        os.makedirs("image/labeled/storm")
+    
     counter = 0
     try:
         # Use multiprocessing to iterate over the metadata 
@@ -210,12 +217,6 @@ if __name__ == '__main__':
     
     # counter = 0
     # try:
-    #     if not os.path.exists("image/labeled"):
-    #         os.makedirs("image/labeled")
-    #         os.makedirs("image/labeled/clear")
-    #         os.makedirs("image/labeled/light_rain")
-    #         os.makedirs("image/labeled/heavy_rain")
-    #         os.makedirs("image/labeled/storm")
     #     # Use multiprocessing to iterate over the metadata 
     #     with mp.Pool(processes=num_processes) as pool:
     #         labeled_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
@@ -231,7 +232,7 @@ if __name__ == '__main__':
     #     print(e)
     #     logging.error(e, exc_info=True)
     
-    plot_distribution()
+    # plot_distribution()
         
 
         
