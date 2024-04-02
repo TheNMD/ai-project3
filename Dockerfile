@@ -13,7 +13,7 @@ RUN pip install --upgrade pip
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN chmod +x entrypoint.sh
+RUN chmod +x docker-entrypoint.sh
 
 EXPOSE 5000
 
