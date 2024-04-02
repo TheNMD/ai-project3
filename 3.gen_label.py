@@ -1,4 +1,4 @@
-import os
+import shutil
 import time
 import multiprocessing as mp
 import warnings
@@ -71,7 +71,7 @@ def find_future_images(interval=7200):
         future_metadata = metadata[(metadata['timestamp'] - current_time > pd.Timedelta(interval, "s")) &
                                      (metadata['timestamp'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
 
-        if future_metadata.empty:
+        if future_metadata.empty or future_metadata['generated'].tolist()[0] == "Error":
             metadata.loc[idx, ['future_path']] = "NotAvail"
             metadata.loc[idx, ['future_timestamp']] = "NotAvail"
         else:
@@ -81,7 +81,31 @@ def find_future_images(interval=7200):
     metadata['timestamp'] = metadata['timestamp'].astype(str).str.replace(':', '-')
     metadata['future_timestamp'] = metadata['future_timestamp'].astype(str).str.replace(':', '-')
     metadata.to_csv("metadata.csv", index=False)
-            
+
+def calculate_avg_reflectivity(reflectivity, weight_set):
+    weights = []
+    for ele in reflectivity:
+        if ele < 30:
+            weights += [weight_set[0]]
+        elif ele < 52:
+            weights += [weight_set[1]]
+        elif ele < 63:
+            weights += [weight_set[2]]
+        else:
+            weights += [weight_set[3]]
+    
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+    if avg_reflectivity < 30:
+        label = "clear"
+    elif avg_reflectivity < 52:
+        label = "light_rain"
+    elif avg_reflectivity < 63:
+        label = "heavy_rain"
+    else:
+        label = "storm"
+        
+    return avg_reflectivity, label
+
 def image_labeling(metadata_chunk, weight_set=[0.001, 0.333, 0.333, 0.333]):
     metadata_chunk['timestamp'] = pd.to_datetime(metadata_chunk['timestamp'], format="%Y-%m-%d %H-%M-%S")
     
@@ -99,28 +123,9 @@ def image_labeling(metadata_chunk, weight_set=[0.001, 0.333, 0.333, 0.333]):
         )
         
         reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
-        weights = []
-        for ele in reflectivity:
-            if ele < 30:
-                weights += [weight_set[0]]
-            elif ele < 52:
-                weights += [weight_set[1]]
-            elif ele < 63:
-                weights += [weight_set[2]]
-            else:
-                weights += [weight_set[3]]
-        
-        avg_reflectivity = np.average(reflectivity, weights=weights)
-        if avg_reflectivity < 30:
-            label = "clear"
-        elif avg_reflectivity < 52:
-            label = "light_rain"
-        elif avg_reflectivity < 63:
-            label = "heavy_rain"
-        else:
-            label = "storm"
+        avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, weight_set)
             
-        # print(f"{row['timestamp']} - Average reflectivity: {avg_reflectivity} | Label: {label}")
+        print(f"{row['timestamp']} - Average reflectivity: {avg_reflectivity} | Label: {label}")
         
         metadata_chunk.loc[idx, ['future_avg_reflectivity']] = avg_reflectivity
         metadata_chunk.loc[idx, ['future_label']] = label
@@ -140,12 +145,20 @@ def update_metadata(new_metadata):
     updated_metadata.loc[new_metadata.index, 'future_label'] = new_metadata['future_label'].tolist()
     
     updated_metadata.to_csv("metadata.csv", index=False)        
+
+def move_to_label(metadata_chunk):
+    for _, row in metadata_chunk.iterrows():
+        if row['generated'] == "Error":
+            continue
+        label = row['label']
+        timestamp = row['timestamp']
+        shutil.copy(f"image/unlabeled/{timestamp}.jpg", f"image/labeled/{label}/{timestamp}.jpg")
         
 if __name__ == '__main__':
     # find_future_images(interval=7200)
     
-    num_processes = 4
-    chunk_size = 400
+    num_processes = 20
+    chunk_size = 1000 * num_processes 
     
     counter = 0
     try:
@@ -161,8 +174,15 @@ if __name__ == '__main__':
 
                 counter += 1
                 print(f"### Chunk: {counter} | Time: {end_time} ###")
-        
-        print(f"Time: {end_time}")
+
+            labeled_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
+            for chunk in labeled_chunks:
+                start_time = time.time()
+                pool.map(move_to_label, np.array_split(chunk, num_processes))
+                end_time = time.time() - start_time
+
+                counter += 1
+                print(f"### Chunk: {counter} | Time: {end_time} ###")
     except Exception as e:
         # If crash due to lack of memory, restart the process (progress is saved)
         print(e)
