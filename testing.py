@@ -1,23 +1,19 @@
-import pyart
 import numpy as np
+import pandas as pd
+import pyart
+
 
 def calculate_avg_reflectivity(reflectivity, weight_set):
-    weights = []
-    
-    num_clear = sum(1 for ele in reflectivity if ele < 30)
-    num_light_rain = sum(1 for ele in reflectivity if ele >= 30 and ele < 52)
-    num_heavy_rain = sum(1 for ele in reflectivity if ele >= 52 and ele < 63)
-    num_storm = sum(1 for ele in reflectivity if ele > 63)
-    
+    weights = []    
     for ele in reflectivity:
         if ele < 30:
-            weights += [weight_set[0] / num_clear]
+            weights += [weight_set[0]]
         elif ele < 52:
-            weights += [weight_set[1] / num_light_rain]
+            weights += [weight_set[1]]
         elif ele < 63:
-            weights += [weight_set[2] / num_heavy_rain]
+            weights += [weight_set[2]]
         else:
-            weights += [weight_set[3] / num_storm]
+            weights += [weight_set[3]]
     
     avg_reflectivity = np.average(reflectivity, weights=weights)
     if avg_reflectivity < 30:
@@ -31,14 +27,21 @@ def calculate_avg_reflectivity(reflectivity, weight_set):
         
     return avg_reflectivity, label
 
-# data = pyart.io.read_sigmet(r"/data/data_WF/NhaBe/2020/Pro-Raw(1-8)T7-2020/01/2020-07-01T02:03")
-# data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
+timestamp = ''
 
-# grid_data = pyart.map.grid_from_radars(
-#     data,
-#     grid_shape=(1, 500, 500),
-#     grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
-# )
+metadata = pd.read_csv("metadata.csv")
+path = metadata[metadata['timestamp'] == timestamp]
+
+data = pyart.io.read_sigmet(f"/data/data_WF/NhaBe/{path}")
+data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
+
+grid_data = pyart.map.grid_from_radars(
+    data,
+    grid_shape=(1, 500, 500),
+    grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
+)
 
 reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
-avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, [0.1, 0.3, 0.3, 0.3])
+avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, [1, 20, 25, 30])
+
+print(avg_reflectivity, label)
