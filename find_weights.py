@@ -1,14 +1,14 @@
 import os
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import pyart
 import warnings
 warnings.filterwarnings('ignore')
 import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import pyart
 
 # Given a list of dbz values
 # Assign each value a weight according to how important it is
