@@ -31,14 +31,14 @@ def calculate_avg_reflectivity(reflectivity, weight_set):
         
     return avg_reflectivity, label
 
-data = pyart.io.read_sigmet(r"/data/data_WF/NhaBe/2020/Pro-Raw(1-8)T7-2020/01/2020-07-01T02:03")
-data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
+# data = pyart.io.read_sigmet(r"/data/data_WF/NhaBe/2020/Pro-Raw(1-8)T7-2020/01/2020-07-01T02:03")
+# data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
 
-grid_data = pyart.map.grid_from_radars(
-    data,
-    grid_shape=(1, 500, 500),
-    grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
-)
+# grid_data = pyart.map.grid_from_radars(
+#     data,
+#     grid_shape=(1, 500, 500),
+#     grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
+# )
 
 reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
 avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, [0.1, 0.3, 0.3, 0.3])

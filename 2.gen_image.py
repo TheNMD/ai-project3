@@ -70,7 +70,7 @@ def view_sample_images():
     plt.savefig("image/2.sample_grid_image.jpg", dpi=150)
 
 # @profile
-def image_generating(metadata_chunk):    
+def generate_image(metadata_chunk):    
     for _, row in metadata_chunk.iterrows():
         if row['generated'] == "True" or row['generated'] == "Error":
             continue
@@ -123,8 +123,12 @@ if __name__ == '__main__':
     num_processes = 20
     chunk_size = 100 * num_processes
     
-    counter = 0
+    if not os.path.exists("image"):
+        os.makedirs("image")
+        os.makedirs("image/unlabeled")
+    
     try:
+        counter = 0
         update_metadata()
         # Use multiprocessing to iterate over the metadata 
         with mp.Pool(processes=num_processes) as pool:
@@ -136,7 +140,8 @@ if __name__ == '__main__':
                 sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
                 start_time = time.time()
-                pool.map(image_generating, sub_metadata_chunks)
+                pool.map(generate_image, sub_metadata_chunks)
+                update_metadata()
                 end_time = time.time() - start_time
                 
                 counter += 1

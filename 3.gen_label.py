@@ -90,21 +90,15 @@ def find_future_images(interval=7200):
 
 def calculate_avg_reflectivity(reflectivity, weight_set):
     weights = []
-    
-    num_clear = sum(1 for ele in reflectivity if ele < 30)
-    num_light_rain = sum(1 for ele in reflectivity if ele >= 30 and ele < 52)
-    num_heavy_rain = sum(1 for ele in reflectivity if ele >= 52 and ele < 63)
-    num_storm = sum(1 for ele in reflectivity if ele > 63)
-    
     for ele in reflectivity:
         if ele < 30:
-            weights += [weight_set[0] / num_clear]
+            weights += [weight_set[0]]
         elif ele < 52:
-            weights += [weight_set[1] / num_light_rain]
+            weights += [weight_set[1]]
         elif ele < 63:
-            weights += [weight_set[2] / num_heavy_rain]
+            weights += [weight_set[2]]
         else:
-            weights += [weight_set[3] / num_storm]
+            weights += [weight_set[3]]
     
     avg_reflectivity = np.average(reflectivity, weights=weights)
     if avg_reflectivity < 30:
@@ -118,8 +112,9 @@ def calculate_avg_reflectivity(reflectivity, weight_set):
         
     return avg_reflectivity, label
 
-def image_labeling(metadata_chunk, weight_set=[0.001, 0.333, 0.333, 0.333]):
+def label_image(metadata_chunk):
     metadata_chunk['timestamp'] = pd.to_datetime(metadata_chunk['timestamp'], format="%Y-%m-%d %H-%M-%S")
+    weight_set=[1, 20, 25, 30]
     
     for idx, row in metadata_chunk.iterrows():
         if type(row['future_label']) is str or row['future_path'] == "NotAvail":
@@ -135,7 +130,7 @@ def image_labeling(metadata_chunk, weight_set=[0.001, 0.333, 0.333, 0.333]):
             )
             
             reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
-            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, weight_set)
+            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, weight_set=weight_set)
                 
             print(f"{row['timestamp']} - Average reflectivity: {avg_reflectivity} | Label: {label}")
             
@@ -164,8 +159,6 @@ def update_metadata(new_metadata):
 
 def move_to_label(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
-        if row['generated'] == "Error":
-            continue
         label = row['label']
         timestamp = row['timestamp']
         shutil.copy(f"image/unlabeled/{timestamp}.jpg", f"image/labeled/{label}/{timestamp}.jpg")
@@ -199,23 +192,28 @@ if __name__ == '__main__':
     num_processes = 20
     chunk_size = 1000 * num_processes 
     
-    if not os.path.exists("image/labeled"):
+    if not os.path.exists("image"):
+        os.makedirs("image")
         os.makedirs("image/labeled")
         os.makedirs("image/labeled/clear")
         os.makedirs("image/labeled/light_rain")
         os.makedirs("image/labeled/heavy_rain")
         os.makedirs("image/labeled/storm")
     
-    counter = 0
     try:
+        counter = 0
         # Use multiprocessing to iterate over the metadata 
         with mp.Pool(processes=num_processes) as pool:
             metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
             for chunk in metadata_chunks:
+                chunk = chunk[chunk['future_path'] != 'NotAvail']
+                if len(chunk) == 0:
+                    continue
+                sub_metadata_chunks = np.array_split(chunk, num_processes)
+                
                 start_time = time.time()
-                results = pool.map(image_labeling, np.array_split(chunk, num_processes))
-                new_metadata = pd.concat(results)
-                update_metadata(new_metadata)
+                results = pool.map(label_image, sub_metadata_chunks)
+                update_metadata(pd.concat(results))
                 end_time = time.time() - start_time
 
                 counter += 1
@@ -225,8 +223,8 @@ if __name__ == '__main__':
         print(e)
         logging.error(e, exc_info=True)
     
-    # counter = 0
     # try:
+    #     counter = 0
     #     # Use multiprocessing to iterate over the metadata 
     #     with mp.Pool(processes=num_processes) as pool:
     #         labeled_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
