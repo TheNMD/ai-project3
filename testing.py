@@ -28,11 +28,7 @@ def calculate_avg_reflectivity(reflectivity, weight_set):
     return avg_reflectivity, label
 
 timestamp = ''
-
-metadata = pd.read_csv("metadata.csv")
-path = metadata[metadata['timestamp'] == timestamp]
-
-data = pyart.io.read_sigmet(f"/data/data_WF/NhaBe/{path}")
+data = pyart.io.read_sigmet(f"/data/data_WF/NhaBe/{timestamp}")
 data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
 
 grid_data = pyart.map.grid_from_radars(
