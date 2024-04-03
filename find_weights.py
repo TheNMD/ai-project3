@@ -45,6 +45,15 @@ def calculate_avg_reflectivity(reflectivity, weight_set=[0.000001, 0.00001, 0.00
         
     return avg_reflectivity, label
 
+def plot_distribution(list, value_name, save_name):
+    _, _, _ = plt.hist(list, color='skyblue', edgecolor='black')
+    plt.xlabel(f'{value_name}')
+    plt.ylabel('Frequency')
+    plt.title('Reflectivity distribution')
+    plt.savefig(f'data/data_WF/NhaBe/{save_name}')
+    plt.clf()
+    
+
 if __name__ == "__main__":
     if os.path.exists('data/data_WF/NhaBe/results.txt'):      
         os.remove('data/data_WF/NhaBe/results.txt') 
@@ -73,12 +82,7 @@ if __name__ == "__main__":
             reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
             
             # Plot reflectivity value distribution
-            _, _, _ = plt.hist(reflectivity, color='skyblue', edgecolor='black')
-            plt.xlabel('Reflectivity')
-            plt.ylabel('Frequency')
-            plt.title('Reflectivity distribution')
-            plt.savefig(f'data/data_WF/NhaBe/{timestamp}-dist.png')
-            plt.clf()
+            plot_distribution(reflectivity, "Reflectivity", f"{timestamp}-dist.png")
             
             # Calculate average reflectivity and label
             avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
@@ -93,17 +97,7 @@ if __name__ == "__main__":
             continue
         
     # Plot avg reflectivity value distribution
-    _, _, _ = plt.hist(reflectivity_list, color='skyblue', edgecolor='black')
-    plt.xlabel('Avg reflectivity')
-    plt.ylabel('Frequency')
-    plt.title('Avg reflectivity distribution')
-    plt.savefig('data/data_WF/NhaBe/result-dist-avg_reflectivity.png')
-    plt.clf()
+    plot_distribution(reflectivity, "Avg reflectivity", "result-dist-avg_reflectivity.png")
     
-    # Plot avg reflectivity value distribution
-    _, _, _ = plt.hist(label_list, color='skyblue', edgecolor='black')
-    plt.xlabel('Label')
-    plt.ylabel('Frequency')
-    plt.title('Avg reflectivity distribution')
-    plt.savefig('data/data_WF/NhaBe/result-dist-label.png')
-    plt.clf()
+    # Plot label distribution
+    plot_distribution(reflectivity, "Reflectivity", "result-dist-label.png")
