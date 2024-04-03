@@ -2,8 +2,7 @@
 venv/
 
 data/
+image/
 server/
-image/unlabeled/
-image/label/
 
 image.zip

@@ -1,4 +1,5 @@
 import os
+import shutil
 import time
 import multiprocessing as mp
 import warnings
@@ -90,7 +91,7 @@ def generate_image(metadata_chunk):
 
             plt.title('')
             plt.axis('off')
-            plt.savefig(f"image/unlabeled/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+            plt.savefig(f"image/unlabeled1/{timestamp}.jpg", dpi=150, bbox_inches='tight')
             
             print(f"{timestamp} - Done")
             
@@ -98,10 +99,24 @@ def generate_image(metadata_chunk):
             plt.close()
             del display, grid_data, data
         except Exception as e:
-            with open(f'image/unlabeled/{timestamp}.txt', 'w') as f: 
+            with open(f'image/unlabeled1/{timestamp}.txt', 'w') as f: 
                 f.write('error')
             logging.error(e, exc_info=True)
             continue
+
+def move_alternate_files():
+    source_folder = "image/unlabeled1"
+    destination_folder = "image/unlabeled2"
+    
+    files = os.listdir(source_folder)
+
+    # Iterate over the files and copy every other file
+    for i, file_name in enumerate(files):
+        if i % 2 == 0:  # Every other file
+            source_path = os.path.join(source_folder, file_name)
+            destination_path = os.path.join(destination_folder, file_name)
+            shutil.move(source_path, destination_path)
+            print(f"Copied '{file_name}' to '{destination_folder}'")
 
 def update_metadata():
     old_metadata = pd.read_csv("metadata.csv")
@@ -109,7 +124,7 @@ def update_metadata():
     if 'generated' in old_metadata.columns:
         old_metadata.drop(columns="generated", inplace=True)
     
-    files = [file for file in os.listdir("image/unlabeled")]
+    files = [file for file in os.listdir("image/unlabeled1")]
     timestamps = [file[:-4] for file in files]
     generated = ["True" if file.endswith('.jpg') else "Error" for file in files]
     new_metadata = pd.DataFrame({'timestamp': timestamps, 'generated': generated})
@@ -125,7 +140,8 @@ if __name__ == '__main__':
     
     if not os.path.exists("image"):
         os.makedirs("image")
-        os.makedirs("image/unlabeled")
+        os.makedirs("image/unlabeled1")
+        os.makedirs("image/unlabeled2")
     
     try:
         counter = 0
@@ -151,4 +167,6 @@ if __name__ == '__main__':
         update_metadata()
         print(e)
         logging.error(e, exc_info=True)
+        
+    move_alternate_files()
         
