@@ -146,6 +146,34 @@ def label_image(metadata_chunk):
             logging.error(e, exc_info=True)
             continue
         
+        try:
+            data = pyart.io.read_sigmet(f"{data_path}/{row['path']}")
+            data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
+            
+            grid_data = pyart.map.grid_from_radars(
+                data,
+                grid_shape=(1, 500, 500),
+                grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
+            )
+            
+            reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
+            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, weight_set=weight_set)
+                
+            print(f"{row['timestamp']} - Average reflectivity: {avg_reflectivity} | Label: {label}")
+            
+            metadata_chunk.loc[idx, ['current_avg_reflectivity']] = avg_reflectivity
+            metadata_chunk.loc[idx, ['current_label']] = label
+            
+            # Close and delete to release memory
+            del grid_data
+            del data
+        except Exception as e:
+            metadata_chunk.loc[idx, ['current_avg_reflectivity']] = np.nan
+            metadata_chunk.loc[idx, ['current_label']] = "NotAvail"
+            logging.error(e, exc_info=True)
+            continue
+        
+        
     metadata_chunk['timestamp'] = metadata_chunk['timestamp'].astype(str).str.replace(':', '-')
     return metadata_chunk
         
@@ -159,9 +187,17 @@ def update_metadata(new_metadata):
 
 def move_to_label(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
-        label = row['label']
         timestamp = row['timestamp']
-        shutil.copy(f"image/unlabeled/{timestamp}.jpg", f"image/labeled/{label}/{timestamp}.jpg")
+        
+        future_label = row['future_label']
+        current_label = row['current_label']
+        
+        if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
+            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
+            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{current_label}/{timestamp}.jpg")
+        else:
+            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
+            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{current_label}/{timestamp}.jpg")
 
 def plot_distribution():
     metadata = pd.read_csv("metadata.csv")
@@ -192,13 +228,21 @@ if __name__ == '__main__':
     num_processes = 20
     chunk_size = 1000 * num_processes 
     
-    if not os.path.exists("image"):
+    if not os.path.exists("image/labeled"):
         os.makedirs("image")
         os.makedirs("image/labeled")
-        os.makedirs("image/labeled/clear")
-        os.makedirs("image/labeled/light_rain")
-        os.makedirs("image/labeled/heavy_rain")
-        os.makedirs("image/labeled/storm")
+        
+        os.makedirs("image/labeled/future")
+        os.makedirs("image/labeled/future/clear")
+        os.makedirs("image/labeled/future/light_rain")
+        os.makedirs("image/labeled/future/heavy_rain")
+        os.makedirs("image/labeled/future/storm")
+        
+        os.makedirs("image/labeled/current")
+        os.makedirs("image/labeled/current/clear")
+        os.makedirs("image/labeled/current/light_rain")
+        os.makedirs("image/labeled/current/heavy_rain")
+        os.makedirs("image/labeled/current/storm")
     
     try:
         counter = 0
