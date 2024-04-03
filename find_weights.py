@@ -51,6 +51,9 @@ if __name__ == "__main__":
     
     filenames = [file for file in os.listdir('data/data_WF/NhaBe') if not file.endswith('jpg') and not file.endswith('txt')]
 
+    reflectivity_list = []
+    label_list = []
+
     for name in filenames:
         try:
             # Read data
@@ -71,9 +74,9 @@ if __name__ == "__main__":
             
             # Plot reflectivity value distribution
             _, _, _ = plt.hist(reflectivity, color='skyblue', edgecolor='black')
-            plt.xlabel('Avg reflectivity')
+            plt.xlabel('Reflectivity')
             plt.ylabel('Frequency')
-            plt.title('Avg reflectivity distribution')
+            plt.title('Reflectivity distribution')
             plt.savefig(f'data/data_WF/NhaBe/{timestamp}-dist.png')
             plt.clf()
             
@@ -83,5 +86,24 @@ if __name__ == "__main__":
             print(f"{timestamp} - {avg_reflectivity} - {label}")
             with open('data/data_WF/NhaBe/results.txt', 'a') as file:
                 file.write(f"{timestamp} - {avg_reflectivity} - {label}" + '\n')
+                
+            reflectivity_list += [avg_reflectivity]
+            label_list += [label]
         except Exception as e:
             continue
+        
+    # Plot avg reflectivity value distribution
+    _, _, _ = plt.hist(reflectivity_list, color='skyblue', edgecolor='black')
+    plt.xlabel('Avg reflectivity')
+    plt.ylabel('Frequency')
+    plt.title('Avg reflectivity distribution')
+    plt.savefig('data/data_WF/NhaBe/result-dist-avg_reflectivity.png')
+    plt.clf()
+    
+    # Plot avg reflectivity value distribution
+    _, _, _ = plt.hist(label_list, color='skyblue', edgecolor='black')
+    plt.xlabel('Label')
+    plt.ylabel('Frequency')
+    plt.title('Avg reflectivity distribution')
+    plt.savefig('data/data_WF/NhaBe/result-dist-label.png')
+    plt.clf()
