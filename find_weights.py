@@ -49,7 +49,7 @@ def plot_distribution(list, value_name, save_name):
     _, _, _ = plt.hist(list, color='skyblue', edgecolor='black')
     plt.xlabel(f'{value_name}')
     plt.ylabel('Frequency')
-    plt.title('Reflectivity distribution')
+    plt.title(f'{value_name} distribution')
     plt.savefig(f'data/data_WF/NhaBe/{save_name}')
     plt.clf()
     
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
             
             # Plot reflectivity value distribution
-            plot_distribution(reflectivity, "Reflectivity", f"{timestamp}-dist.png")
+            plot_distribution(sorted(reflectivity), "Reflectivity", f"{timestamp}-dist.png")
             
             # Calculate average reflectivity and label
             avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
@@ -97,7 +97,7 @@ if __name__ == "__main__":
             continue
         
     # Plot avg reflectivity value distribution
-    plot_distribution(reflectivity, "Avg reflectivity", "result-dist-avg_reflectivity.png")
+    plot_distribution(sorted(reflectivity_list), "Avg reflectivity", "results-dist-avg_reflectivity.png")
     
     # Plot label distribution
-    plot_distribution(reflectivity, "Reflectivity", "result-dist-label.png")
+    plot_distribution(sorted(label_list), "Label", "results-dist-label.png")

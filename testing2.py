@@ -1,20 +1,21 @@
-import os
-import shutil
+import subprocess
 
-def copy_alternate_files(source_folder, destination_folder):
-    # List all files in the source folder
-    files = os.listdir(source_folder)
+import pandas as pd
 
-    # Iterate over the files and copy every other file
-    for i, file_name in enumerate(files):
-        if i % 2 == 0:  # Every other file
-            source_path = os.path.join(source_folder, file_name)
-            destination_path = os.path.join(destination_folder, file_name)
-            shutil.move(source_path, destination_path)
-            print(f"Copied '{file_name}' to '{destination_folder}'")
+df = pd.read_csv("data/data_WF/temp.csv")
 
-# Example usage
-source_folder = 'image/unlabeled1'
-destination_folder = 'image/unlabeled2'
+raw_files = df['path'].tolist()
 
-copy_alternate_files(source_folder, destination_folder)
+# Define the SCP command
+srv = 'radaric@192.168.100.11'
+source = '/data/data_WF/NhaBe'
+destination = 'data/data_WF/temp'
+password = 'abcd@1234'
+
+for i in range(len(raw_files)): 
+    command = f"sshpass -p {password} scp {srv}:'{source}/{raw_files[i]}' {destination}"
+    try:
+        subprocess.run(command, shell=True, check=True)
+    except subprocess.CalledProcessError as e:
+        print("Error executing SCP command:", e)
+        break
