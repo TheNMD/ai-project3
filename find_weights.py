@@ -1,4 +1,6 @@
 import os
+import time
+import multiprocessing as mp
 import warnings
 warnings.filterwarnings('ignore')
 import logging
@@ -13,7 +15,8 @@ import pyart
 # Given a list of dbz values
 # Assign each value a weight according to how important it is
 # Calculate weighted average
-def calculate_avg_reflectivity(reflectivity, weight_set=[0.000001, 0.00001, 0.0001, 0.001, 0.01, 10000, 100000, 1000000]):
+def calculate_avg_reflectivity(reflectivity, 
+                               weight_set=[0.000001, 0.00001, 0.0001, 0.001, 0.01, 10000, 100000, 1000000]):
     weights = []
     for ele in reflectivity:
         if ele < 30:
@@ -45,24 +48,8 @@ def calculate_avg_reflectivity(reflectivity, weight_set=[0.000001, 0.00001, 0.00
         
     return avg_reflectivity, label
 
-def plot_distribution(list, value_name, save_name):
-    _, _, _ = plt.hist(list, color='skyblue', edgecolor='black')
-    plt.xlabel(f'{value_name}')
-    plt.ylabel('Frequency')
-    plt.title(f'{value_name} distribution')
-    plt.savefig(f'data/data_WF/NhaBe/{save_name}')
-    plt.clf()
-    
-
-if __name__ == "__main__":
-    if os.path.exists('data/data_WF/NhaBe/results.txt'):      
-        os.remove('data/data_WF/NhaBe/results.txt') 
-    
-    filenames = [file for file in os.listdir('data/data_WF/NhaBe') if not file.endswith('jpg') and not file.endswith('txt')]
-
-    reflectivity_list = []
-    label_list = []
-
+def run_processes(filenames):
+    results = []
     for name in filenames:
         try:
             # Read data
@@ -82,19 +69,66 @@ if __name__ == "__main__":
             reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
             
             # Plot reflectivity value distribution
-            plot_distribution(sorted(reflectivity), "Reflectivity", f"{timestamp}-dist.png")
+            plot_distribution(sorted(reflectivity), "Reflectivity", f"NhaBe/{timestamp}-dist.png")
             
             # Calculate average reflectivity and label
             avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
             
             print(f"{timestamp} - {avg_reflectivity} - {label}")
-            with open('data/data_WF/NhaBe/results.txt', 'a') as file:
-                file.write(f"{timestamp} - {avg_reflectivity} - {label}" + '\n')
-                
-            reflectivity_list += [avg_reflectivity]
-            label_list += [label]
+            results += [(timestamp, avg_reflectivity, label)]
         except Exception as e:
             continue
+    return results
+
+# Write results to a txt file
+def update_result(results):
+    full_results = []
+    for result in results:
+        full_results += result
+    full_results = sorted(full_results)
+    for result in full_results:
+        with open('data/data_WF/results.txt', 'a') as file:
+            file.write(f"{result[0]} - {result[1]} - {result[2]}" + '\n')
+    return full_results
+
+# Plot value distribution
+def plot_distribution(list, value_name, save_name):
+    _, _, _ = plt.hist(list, color='skyblue', edgecolor='black')
+    plt.xlabel(f'{value_name}')
+    plt.ylabel('Frequency')
+    plt.title(f'{value_name} distribution')
+    plt.savefig(f'data/data_WF/{save_name}')
+    plt.clf()
+    
+if __name__ == "__main__":
+    if os.path.exists('data/data_WF/results.txt'):      
+        os.remove('data/data_WF/results.txt') 
+    
+    filenames = [file for file in os.listdir('data/data_WF/NhaBe') if not file.endswith('jpg')]
+    reflectivity_list = []
+    label_list = []
+    
+    # Change num_processes to increase threads
+    num_processes = 4
+    try:
+        # Use multiprocessing to iterate over the filename list 
+        with mp.Pool(processes=num_processes) as pool:
+            sub_list = np.array_split(filenames, num_processes)
+            start_time = time.time()
+            results = pool.map(run_processes, sub_list)
+            
+            # Update result to a txt file
+            full_results = update_result(results)
+            reflectivity_list = [result[1] for result in full_results]
+            label_list = [result[2] for result in full_results]
+                
+            end_time = time.time() - start_time
+            print(f"Time: {end_time}")
+    except Exception as e:
+        # If crash due to lack of memory, restart the process (progress is saved)
+        print(e)
+        logging.error(e, exc_info=True)
+    print(f"Time taken: {end_time}")
         
     # Plot avg reflectivity value distribution
     plot_distribution(sorted(reflectivity_list), "Avg reflectivity", "results-dist-avg_reflectivity.png")
