@@ -222,7 +222,7 @@ if __name__ == '__main__':
     # find_future_images(interval=7200)
     
     num_processes = 20
-    chunk_size = 10 * num_processes 
+    chunk_size = 1000 * num_processes 
     
     if not os.path.exists("image/labeled"):
         if not os.path.exists("image"):
