@@ -170,13 +170,13 @@ def label_image(metadata_chunk):
         
     return metadata_chunk
         
-def update_metadata(new_metadata):
+def update_metadata(new_metadata, idx):
     updated_metadata = pd.read_csv("metadata.csv")
     
     updated_metadata.loc[new_metadata.index, 'future_avg_reflectivity'] = new_metadata['future_avg_reflectivity'].tolist()
     updated_metadata.loc[new_metadata.index, 'future_label'] = new_metadata['future_label'].tolist()
     
-    updated_metadata.to_csv("metadata.csv", index=False)        
+    updated_metadata.to_csv(f"image/metadata_{idx}.csv", index=False)        
 
 def move_to_label(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     # find_future_images(interval=7200)
     
     num_processes = 20
-    chunk_size = 100 * num_processes 
+    chunk_size = 10 * num_processes 
     
     if not os.path.exists("image/labeled"):
         if not os.path.exists("image"):
@@ -249,7 +249,7 @@ if __name__ == '__main__':
                 
                 start_time = time.time()
                 results = pool.map(label_image, sub_metadata_chunks)
-                update_metadata(pd.concat(results))
+                update_metadata(pd.concat(results), counter + 1)
                 end_time = time.time() - start_time
 
                 counter += 1
@@ -258,6 +258,12 @@ if __name__ == '__main__':
         # If crash due to lack of memory, restart the process (progress is saved)
         print(e)
         logging.error(e, exc_info=True)
+    
+    filenames = sorted(os.listdir("image"))
+    metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames if name.endswith("csv")]
+    metadata = pd.concat(metadata_list)
+    metadata = metadata.sort_values(by='timestamp').reset_index(drop=True)
+    metadata.to_csv("metadata.csv", index=False)
     
     # try:
     #     counter = 0
