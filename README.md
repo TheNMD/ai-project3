@@ -10,12 +10,18 @@ docker run -v /data/data_WF/NhaBe:/app/data --name dht-cont dht-image
 ## Remove image
 docker rmi -f dht-image
 
+## Start container
+docker start dht-cont
+docker exec -it dht-cont /bin/bash 
 ## Copy from host to container
 docker cp 1.gen_meta.py dht-cont:/app
 ## Copy from container to host
 docker cp dht-cont:/app/metadata.csv .
+docker cp dht-cont:/app/metadata_temp.csv .
+docker cp dht-cont:/app/metadata_lite.csv .
+
 docker cp dht-cont:/app/metadata .
-docker cp dht-cont:/app/image .
+docker cp -rn dht-cont:/app/image .
 ## Find container id
 docker ps -aqf "ancestor=dht-image"
 ## Stop container
