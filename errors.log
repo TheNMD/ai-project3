@@ -18961,3 +18961,1912 @@ Traceback (most recent call last):
   File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/PIL/Image.py", line 2456, in save
     fp = builtins.open(filename, "w+b")
 FileNotFoundError: [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/data/data_aWF/NhaBe/2022-12-02 01-10-41-dist.png'
+2024-04-05 20:11:19,576 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 34, in calculate_avg_reflectivity
+    pow(10, 2) / reflectivity_30_to_35,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:19,601 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:19,806 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 34, in calculate_avg_reflectivity
+    pow(10, 2) / reflectivity_30_to_35,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:19,844 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 34, in calculate_avg_reflectivity
+    pow(10, 2) / reflectivity_30_to_35,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:20,305 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:20,418 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 40, in calculate_avg_reflectivity
+    pow(10, 8) / reflectivity_bigger_than_60]
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:20,441 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 35, in calculate_avg_reflectivity
+    pow(10, 3) / reflectivity_35_to_40,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:20,671 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 35, in calculate_avg_reflectivity
+    pow(10, 3) / reflectivity_35_to_40,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:20,702 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 39, in calculate_avg_reflectivity
+    pow(10, 7) / reflectivity_55_to_60,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:20,915 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 35, in calculate_avg_reflectivity
+    pow(10, 3) / reflectivity_35_to_40,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:21,038 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 37, in calculate_avg_reflectivity
+    pow(10, 5) / reflectivity_45_to_50,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:21,048 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 37, in calculate_avg_reflectivity
+    pow(10, 5) / reflectivity_45_to_50,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:21,279 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 34, in calculate_avg_reflectivity
+    pow(10, 2) / reflectivity_30_to_35,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:21,529 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 38, in calculate_avg_reflectivity
+    pow(10, 6) / reflectivity_50_to_55,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:21,575 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 37, in calculate_avg_reflectivity
+    pow(10, 5) / reflectivity_45_to_50,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:21,856 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 37, in calculate_avg_reflectivity
+    pow(10, 5) / reflectivity_45_to_50,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:22,046 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 35, in calculate_avg_reflectivity
+    pow(10, 3) / reflectivity_35_to_40,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:22,061 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 38, in calculate_avg_reflectivity
+    pow(10, 6) / reflectivity_50_to_55,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:22,178 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 38, in calculate_avg_reflectivity
+    pow(10, 6) / reflectivity_50_to_55,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:22,242 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 39, in calculate_avg_reflectivity
+    pow(10, 7) / reflectivity_55_to_60,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:22,293 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 38, in calculate_avg_reflectivity
+    pow(10, 6) / reflectivity_50_to_55,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:22,367 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 37, in calculate_avg_reflectivity
+    pow(10, 5) / reflectivity_45_to_50,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:22,663 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 34, in calculate_avg_reflectivity
+    pow(10, 2) / reflectivity_30_to_35,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:22,838 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 37, in calculate_avg_reflectivity
+    pow(10, 5) / reflectivity_45_to_50,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:23,065 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:23,084 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:23,239 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 39, in calculate_avg_reflectivity
+    pow(10, 7) / reflectivity_55_to_60,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:23,333 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 38, in calculate_avg_reflectivity
+    pow(10, 6) / reflectivity_50_to_55,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:23,355 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 35, in calculate_avg_reflectivity
+    pow(10, 3) / reflectivity_35_to_40,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:23,658 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 39, in calculate_avg_reflectivity
+    pow(10, 7) / reflectivity_55_to_60,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:23,777 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 38, in calculate_avg_reflectivity
+    pow(10, 6) / reflectivity_50_to_55,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:23,816 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 34, in calculate_avg_reflectivity
+    pow(10, 2) / reflectivity_30_to_35,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:23,818 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 39, in calculate_avg_reflectivity
+    pow(10, 7) / reflectivity_55_to_60,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:23,996 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:24,030 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 34, in calculate_avg_reflectivity
+    pow(10, 2) / reflectivity_30_to_35,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:24,468 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 37, in calculate_avg_reflectivity
+    pow(10, 5) / reflectivity_45_to_50,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:24,528 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:24,640 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 34, in calculate_avg_reflectivity
+    pow(10, 2) / reflectivity_30_to_35,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:24,793 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 37, in calculate_avg_reflectivity
+    pow(10, 5) / reflectivity_45_to_50,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:24,868 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 35, in calculate_avg_reflectivity
+    pow(10, 3) / reflectivity_35_to_40,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:25,207 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 37, in calculate_avg_reflectivity
+    pow(10, 5) / reflectivity_45_to_50,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:25,214 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 35, in calculate_avg_reflectivity
+    pow(10, 3) / reflectivity_35_to_40,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:25,218 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 39, in calculate_avg_reflectivity
+    pow(10, 7) / reflectivity_55_to_60,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:25,347 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:25,557 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:25,615 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 35, in calculate_avg_reflectivity
+    pow(10, 3) / reflectivity_35_to_40,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:25,654 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 40, in calculate_avg_reflectivity
+    pow(10, 8) / reflectivity_bigger_than_60]
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:25,905 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 38, in calculate_avg_reflectivity
+    pow(10, 6) / reflectivity_50_to_55,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:25,938 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 39, in calculate_avg_reflectivity
+    pow(10, 7) / reflectivity_55_to_60,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:26,018 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 38, in calculate_avg_reflectivity
+    pow(10, 6) / reflectivity_50_to_55,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:26,045 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 37, in calculate_avg_reflectivity
+    pow(10, 5) / reflectivity_45_to_50,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:26,047 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 34, in calculate_avg_reflectivity
+    pow(10, 2) / reflectivity_30_to_35,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:26,340 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 35, in calculate_avg_reflectivity
+    pow(10, 3) / reflectivity_35_to_40,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:26,603 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:26,751 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:26,774 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 36, in calculate_avg_reflectivity
+    pow(10, 4) / reflectivity_40_to_45,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:26,854 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 39, in calculate_avg_reflectivity
+    pow(10, 7) / reflectivity_55_to_60,
+ZeroDivisionError: float division by zero
+2024-04-05 20:11:26,957 - ERROR - float division by zero
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 34, in calculate_avg_reflectivity
+    pow(10, 2) / reflectivity_30_to_35,
+ZeroDivisionError: float division by zero
+2024-04-05 20:14:08,284 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:08,334 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:08,454 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:09,790 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:11,061 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:12,333 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:13,238 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:14,733 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:15,117 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:16,575 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:17,314 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:18,654 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:18,975 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:19,281 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:20,004 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:20,688 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:22,600 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:23,961 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:27,048 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:27,878 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:28,383 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:29,327 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:30,685 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:31,325 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:31,973 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:32,622 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:33,026 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:33,134 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:33,954 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:34,578 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:34,627 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:34,990 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:37,818 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:37,893 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:38,273 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:40,612 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:41,246 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:42,512 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:43,132 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:43,683 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:43,878 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:45,590 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:46,257 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:46,999 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:48,072 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:48,685 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:49,399 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:51,430 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:52,056 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:53,665 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:54,183 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:55,241 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:55,502 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:55,590 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:55,964 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:56,946 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:57,585 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:57,932 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:58,223 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:58,226 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:58,829 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:58,897 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:59,169 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:14:59,416 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:00,550 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:00,992 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:01,141 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:01,232 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:01,286 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:02,016 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:04,542 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:06,146 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:07,237 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:07,606 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:07,671 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:07,843 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:08,407 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:09,041 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:10,021 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:11,159 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:12,624 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:13,233 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:13,366 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:15,619 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:18,825 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:19,735 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:21,190 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:21,705 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:24,014 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:25,442 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:27,667 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:29,750 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:29,769 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:30,153 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:31,741 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:32,056 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:32,066 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:32,534 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:33,861 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:34,698 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:36,542 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:36,884 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:37,560 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:37,562 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:38,180 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:38,189 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:38,619 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:38,848 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:38,929 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:39,820 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:40,137 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:42,074 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:42,123 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:42,424 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:42,846 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:43,442 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:43,805 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:44,434 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:44,450 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:44,739 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:45,227 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:45,908 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:46,462 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:47,230 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:47,744 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:50,711 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:51,347 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:51,972 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:52,577 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:53,193 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:53,316 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:53,828 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:54,462 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:55,768 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:56,129 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:56,489 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:59,010 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:59,455 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:15:59,641 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:00,412 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:01,415 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:01,802 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:02,004 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:02,724 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:03,247 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:03,368 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:03,824 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:03,922 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:05,614 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:06,651 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:07,557 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:07,663 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:07,706 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:08,248 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:09,078 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:10,140 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:11,313 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:11,773 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:12,524 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:13,132 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:19,352 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:20,634 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:23,659 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:24,145 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:25,566 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:26,705 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
+2024-04-05 20:16:28,222 - ERROR - Weights sum to zero, can't be normalized
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 550, in average
+    raise ZeroDivisionError(
+ZeroDivisionError: Weights sum to zero, can't be normalized
