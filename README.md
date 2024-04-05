@@ -6,7 +6,7 @@ Code: cd /data/DanHoangThu
 ## Create image
 docker build -t dht-image .
 ## Run image (Mount NhaBe folder from host to container)
-docker run -v /data/data_WF/NhaBe:/app/data --name dht-cont dht-image
+docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image --name dht-cont dht-image
 ## Remove image
 docker rmi -f dht-image
 
