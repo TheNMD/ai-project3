@@ -13,18 +13,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import pyart
-# import random
-
-
-# # Generate random weights
-# def generate_randon_weights():
-#     num_weights = 8
-#     weights = [random.uniform(i, num_weights) for i in range(num_weights)]
-#     return weights
-
-
-# weights_set = generate_randon_weights()
-
 
 # Given a list of dbz values
 # Assign each value a weight according to how important it is
@@ -40,7 +28,7 @@ def calculate_avg_reflectivity(reflectivity):
     reflectivity_50_to_55 = len([ele for ele in reflectivity if 50 <= ele < 55]) / len(reflectivity)
     reflectivity_55_to_60 = len([ele for ele in reflectivity if 55 <= ele < 60]) / len(reflectivity)
     reflectivity_bigger_than_60 = len([ele for ele in reflectivity if ele >= 60]) / len(reflectivity)
-
+    
     # assign weight to each reflectivity range value
     weight_set = [pow(10, 1) * pow(1, 1 - reflectivity_smaller_than_30), 
                   pow(10, 2) * pow(3, 1 - reflectivity_30_to_35),
@@ -107,14 +95,15 @@ def run_processes(filenames):
 
             # Plot reflectivity value distribution
             plot_distribution(sorted(reflectivity), "Reflectivity", f"NhaBe/{timestamp}-dist.png")
-
+            
             # Calculate average reflectivity and label
             avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
 
             print(f"{timestamp} - {avg_reflectivity} - {label}")
             results += [(timestamp, avg_reflectivity, label)]
         except Exception as e:
-            continue
+            print(e)
+            logging.error(e, exc_info=True)
     return results
 
 
@@ -143,11 +132,11 @@ def plot_distribution(list, value_name, save_name):
 if __name__ == "__main__":
     if os.path.exists('data/data_WF/results.txt'):
         os.remove('data/data_WF/results.txt')
-
-    filenames = [file for file in os.listdir('data/data_WF/NhaBe') if not file.endswith('jpg')]
+    
+    filenames = [file for file in os.listdir('data/data_WF/NhaBe') if not file.endswith('jpg') and not file.endswith('png')]
     reflectivity_list = []
     label_list = []
-
+    
     # Change num_processes to increase threads
     num_processes = 8
     try:
