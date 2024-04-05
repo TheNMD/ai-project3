@@ -1,8 +1,5 @@
 import pandas as pd
 
-df = pd.read_csv("metadata.csv")
-
-df = df['future_label']
-df = df.dropna()
-
-print(len(df))
+metadata_chunks = pd.read_csv("metadata.csv", chunksize=2000)
+for chunk in metadata_chunks:
+    print(123)
