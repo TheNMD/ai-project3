@@ -237,25 +237,25 @@ if __name__ == '__main__':
         os.makedirs("image/labeled/storm")
     
     # Label images
-    # try:
-    #     counter = 0
-    #     # Use multiprocessing to iterate over the metadata 
-    #     with mp.Pool(processes=num_processes) as pool:
-    #         metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
-    #         for chunk in metadata_chunks:
-    #             sub_metadata_chunks = np.array_split(chunk, num_processes)
+    try:
+        counter = 0
+        # Use multiprocessing to iterate over the metadata 
+        with mp.Pool(processes=num_processes) as pool:
+            metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
+            for chunk in metadata_chunks:
+                sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
-    #             start_time = time.time()
-    #             results = pool.map(label_image, sub_metadata_chunks)
-    #             update_metadata(pd.concat(results))
-    #             end_time = time.time() - start_time
+                start_time = time.time()
+                results = pool.map(label_image, sub_metadata_chunks)
+                update_metadata(pd.concat(results))
+                end_time = time.time() - start_time
 
-    #             counter += 1
-    #             print(f"### Chunk: {counter} | Time: {end_time} ###")
-    # except Exception as e:
-    #     # If crash due to lack of memory, restart the process (progress is saved)
-    #     print(e)
-    #     logging.error(e, exc_info=True)
+                counter += 1
+                print(f"### Chunk: {counter} | Time: {end_time} ###")
+    except Exception as e:
+        # If crash due to lack of memory, restart the process (progress is saved)
+        print(e)
+        logging.error(e, exc_info=True)
     
     updated_metadata = pd.read_csv("metadata_temp.csv")
     updated_metadata.to_csv("metadata.csv", index=False)
