@@ -118,12 +118,20 @@ def calculate_avg_reflectivity(reflectivity):
     for ele in reflectivity:
         if ele < 30:
             weights += [weight_set[0]]
-        elif ele < 52:
+        elif 30 <= ele < 35:
             weights += [weight_set[1]]
-        elif ele < 63:
+        elif 35 <= ele < 40:
             weights += [weight_set[2]]
-        else:
+        elif 40 <= ele < 45:
             weights += [weight_set[3]]
+        elif 45 <= ele < 50:
+            weights += [weight_set[4]]
+        elif 50 <= ele < 55:
+            weights += [weight_set[5]]
+        elif 55 <= ele < 60:
+            weights += [weight_set[6]]
+        elif ele > 60:
+            weights += [weight_set[7]]
     
     avg_reflectivity = np.average(reflectivity, weights=weights)
     if avg_reflectivity < 30:
@@ -184,9 +192,7 @@ def update_metadata(new_metadata):
 def move_to_label(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp']
-        
         future_label = row['future_label']
-        
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
         else:
@@ -231,25 +237,25 @@ if __name__ == '__main__':
         os.makedirs("image/labeled/storm")
     
     # Label images
-    try:
-        counter = 0
-        # Use multiprocessing to iterate over the metadata 
-        with mp.Pool(processes=num_processes) as pool:
-            metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
-            for chunk in metadata_chunks:
-                sub_metadata_chunks = np.array_split(chunk, num_processes)
+    # try:
+    #     counter = 0
+    #     # Use multiprocessing to iterate over the metadata 
+    #     with mp.Pool(processes=num_processes) as pool:
+    #         metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
+    #         for chunk in metadata_chunks:
+    #             sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
-                start_time = time.time()
-                results = pool.map(label_image, sub_metadata_chunks)
-                update_metadata(pd.concat(results))
-                end_time = time.time() - start_time
+    #             start_time = time.time()
+    #             results = pool.map(label_image, sub_metadata_chunks)
+    #             update_metadata(pd.concat(results))
+    #             end_time = time.time() - start_time
 
-                counter += 1
-                print(f"### Chunk: {counter} | Time: {end_time} ###")
-    except Exception as e:
-        # If crash due to lack of memory, restart the process (progress is saved)
-        print(e)
-        logging.error(e, exc_info=True)
+    #             counter += 1
+    #             print(f"### Chunk: {counter} | Time: {end_time} ###")
+    # except Exception as e:
+    #     # If crash due to lack of memory, restart the process (progress is saved)
+    #     print(e)
+    #     logging.error(e, exc_info=True)
     
     updated_metadata = pd.read_csv("metadata_temp.csv")
     updated_metadata.to_csv("metadata.csv", index=False)
@@ -263,25 +269,27 @@ if __name__ == '__main__':
     metadata_lite.to_csv("metadata_lite.csv", index=False)
     
     # Plot label and avg reflectivity distribution
-    # plot_distribution()
+    plot_distribution()
     
     # Move images from unlabeled to labeled folders
-    # try:
-    #     counter = 0
-    #     # Use multiprocessing to iterate over the metadata 
-    #     with mp.Pool(processes=num_processes) as pool:
-    #         labeled_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
-    #         for chunk in labeled_chunks:
-    #             start_time = time.time()
-    #             pool.map(move_to_label, np.array_split(chunk, num_processes))
-    #             end_time = time.time() - start_time
+    try:
+        counter = 0
+        # Use multiprocessing to iterate over the metadata 
+        with mp.Pool(processes=num_processes) as pool:
+            labeled_chunks = pd.read_csv("metadata_lite.csv", chunksize=chunk_size)
+            for chunk in labeled_chunks:
+                sub_metadata_chunks = np.array_split(chunk, num_processes)
+    
+                start_time = time.time()
+                pool.map(move_to_label, sub_metadata_chunks)
+                end_time = time.time() - start_time
 
-    #             counter += 1
-    #             print(f"### Chunk: {counter} | Time: {end_time} ###")
-    # except Exception as e:
-    #     # If crash due to lack of memory, restart the process (progress is saved)
-    #     print(e)
-    #     logging.error(e, exc_info=True)
+                counter += 1
+                print(f"### Chunk: {counter} | Time: {end_time} ###")
+    except Exception as e:
+        # If crash due to lack of memory, restart the process (progress is saved)
+        print(e)
+        logging.error(e, exc_info=True)
 
         
         
