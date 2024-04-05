@@ -170,13 +170,16 @@ def label_image(metadata_chunk):
         
     return metadata_chunk
         
-def update_metadata(new_metadata, idx):
-    updated_metadata = pd.read_csv("metadata.csv")
+def update_metadata(new_metadata):
+    if not os.path.exists("metadata_temp.csv"):
+        updated_metadata = pd.read_csv("metadata.csv")
+    else:
+        updated_metadata = pd.read_csv("metadata_temp.csv")
     
     updated_metadata.loc[new_metadata.index, 'future_avg_reflectivity'] = new_metadata['future_avg_reflectivity'].tolist()
     updated_metadata.loc[new_metadata.index, 'future_label'] = new_metadata['future_label'].tolist()
     
-    updated_metadata.to_csv(f"image/metadata_{idx}.csv", index=False)        
+    updated_metadata.to_csv("metadata_temp.csv", index=False)        
 
 def move_to_label(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
@@ -249,7 +252,7 @@ if __name__ == '__main__':
                 
                 start_time = time.time()
                 results = pool.map(label_image, sub_metadata_chunks)
-                update_metadata(pd.concat(results), counter + 1)
+                update_metadata(pd.concat(results))
                 end_time = time.time() - start_time
 
                 counter += 1
@@ -259,11 +262,8 @@ if __name__ == '__main__':
         print(e)
         logging.error(e, exc_info=True)
     
-    filenames = sorted(os.listdir("image"))
-    metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames if name.endswith("csv")]
-    metadata = pd.concat(metadata_list)
-    metadata = metadata.sort_values(by='timestamp').reset_index(drop=True)
-    metadata.to_csv("metadata.csv", index=False)
+    updated_metadata = pd.read_csv("metadata_temp.csv")
+    updated_metadata.to_csv("metadata.csv", index=False)
     
     # try:
     #     counter = 0
@@ -284,11 +284,11 @@ if __name__ == '__main__':
     
     # plot_distribution()
     
-    metadata = pd.read_csv("metadata.csv")
-    metadata_lite = metadata[metadata['generated'] != "Error"]
+    metadata_lite = pd.read_csv("metadata.csv")
+    metadata_lite = metadata_lite[metadata_lite['generated'] != "Error"]
     metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
     metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
-    metadata_lite = metadata.drop(['path', 'future_path'], axis=1)
+    metadata_lite = metadata_lite.drop(['path', 'future_path'], axis=1)
     metadata_lite.to_csv("metadata_lite.csv", index=False)
         
 
