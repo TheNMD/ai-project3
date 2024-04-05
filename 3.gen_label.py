@@ -69,7 +69,7 @@ def find_future_images(interval=7200):
     metadata = metadata[metadata['generated'] != 'Error']
 
     for idx, row in metadata.iterrows():
-        if type(row['future_path']) is str:
+        if type(row['future_path']) is str or row['generated'] == 'Error':
             continue
                 
         current_time = row['timestamp']
@@ -142,7 +142,7 @@ def label_image(metadata_chunk):
     metadata_chunk['timestamp'] = pd.to_datetime(metadata_chunk['timestamp'], format="%Y-%m-%d %H-%M-%S")
     
     for idx, row in metadata_chunk.iterrows():
-        if type(row['future_label']) is str:
+        if type(row['future_path']) is str or row['generated'] == 'Error':
             continue
         try:
             data = pyart.io.read_sigmet(f"{data_path}/{row['future_path']}")
@@ -167,34 +167,7 @@ def label_image(metadata_chunk):
             del data
         except Exception as e:
             metadata_chunk.loc[idx, ['future_avg_reflectivity']] = np.nan
-            metadata_chunk.loc[idx, ['future_label']] = "NotAvail"
-            logging.error(e, exc_info=True)
-            continue
-        
-        try:
-            data = pyart.io.read_sigmet(f"{data_path}/{row['path']}")
-            data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
-            
-            grid_data = pyart.map.grid_from_radars(
-                data,
-                grid_shape=(1, 500, 500),
-                grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
-            )
-            
-            reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
-            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
-                
-            print(f"{row['timestamp']} - Average reflectivity: {avg_reflectivity} | Label: {label}")
-            
-            metadata_chunk.loc[idx, ['current_avg_reflectivity']] = avg_reflectivity
-            metadata_chunk.loc[idx, ['current_label']] = label
-            
-            # Close and delete to release memory
-            del grid_data
-            del data
-        except Exception as e:
-            metadata_chunk.loc[idx, ['current_avg_reflectivity']] = np.nan
-            metadata_chunk.loc[idx, ['current_label']] = "NotAvail"
+            metadata_chunk.loc[idx, ['future_label']] = "Error"
             logging.error(e, exc_info=True)
             continue
         
@@ -276,9 +249,6 @@ if __name__ == '__main__':
         with mp.Pool(processes=num_processes) as pool:
             metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
             for chunk in metadata_chunks:
-                chunk = chunk[chunk['future_path'] != 'NotAvail']
-                if len(chunk) == 0:
-                    continue
                 sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
                 start_time = time.time()
