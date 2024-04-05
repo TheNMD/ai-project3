@@ -283,6 +283,9 @@ if __name__ == '__main__':
     # plot_distribution()
     
     metadata = pd.read_csv("metadata.csv")
+    metadata_lite = metadata[metadata['generated'] != "Error"]
+    metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
+    metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
     metadata_lite = metadata.drop(['path', 'future_path'], axis=1)
     metadata_lite.to_csv("metadata_lite.csv", index=False)
         
