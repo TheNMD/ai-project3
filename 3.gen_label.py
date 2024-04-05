@@ -186,18 +186,14 @@ def move_to_label(metadata_chunk):
         timestamp = row['timestamp']
         
         future_label = row['future_label']
-        current_label = row['current_label']
         
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
-            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{current_label}/{timestamp}.jpg")
         else:
             shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
-            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{current_label}/{timestamp}.jpg")
 
 def plot_distribution():
-    metadata = pd.read_csv("metadata.csv")
-    metadata = metadata[metadata['future_label' != "NotAvail"]]
+    metadata = pd.read_csv("metadata_lite.csv")
     
     frequency = metadata['future_label'].value_counts()
     print(frequency)
@@ -229,19 +225,12 @@ if __name__ == '__main__':
             os.makedirs("image")
             
         os.makedirs("image/labeled")
-        
-        os.makedirs("image/labeled/future")
-        os.makedirs("image/labeled/future/clear")
-        os.makedirs("image/labeled/future/light_rain")
-        os.makedirs("image/labeled/future/heavy_rain")
-        os.makedirs("image/labeled/future/storm")
-        
-        os.makedirs("image/labeled/current")
-        os.makedirs("image/labeled/current/clear")
-        os.makedirs("image/labeled/current/light_rain")
-        os.makedirs("image/labeled/current/heavy_rain")
-        os.makedirs("image/labeled/current/storm")
+        os.makedirs("image/labeled/clear")
+        os.makedirs("image/labeled/light_rain")
+        os.makedirs("image/labeled/heavy_rain")
+        os.makedirs("image/labeled/storm")
     
+    # Label images
     try:
         counter = 0
         # Use multiprocessing to iterate over the metadata 
@@ -265,6 +254,18 @@ if __name__ == '__main__':
     updated_metadata = pd.read_csv("metadata_temp.csv")
     updated_metadata.to_csv("metadata.csv", index=False)
     
+    # Make a metadata_lite.csv that contains only relevant info for model
+    metadata_lite = pd.read_csv("metadata.csv")
+    metadata_lite = metadata_lite[metadata_lite['generated'] != "Error"]
+    metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
+    metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
+    metadata_lite = metadata_lite.drop(['path', 'future_path'], axis=1)
+    metadata_lite.to_csv("metadata_lite.csv", index=False)
+    
+    # Plot label and avg reflectivity distribution
+    # plot_distribution()
+    
+    # Move images from unlabeled to labeled folders
     # try:
     #     counter = 0
     #     # Use multiprocessing to iterate over the metadata 
@@ -281,16 +282,6 @@ if __name__ == '__main__':
     #     # If crash due to lack of memory, restart the process (progress is saved)
     #     print(e)
     #     logging.error(e, exc_info=True)
-    
-    # plot_distribution()
-    
-    metadata_lite = pd.read_csv("metadata.csv")
-    metadata_lite = metadata_lite[metadata_lite['generated'] != "Error"]
-    metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
-    metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
-    metadata_lite = metadata_lite.drop(['path', 'future_path'], axis=1)
-    metadata_lite.to_csv("metadata_lite.csv", index=False)
-        
 
         
         
