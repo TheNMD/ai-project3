@@ -253,7 +253,9 @@ if __name__ == '__main__':
     chunk_size = 100 * num_processes 
     
     if not os.path.exists("image/labeled"):
-        os.makedirs("image")
+        if not os.path.exists("image"):
+            os.makedirs("image")
+            
         os.makedirs("image/labeled")
         
         os.makedirs("image/labeled/future")
@@ -308,7 +310,11 @@ if __name__ == '__main__':
     #     print(e)
     #     logging.error(e, exc_info=True)
     
-    plot_distribution()
+    # plot_distribution()
+    
+    metadata = pd.read_csv("metadata.csv")
+    metadata_lite = metadata.drop(['path', 'future_path'], axis=1)
+    metadata_lite.to_csv("metadata_lite.csv", index=False)
         
 
         

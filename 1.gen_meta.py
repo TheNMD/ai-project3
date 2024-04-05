@@ -70,7 +70,7 @@ if __name__ == '__main__':
   num_processes = len(years)
   
   if not os.path.exists("metadata"):
-    os.makedirs("image")
+    os.makedirs("metadata")
   
   try:
       update_metadata()
