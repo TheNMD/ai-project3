@@ -31,13 +31,13 @@ def calculate_avg_reflectivity(reflectivity):
     
     # assign weight to each reflectivity range value
     weight_set = [pow(10, 1) * pow(1, 1 - reflectivity_smaller_than_30), 
-                  pow(10, 2) * pow(3, 1 - reflectivity_30_to_35),
-                  pow(10, 3) * pow(5, 1 - reflectivity_35_to_40),
-                  pow(10, 4) * pow(7, 1 - reflectivity_40_to_45),
-                  pow(10, 5) * pow(9, 1 - reflectivity_45_to_50), 
-                  pow(10, 6) * pow(11, 1 - reflectivity_50_to_55),
-                  pow(10, 7) * pow(13, 1 - reflectivity_55_to_60),
-                  pow(10, 8) * pow(15, 1 - reflectivity_bigger_than_60)]
+                  pow(10, 2) * 5 * pow(2, 1 - reflectivity_30_to_35),
+                  pow(10, 2) * pow(2, 2 - reflectivity_35_to_40),
+                  pow(10, 4) * 5 * pow(4, 1 - reflectivity_40_to_45),
+                  pow(10, 4) * pow(4, 1 - reflectivity_45_to_50), 
+                  pow(10, 6) * 5 * pow(6, 1 - reflectivity_50_to_55),
+                  pow(10, 6) * pow(6, 1 - reflectivity_55_to_60),
+                  pow(10, 8) * 5 * pow(8, 1 - reflectivity_bigger_than_60)]
 
     # print(weight_set)
 
