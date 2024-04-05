@@ -253,7 +253,9 @@ if __name__ == '__main__':
     chunk_size = 100 * num_processes 
     
     if not os.path.exists("image/labeled"):
-        os.makedirs("image")
+        if not os.path.exists("image"):
+            os.makedirs("image")
+            
         os.makedirs("image/labeled")
         
         os.makedirs("image/labeled/future")
