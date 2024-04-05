@@ -2,51 +2,88 @@ import os
 import time
 import multiprocessing as mp
 import warnings
+
 warnings.filterwarnings('ignore')
 import logging
-logging.basicConfig(filename='errors.log', level=logging.ERROR, 
+
+logging.basicConfig(filename='errors.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import pyart
+# import random
+
+
+# # Generate random weights
+# def generate_randon_weights():
+#     num_weights = 8
+#     weights = [random.uniform(i, num_weights) for i in range(num_weights)]
+#     return weights
+
+
+# weights_set = generate_randon_weights()
+
 
 # Given a list of dbz values
 # Assign each value a weight according to how important it is
 # Calculate weighted average
-def calculate_avg_reflectivity(reflectivity, 
-                               weight_set=[0.000001, 0.00001, 0.0001, 0.001, 0.01, 10000, 100000, 1000000]):
+def calculate_avg_reflectivity(reflectivity):
+    # calculate the percentage of each reflectivity value in each of 8 ranges
+    # count the reflectivity value smaller than 30
+    reflectivity_smaller_than_30 = len([ele for ele in reflectivity if ele < 30]) / len(reflectivity)
+    reflectivity_30_to_35 = len([ele for ele in reflectivity if 30 <= ele < 35]) / len(reflectivity)
+    reflectivity_35_to_40 = len([ele for ele in reflectivity if 35 <= ele < 40]) / len(reflectivity)
+    reflectivity_40_to_45 = len([ele for ele in reflectivity if 40 <= ele < 45]) / len(reflectivity)
+    reflectivity_45_to_50 = len([ele for ele in reflectivity if 45 <= ele < 50]) / len(reflectivity)
+    reflectivity_50_to_55 = len([ele for ele in reflectivity if 50 <= ele < 55]) / len(reflectivity)
+    reflectivity_55_to_60 = len([ele for ele in reflectivity if 55 <= ele < 60]) / len(reflectivity)
+    reflectivity_bigger_than_60 = len([ele for ele in reflectivity if ele >= 60]) / len(reflectivity)
+
+    # assign weight to each reflectivity range value
+    weight_set = [pow(10, 1) * pow(1, 1 - reflectivity_smaller_than_30), 
+                  pow(10, 2) * pow(3, 1 - reflectivity_30_to_35),
+                  pow(10, 3) * pow(5, 1 - reflectivity_35_to_40),
+                  pow(10, 4) * pow(7, 1 - reflectivity_40_to_45),
+                  pow(10, 5) * pow(9, 1 - reflectivity_45_to_50), 
+                  pow(10, 6) * pow(11, 1 - reflectivity_50_to_55),
+                  pow(10, 7) * pow(13, 1 - reflectivity_55_to_60),
+                  pow(10, 8) * pow(15, 1 - reflectivity_bigger_than_60)]
+
+    # print(weight_set)
+
     weights = []
     for ele in reflectivity:
         if ele < 30:
             weights += [weight_set[0]]
-        elif ele >= 30 and ele < 35:
+        elif 30 <= ele < 35:
             weights += [weight_set[1]]
-        elif ele >= 35 and ele < 40:
+        elif 35 <= ele < 40:
             weights += [weight_set[2]]
-        elif ele >= 40 and ele < 45:
+        elif 40 <= ele < 45:
             weights += [weight_set[3]]
-        elif ele >= 45 and ele < 50:
+        elif 45 <= ele < 50:
             weights += [weight_set[4]]
-        elif ele >= 50 and ele < 55:
+        elif 50 <= ele < 55:
             weights += [weight_set[5]]
-        elif ele >= 55 and ele < 60:
+        elif 55 <= ele < 60:
             weights += [weight_set[6]]
         elif ele > 60:
             weights += [weight_set[7]]
-    
+
     avg_reflectivity = np.average(reflectivity, weights=weights)
-    if avg_reflectivity < 30:
+    if avg_reflectivity < 35:
         label = "clear"
-    elif avg_reflectivity >= 30 and avg_reflectivity < 52:
+    elif 35 <= avg_reflectivity < 50:
         label = "light_rain"
-    elif avg_reflectivity >= 52 and avg_reflectivity < 63:
+    elif 50 <= avg_reflectivity < 63:
         label = "heavy_rain"
     elif avg_reflectivity > 63:
         label = "storm"
-        
+
     return avg_reflectivity, label
+
 
 def run_processes(filenames):
     results = []
@@ -55,7 +92,7 @@ def run_processes(filenames):
             # Read data
             data = pyart.io.read_sigmet(f"data/data_WF/NhaBe/{name}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
-            
+
             # Convert to grid
             grid_data = pyart.map.grid_from_radars(
                 data,
@@ -67,18 +104,19 @@ def run_processes(filenames):
 
             # Compress to remove masked elements
             reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
-            
+
             # Plot reflectivity value distribution
             plot_distribution(sorted(reflectivity), "Reflectivity", f"NhaBe/{timestamp}-dist.png")
-            
+
             # Calculate average reflectivity and label
             avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
-            
+
             print(f"{timestamp} - {avg_reflectivity} - {label}")
             results += [(timestamp, avg_reflectivity, label)]
         except Exception as e:
             continue
     return results
+
 
 # Write results to a txt file
 def update_result(results):
@@ -91,6 +129,7 @@ def update_result(results):
             file.write(f"{result[0]} - {result[1]} - {result[2]}" + '\n')
     return full_results
 
+
 # Plot value distribution
 def plot_distribution(list, value_name, save_name):
     _, _, _ = plt.hist(list, color='skyblue', edgecolor='black')
@@ -99,29 +138,30 @@ def plot_distribution(list, value_name, save_name):
     plt.title(f'{value_name} distribution')
     plt.savefig(f'data/data_WF/{save_name}')
     plt.clf()
-    
+
+
 if __name__ == "__main__":
-    if os.path.exists('data/data_WF/results.txt'):      
-        os.remove('data/data_WF/results.txt') 
-    
+    if os.path.exists('data/data_WF/results.txt'):
+        os.remove('data/data_WF/results.txt')
+
     filenames = [file for file in os.listdir('data/data_WF/NhaBe') if not file.endswith('jpg')]
     reflectivity_list = []
     label_list = []
-    
+
     # Change num_processes to increase threads
-    num_processes = 4
+    num_processes = 8
     try:
         # Use multiprocessing to iterate over the filename list 
         with mp.Pool(processes=num_processes) as pool:
             sub_list = np.array_split(filenames, num_processes)
             start_time = time.time()
             results = pool.map(run_processes, sub_list)
-            
+
             # Update result to a txt file
             full_results = update_result(results)
             reflectivity_list = [result[1] for result in full_results]
             label_list = [result[2] for result in full_results]
-                
+
             end_time = time.time() - start_time
             print(f"Time: {end_time}")
     except Exception as e:
@@ -129,9 +169,9 @@ if __name__ == "__main__":
         print(e)
         logging.error(e, exc_info=True)
     print(f"Time taken: {end_time}")
-        
+
     # Plot avg reflectivity value distribution
     plot_distribution(sorted(reflectivity_list), "Avg reflectivity", "results-dist-avg_reflectivity.png")
-    
+
     # Plot label distribution
     plot_distribution(sorted(label_list), "Label", "results-dist-label.png")

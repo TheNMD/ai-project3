@@ -68,7 +68,10 @@ def find_future_images(interval=7200):
     metadata['timestamp'] = pd.to_datetime(metadata['timestamp'], format="%Y-%m-%d %H-%M-%S")
     metadata = metadata[metadata['generated'] != 'Error']
 
-    for idx, row in metadata.iterrows():        
+    for idx, row in metadata.iterrows():
+        if type(row['future_path']) is str:
+            continue
+                
         current_time = row['timestamp']
         future_metadata = metadata[(metadata['timestamp'] - current_time > pd.Timedelta(interval, "s")) &
                                    (metadata['timestamp'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
@@ -88,7 +91,30 @@ def find_future_images(interval=7200):
     metadata['future_timestamp'] = metadata['future_timestamp'].astype(str).str.replace(':', '-')
     metadata.to_csv("metadata.csv", index=False)
 
-def calculate_avg_reflectivity(reflectivity, weight_set):
+def calculate_avg_reflectivity(reflectivity):
+    # calculate the percentage of each reflectivity value in each of 8 ranges
+    # count the reflectivity value smaller than 30
+    reflectivity_smaller_than_30 = len([ele for ele in reflectivity if ele < 30]) / len(reflectivity)
+    reflectivity_30_to_35 = len([ele for ele in reflectivity if 30 <= ele < 35]) / len(reflectivity)
+    reflectivity_35_to_40 = len([ele for ele in reflectivity if 35 <= ele < 40]) / len(reflectivity)
+    reflectivity_40_to_45 = len([ele for ele in reflectivity if 40 <= ele < 45]) / len(reflectivity)
+    reflectivity_45_to_50 = len([ele for ele in reflectivity if 45 <= ele < 50]) / len(reflectivity)
+    reflectivity_50_to_55 = len([ele for ele in reflectivity if 50 <= ele < 55]) / len(reflectivity)
+    reflectivity_55_to_60 = len([ele for ele in reflectivity if 55 <= ele < 60]) / len(reflectivity)
+    reflectivity_bigger_than_60 = len([ele for ele in reflectivity if ele >= 60]) / len(reflectivity)
+
+    # assign weight to each reflectivity range value
+    weight_set = [pow(10, 1) * pow(1, 1 - reflectivity_smaller_than_30), 
+                  pow(10, 2) * pow(3, 1 - reflectivity_30_to_35),
+                  pow(10, 3) * pow(5, 1 - reflectivity_35_to_40),
+                  pow(10, 4) * pow(7, 1 - reflectivity_40_to_45),
+                  pow(10, 5) * pow(9, 1 - reflectivity_45_to_50), 
+                  pow(10, 6) * pow(11, 1 - reflectivity_50_to_55),
+                  pow(10, 7) * pow(13, 1 - reflectivity_55_to_60),
+                  pow(10, 8) * pow(15, 1 - reflectivity_bigger_than_60)]
+
+    # print(weight_set)
+    
     weights = []
     for ele in reflectivity:
         if ele < 30:
@@ -114,10 +140,9 @@ def calculate_avg_reflectivity(reflectivity, weight_set):
 
 def label_image(metadata_chunk):
     metadata_chunk['timestamp'] = pd.to_datetime(metadata_chunk['timestamp'], format="%Y-%m-%d %H-%M-%S")
-    weight_set=[1, 20, 25, 30]
     
     for idx, row in metadata_chunk.iterrows():
-        if type(row['future_label']) is str or row['future_path'] == "NotAvail":
+        if type(row['future_label']) is str:
             continue
         try:
             data = pyart.io.read_sigmet(f"{data_path}/{row['future_path']}")
@@ -130,7 +155,7 @@ def label_image(metadata_chunk):
             )
             
             reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
-            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, weight_set=weight_set)
+            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
                 
             print(f"{row['timestamp']} - Average reflectivity: {avg_reflectivity} | Label: {label}")
             
@@ -157,7 +182,7 @@ def label_image(metadata_chunk):
             )
             
             reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
-            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity, weight_set=weight_set)
+            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
                 
             print(f"{row['timestamp']} - Average reflectivity: {avg_reflectivity} | Label: {label}")
             
@@ -172,7 +197,6 @@ def label_image(metadata_chunk):
             metadata_chunk.loc[idx, ['current_label']] = "NotAvail"
             logging.error(e, exc_info=True)
             continue
-        
         
     metadata_chunk['timestamp'] = metadata_chunk['timestamp'].astype(str).str.replace(':', '-')
     return metadata_chunk
@@ -201,7 +225,7 @@ def move_to_label(metadata_chunk):
 
 def plot_distribution():
     metadata = pd.read_csv("metadata.csv")
-    metadata = metadata[metadata['future_path' != "NotAvail"]]
+    metadata = metadata[metadata['future_label' != "NotAvail"]]
     
     frequency = metadata['future_label'].value_counts()
     print(frequency)
@@ -284,7 +308,7 @@ if __name__ == '__main__':
     #     print(e)
     #     logging.error(e, exc_info=True)
     
-    # plot_distribution()
+    plot_distribution()
         
 
         
