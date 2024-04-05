@@ -193,8 +193,7 @@ def move_to_label(metadata_chunk):
             shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
 
 def plot_distribution():
-    metadata = pd.read_csv("metadata.csv")
-    metadata = metadata[metadata['future_label' != "NotAvail"]]
+    metadata = pd.read_csv("metadata_lite.csv")
     
     frequency = metadata['future_label'].value_counts()
     print(frequency)
@@ -231,6 +230,7 @@ if __name__ == '__main__':
         os.makedirs("image/labeled/heavy_rain")
         os.makedirs("image/labeled/storm")
     
+    # Label images
     try:
         counter = 0
         # Use multiprocessing to iterate over the metadata 
@@ -254,6 +254,18 @@ if __name__ == '__main__':
     updated_metadata = pd.read_csv("metadata_temp.csv")
     updated_metadata.to_csv("metadata.csv", index=False)
     
+    # Make a metadata_lite.csv that contains only relevant info for model
+    metadata_lite = pd.read_csv("metadata.csv")
+    metadata_lite = metadata_lite[metadata_lite['generated'] != "Error"]
+    metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
+    metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
+    metadata_lite = metadata_lite.drop(['path', 'future_path'], axis=1)
+    metadata_lite.to_csv("metadata_lite.csv", index=False)
+    
+    # Plot label and avg reflectivity distribution
+    # plot_distribution()
+    
+    # Move images from unlabeled to labeled folders
     # try:
     #     counter = 0
     #     # Use multiprocessing to iterate over the metadata 
@@ -270,16 +282,6 @@ if __name__ == '__main__':
     #     # If crash due to lack of memory, restart the process (progress is saved)
     #     print(e)
     #     logging.error(e, exc_info=True)
-    
-    # plot_distribution()
-    
-    metadata_lite = pd.read_csv("metadata.csv")
-    metadata_lite = metadata_lite[metadata_lite['generated'] != "Error"]
-    metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
-    metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
-    metadata_lite = metadata_lite.drop(['path', 'future_path'], axis=1)
-    metadata_lite.to_csv("metadata_lite.csv", index=False)
-        
 
         
         
