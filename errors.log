@@ -1,0 +1,61 @@
+2024-04-05 05:24:12,764 - ERROR - [Errno 2] No such file or directory: '/app/data/nan'
+Traceback (most recent call last):
+  File "/app/3.gen_label.py", line 145, in label_image
+    data = pyart.io.read_sigmet(f"{data_path}/{row['future_path']}")
+  File "/usr/local/lib/python3.10/site-packages/pyart/io/sigmet.py", line 131, in read_sigmet
+    sigmetfile = SigmetFile(prepare_for_read(filename), debug=debug)
+  File "/usr/local/lib/python3.10/site-packages/pyart/io/common.py", line 42, in prepare_for_read
+    fh = fsspec.open(filename, mode="rb", compression="infer", **storage_options).open()
+  File "/usr/local/lib/python3.10/site-packages/fsspec/core.py", line 135, in open
+    return self.__enter__()
+  File "/usr/local/lib/python3.10/site-packages/fsspec/core.py", line 103, in __enter__
+    f = self.fs.open(self.path, mode=mode)
+  File "/usr/local/lib/python3.10/site-packages/fsspec/spec.py", line 1293, in open
+    f = self._open(
+  File "/usr/local/lib/python3.10/site-packages/fsspec/implementations/local.py", line 197, in _open
+    return LocalFileOpener(path, mode, fs=self, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/fsspec/implementations/local.py", line 322, in __init__
+    self._open()
+  File "/usr/local/lib/python3.10/site-packages/fsspec/implementations/local.py", line 327, in _open
+    self.f = open(self.path, mode=self.mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/data/nan'
+2024-04-05 05:25:48,640 - ERROR - [Errno 2] No such file or directory: '/app/data/nan'
+Traceback (most recent call last):
+  File "/app/3.gen_label.py", line 145, in label_image
+    data = pyart.io.read_sigmet(f"{data_path}/{row['future_path']}")
+  File "/usr/local/lib/python3.10/site-packages/pyart/io/sigmet.py", line 131, in read_sigmet
+    sigmetfile = SigmetFile(prepare_for_read(filename), debug=debug)
+  File "/usr/local/lib/python3.10/site-packages/pyart/io/common.py", line 42, in prepare_for_read
+    fh = fsspec.open(filename, mode="rb", compression="infer", **storage_options).open()
+  File "/usr/local/lib/python3.10/site-packages/fsspec/core.py", line 135, in open
+    return self.__enter__()
+  File "/usr/local/lib/python3.10/site-packages/fsspec/core.py", line 103, in __enter__
+    f = self.fs.open(self.path, mode=mode)
+  File "/usr/local/lib/python3.10/site-packages/fsspec/spec.py", line 1293, in open
+    f = self._open(
+  File "/usr/local/lib/python3.10/site-packages/fsspec/implementations/local.py", line 197, in _open
+    return LocalFileOpener(path, mode, fs=self, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/fsspec/implementations/local.py", line 322, in __init__
+    self._open()
+  File "/usr/local/lib/python3.10/site-packages/fsspec/implementations/local.py", line 327, in _open
+    self.f = open(self.path, mode=self.mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/data/nan'
+2024-04-05 05:29:04,077 - ERROR - Error tokenizing data. C error: Expected 7 fields in line 9068, saw 12
+Traceback (most recent call last):
+  File "/app/3.gen_label.py", line 247, in <module>
+    for chunk in metadata_chunks:
+  File "/usr/local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1843, in __next__
+    return self.get_chunk()
+  File "/usr/local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1985, in get_chunk
+    return self.read(nrows=size)
+  File "/usr/local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1923, in read
+    ) = self._engine.read(  # type: ignore[attr-defined]
+  File "/usr/local/lib/python3.10/site-packages/pandas/io/parsers/c_parser_wrapper.py", line 234, in read
+    chunks = self._reader.read_low_memory(nrows)
+  File "parsers.pyx", line 850, in pandas._libs.parsers.TextReader.read_low_memory
+  File "parsers.pyx", line 905, in pandas._libs.parsers.TextReader._read_rows
+  File "parsers.pyx", line 874, in pandas._libs.parsers.TextReader._tokenize_rows
+  File "parsers.pyx", line 891, in pandas._libs.parsers.TextReader._check_tokenize_status
+  File "parsers.pyx", line 2061, in pandas._libs.parsers.raise_parser_error
+pandas.errors.ParserError: Error tokenizing data. C error: Expected 7 fields in line 9068, saw 12
+
