@@ -142,7 +142,7 @@ def label_image(metadata_chunk):
     metadata_chunk['timestamp'] = pd.to_datetime(metadata_chunk['timestamp'], format="%Y-%m-%d %H-%M-%S")
     
     for idx, row in metadata_chunk.iterrows():
-        if type(row['future_path']) is str or row['generated'] == 'Error':
+        if type(row['future_label']) is str or row['future_path'] == 'NotAvail' or row['generated'] == 'Error':
             continue
         try:
             data = pyart.io.read_sigmet(f"{data_path}/{row['future_path']}")
