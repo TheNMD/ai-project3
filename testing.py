@@ -2,7 +2,6 @@ import pandas as pd
 
 df = pd.read_csv("metadata.csv")
 
-df = df['future_label']
-df = df.dropna()
+df = df[df['future_timestamp'] != "NotAvail"]
 
-print(len(df))
+df.to_csv("metadata.csv", index=False)

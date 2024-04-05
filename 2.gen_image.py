@@ -152,9 +152,6 @@ if __name__ == '__main__':
         with mp.Pool(processes=num_processes) as pool:
             metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
             for chunk in metadata_chunks:
-                chunk = chunk[(chunk['generated'] != 'True') & (chunk['generated'] != 'Error')]
-                if len(chunk) == 0:
-                    continue
                 sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
                 start_time = time.time()
