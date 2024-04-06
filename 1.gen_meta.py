@@ -97,7 +97,9 @@ if __name__ == '__main__':
   years = [2020, 2021, 2022, 2023]
   num_processes = len(years)
   
-  if not os.path.exists("metadata"):
+  if os.path.exists("metadata"):
+    shutil.rmtree("image/unlabeled1")
+  else:
     os.makedirs("metadata")
   
   try:
