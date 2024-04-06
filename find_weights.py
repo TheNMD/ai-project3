@@ -19,57 +19,106 @@ import pyart
 # Assign each value a weight according to how important it is
 # Calculate weighted average
 def calculate_avg_reflectivity(reflectivity):
-    # calculate the percentage of each reflectivity value in each of 8 ranges
-    # count the reflectivity value smaller than 30
-    reflectivity_smaller_than_30 = len([ele for ele in reflectivity if ele < 30]) / len(reflectivity)
-    reflectivity_30_to_35 = len([ele for ele in reflectivity if 30 <= ele < 35]) / len(reflectivity)
-    reflectivity_35_to_40 = len([ele for ele in reflectivity if 35 <= ele < 40]) / len(reflectivity)
-    reflectivity_40_to_45 = len([ele for ele in reflectivity if 40 <= ele < 45]) / len(reflectivity)
-    reflectivity_45_to_50 = len([ele for ele in reflectivity if 45 <= ele < 50]) / len(reflectivity)
-    reflectivity_50_to_55 = len([ele for ele in reflectivity if 50 <= ele < 55]) / len(reflectivity)
-    reflectivity_55_to_60 = len([ele for ele in reflectivity if 55 <= ele < 60]) / len(reflectivity)
+    # Calculate the percentage of each reflectivity value in each of 8 ranges
+    # Count the reflectivity value smaller than 30
+    reflectivity_smaller_than_0 = len([ele for ele in reflectivity if ele < 0]) / len(reflectivity)
+    reflectivity_0_to_5         = len([ele for ele in reflectivity if 0 <= ele < 5]) / len(reflectivity)
+    reflectivity_5_to_10        = len([ele for ele in reflectivity if 5 <= ele < 10]) / len(reflectivity)
+    reflectivity_10_to_15       = len([ele for ele in reflectivity if 10 <= ele < 15]) / len(reflectivity)
+    reflectivity_15_to_20       = len([ele for ele in reflectivity if 15 <= ele < 20]) / len(reflectivity)
+    reflectivity_20_to_25       = len([ele for ele in reflectivity if 20 <= ele < 25]) / len(reflectivity)
+    reflectivity_25_to_30       = len([ele for ele in reflectivity if 25 <= ele < 30]) / len(reflectivity)
+    reflectivity_30_to_35       = len([ele for ele in reflectivity if 30 <= ele < 35]) / len(reflectivity)
+    reflectivity_35_to_40       = len([ele for ele in reflectivity if 35 <= ele < 40]) / len(reflectivity)
+    reflectivity_40_to_45       = len([ele for ele in reflectivity if 40 <= ele < 45]) / len(reflectivity)
+    reflectivity_45_to_50       = len([ele for ele in reflectivity if 45 <= ele < 50]) / len(reflectivity)
+    reflectivity_50_to_55       = len([ele for ele in reflectivity if 50 <= ele < 55]) / len(reflectivity)
+    reflectivity_55_to_60       = len([ele for ele in reflectivity if 55 <= ele < 60]) / len(reflectivity)
     reflectivity_bigger_than_60 = len([ele for ele in reflectivity if ele >= 60]) / len(reflectivity)
     
-    # assign weight to each reflectivity range value
-    weight_set = [pow(10, 1) * pow(10, 1 - reflectivity_smaller_than_30), 
-                  pow(10, 2) * pow(10, 1 - reflectivity_30_to_35),
-                  pow(10, 2.5) * 5 * pow(2, 2 - reflectivity_35_to_40),
-                  pow(10, 3) * pow(10, 1 - reflectivity_40_to_45),
-                  pow(10, 3.5) * 5 * pow(3, 1 - reflectivity_45_to_50), 
-                  pow(10, 4) * pow(10, 1 - reflectivity_50_to_55),
-                  pow(10, 4.5) * 5 * pow(4, 1 - reflectivity_55_to_60),
-                  pow(10, 5) * pow(10, 1 - reflectivity_bigger_than_60)]
+    # Assign weight to each reflectivity range value
+    # weight_set = [pow(10, 1) * pow(10, 1 - reflectivity_smaller_than_30), 
+    #               pow(10, 2) * pow(10, 1 - reflectivity_30_to_35),
+    #               pow(10, 2) * 5 * pow(10, 2 - reflectivity_35_to_40),
+    #               pow(10, 3) * pow(10, 1 - reflectivity_40_to_45),
+    #               pow(10, 3) * 5 * pow(10, 1 - reflectivity_45_to_50), 
+    #               pow(10, 4) * pow(10, 1 - reflectivity_50_to_55),
+    #               pow(10, 4) * 5 * pow(10, 1 - reflectivity_55_to_60),
+    #               pow(10, 6) * pow(10, 1 - reflectivity_bigger_than_60)]
+
+    weight_set = [pow(10, 100 * (1 - reflectivity_smaller_than_0)),
+                  pow(10, 100 * (1 - reflectivity_0_to_5)),
+                  pow(10, 100 * (1 - reflectivity_5_to_10)),
+                  pow(10, 100 * (1 - reflectivity_10_to_15)),
+                  pow(10, 100 * (1 - reflectivity_15_to_20)),
+                  pow(10, 100 * (1 - reflectivity_20_to_25)),
+                  pow(10, 100 * (1 - reflectivity_25_to_30)), 
+                  pow(10, 100 * (1 - reflectivity_30_to_35)),
+                  pow(10, 100 * (1 - reflectivity_35_to_40)),
+                  pow(10, 100 * (1 - reflectivity_40_to_45)),
+                  pow(10, 100 * (1 - reflectivity_45_to_50)), 
+                  pow(10, 100 * (1 - reflectivity_50_to_55)),
+                  pow(10, 100 * (1 - reflectivity_55_to_60)) * 100,
+                  pow(10, 100 * (1 - reflectivity_bigger_than_60)) * 100]
 
     # print(weight_set)
 
     weights = []
     for ele in reflectivity:
-        if ele < 30:
+        if ele < 0:
             weights += [weight_set[0]]
-        elif 30 <= ele < 35:
+        elif 0 <= ele < 5:
             weights += [weight_set[1]]
-        elif 35 <= ele < 40:
+        elif 5 <= ele < 10:
             weights += [weight_set[2]]
-        elif 40 <= ele < 45:
+        elif 10 <= ele < 15:
             weights += [weight_set[3]]
-        elif 45 <= ele < 50:
+        elif 15 <= ele < 20:
             weights += [weight_set[4]]
-        elif 50 <= ele < 55:
+        elif 20 <= ele < 25:
             weights += [weight_set[5]]
-        elif 55 <= ele < 60:
+        elif 25 <= ele < 30:
             weights += [weight_set[6]]
-        elif ele > 60:
+        elif 30 <= ele < 35:
             weights += [weight_set[7]]
+        elif 35 <= ele < 40:
+            weights += [weight_set[8]]
+        elif 40 <= ele < 45:
+            weights += [weight_set[9]]
+        elif 45 <= ele < 50:
+            weights += [weight_set[10]]
+        elif 50 <= ele < 55:
+            weights += [weight_set[11]]
+        elif 55 <= ele < 60:
+            weights += [weight_set[12]]
+        elif ele >= 60:
+            weights += [weight_set[13]]
 
+    if len(reflectivity) != len(weights):
+        return np.nan, "error"
+    
     avg_reflectivity = np.average(reflectivity, weights=weights)
-    if avg_reflectivity < 35:
+    if avg_reflectivity < 30:
         label = "clear"
-    elif 35 <= avg_reflectivity < 50:
+    elif 30 <= avg_reflectivity < 40:
         label = "light_rain"
-    elif 50 <= avg_reflectivity < 63:
+    elif 40 <= avg_reflectivity < 50:
+        label = "moderate_rain"
+    elif 50 <= avg_reflectivity < 60:
         label = "heavy_rain"
-    elif avg_reflectivity > 63:
-        label = "storm"
+    elif avg_reflectivity >= 60:
+        label = "very_heavy_rain"
+        
+    # if avg_reflectivity < 25:
+    #     label = "clear"
+    # elif 25 <= avg_reflectivity < 35:
+    #     label = "light_rain"
+    # elif 35 <= avg_reflectivity < 45:
+    #     label = "moderate_rain"
+    # elif 45 <= avg_reflectivity < 55:
+    #     label = "heavy_rain"
+    # elif avg_reflectivity > 55:
+    #     label = "very_heavy_rain"
 
     return avg_reflectivity, label
 
@@ -79,7 +128,7 @@ def run_processes(filenames):
     for name in sorted(filenames):
         try:
             # Read data
-            data = pyart.io.read_sigmet(f"sample_data/data_WF/NhaBe/{name}")
+            data = pyart.io.read_sigmet(f"sample_data/NhaBe/{name}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
 
             # Convert to grid
@@ -115,7 +164,7 @@ def update_result(results):
         full_results += result
     full_results = sorted(full_results)
     df = pd.DataFrame(full_results, columns=['timestamp', 'avg_reflectivity', 'label'])
-    df.to_csv('sample_data/data_WF/results.csv', index=False)
+    df.to_csv('sample_data/results.csv', index=False)
     return full_results
 
 
@@ -125,14 +174,17 @@ def plot_distribution(list, value_name, save_name):
     plt.xlabel(f'{value_name}')
     plt.ylabel('Frequency')
     plt.title(f'{value_name} Distribution')
-    plt.savefig(f'sample_data/data_WF/{save_name}')
+    plt.savefig(f'sample_data/{save_name}')
     plt.clf()
 
 
 if __name__ == "__main__":
-    filenames = [file for file in os.listdir('sample_data/data_WF/NhaBe') if not file.endswith('jpg') 
-                                                                         and not file.endswith('png')]
+    filenames = [file for file in os.listdir('sample_data/NhaBe') if not file.endswith('jpg') 
+                                                                 and not file.endswith('png')]
     random.shuffle(filenames)
+    # Only take n files
+    # filenames = filenames[:1000]
+    
     reflectivity_list = []
     label_list = []
     
