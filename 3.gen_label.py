@@ -63,33 +63,6 @@ def view_sample_image():
     plt.title('Reflectivity value distribution')
     plt.savefig("image/3.reflectivity_value_distribution.jpg", dpi=150)
 
-def find_future_images(interval=7200):
-    metadata = pd.read_csv("metadata.csv")
-    metadata['timestamp'] = pd.to_datetime(metadata['timestamp'], format="%Y-%m-%d %H-%M-%S")
-
-    for idx, row in metadata.iterrows():
-        if type(row['future_path']) is str or row['generated'] == 'Error':
-            continue
-                
-        current_time = row['timestamp']
-        future_metadata = metadata[(metadata['timestamp'] - current_time > pd.Timedelta(interval, "s")) &
-                                   (metadata['timestamp'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
-        
-        if future_metadata.empty:
-            metadata.loc[idx, ['future_path']] = "NotAvail"
-            metadata.loc[idx, ['future_timestamp']] = "NotAvail"
-            metadata.loc[idx, ['future_label']] = "NotAvail"
-            metadata.loc[idx, ['future_avg_reflectivity']] = "NotAvail"
-        else:
-            metadata.loc[idx, ['future_path']] = future_metadata['path'].tolist()[0]
-            metadata.loc[idx, ['future_timestamp']] = future_metadata['timestamp'].tolist()[0]
-        
-        print(current_time)
-
-    metadata['timestamp'] = metadata['timestamp'].astype(str).str.replace(':', '-')
-    metadata['future_timestamp'] = metadata['future_timestamp'].astype(str).str.replace(':', '-')
-    metadata.to_csv("metadata.csv", index=False)
-
 def calculate_avg_reflectivity(reflectivity):
     # calculate the percentage of each reflectivity value in each of 8 ranges
     # count the reflectivity value smaller than 30
@@ -189,15 +162,6 @@ def update_metadata(new_metadata):
     
     updated_metadata.to_csv("metadata_temp.csv", index=False)        
 
-def move_to_label(metadata_chunk):
-    for _, row in metadata_chunk.iterrows():
-        timestamp = row['timestamp']
-        future_label = row['future_label']
-        if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
-            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
-        else:
-            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
-
 def plot_distribution():
     metadata = pd.read_csv("metadata_lite.csv")
     
@@ -219,10 +183,17 @@ def plot_distribution():
     plt.title('Avg reflectivity distribution')
     plt.savefig('image/3.Avg reflectivity distribution.png')
     plt.clf()
+
+def move_to_label(metadata_chunk):
+    for _, row in metadata_chunk.iterrows():
+        timestamp = row['timestamp']
+        future_label = row['future_label']
+        if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
+            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
+        else:
+            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
     
-if __name__ == '__main__':
-    # find_future_images(interval=7200)
-    
+if __name__ == '__main__':    
     num_processes = 20
     chunk_size = 100 * num_processes 
     
