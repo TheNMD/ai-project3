@@ -251,6 +251,9 @@ if __name__ == '__main__':
         os.makedirs("image/labeled/heavy_rain")
         os.makedirs("image/labeled/storm")
     
+    if os.path.exists("image/3.Avg reflectivity distribution.png"): os.remove("image/3.Avg reflectivity distribution.png")
+    if os.path.exists("image/3.Label distribution.png"): os.remove("image/3.Label distribution.png")  
+        
     # Label images
     try:
         counter = 0
