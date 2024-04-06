@@ -66,6 +66,33 @@ def update_metadata():
   
   metadata_cleaned.to_csv("metadata.csv", index=False)
 
+def find_future_images(interval=7200):
+    metadata = pd.read_csv("metadata.csv")
+    metadata['timestamp'] = pd.to_datetime(metadata['timestamp'], format="%Y-%m-%d %H-%M-%S")
+
+    for idx, row in metadata.iterrows():
+        if type(row['future_path']) is str or row['generated'] == 'Error':
+            continue
+                
+        current_time = row['timestamp']
+        future_metadata = metadata[(metadata['timestamp'] - current_time > pd.Timedelta(interval, "s")) &
+                                   (metadata['timestamp'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
+        
+        if future_metadata.empty:
+            metadata.loc[idx, ['future_path']] = "NotAvail"
+            metadata.loc[idx, ['future_timestamp']] = "NotAvail"
+            metadata.loc[idx, ['future_label']] = "NotAvail"
+            metadata.loc[idx, ['future_avg_reflectivity']] = "NotAvail"
+        else:
+            metadata.loc[idx, ['future_path']] = future_metadata['path'].tolist()[0]
+            metadata.loc[idx, ['future_timestamp']] = future_metadata['timestamp'].tolist()[0]
+        
+        print(current_time)
+
+    metadata['timestamp'] = metadata['timestamp'].astype(str).str.replace(':', '-')
+    metadata['future_timestamp'] = metadata['future_timestamp'].astype(str).str.replace(':', '-')
+    metadata.to_csv("metadata.csv", index=False)
+
 if __name__ == '__main__':
   years = [2020, 2021, 2022, 2023]
   num_processes = len(years)
@@ -88,3 +115,5 @@ if __name__ == '__main__':
       update_metadata()
       print(e)
       logging.error(e, exc_info=True)
+      
+  find_future_images(interval=7200)
