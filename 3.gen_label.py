@@ -244,9 +244,8 @@ if __name__ == '__main__':
     
     if os.path.exists("image/labeled"):
         shutil.rmtree("image/labeled")
-        
+    else:
         os.makedirs("image/labeled") 
-        os.makedirs("image/labeled")
         os.makedirs("image/labeled/clear")
         os.makedirs("image/labeled/light_rain")
         os.makedirs("image/labeled/heavy_rain")
