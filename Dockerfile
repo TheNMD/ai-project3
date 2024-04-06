@@ -7,9 +7,7 @@ COPY . .
 
 # Make some required folders inside the container
 RUN mkdir data
-RUN mkdir metadata
 RUN mkdir image
-RUN mkdir result
 
 # Update pip and install packages
 RUN pip install --upgrade pip
