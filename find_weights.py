@@ -78,7 +78,7 @@ def run_processes(filenames):
     for name in filenames:
         try:
             # Read data
-            data = pyart.io.read_sigmet(f"data/data_WF/NhaBe/{name}")
+            data = pyart.io.read_sigmet(f"sample_data/data_WF/NhaBe/{name}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
 
             # Convert to grid
@@ -114,7 +114,7 @@ def update_result(results):
         full_results += result
     full_results = sorted(full_results)
     for result in full_results:
-        with open('data/data_WF/results.txt', 'a') as file:
+        with open('sample_data/data_WF/results.txt', 'a') as file:
             file.write(f"{result[0]} - {result[1]} - {result[2]}" + '\n')
     return full_results
 
@@ -125,15 +125,15 @@ def plot_distribution(list, value_name, save_name):
     plt.xlabel(f'{value_name}')
     plt.ylabel('Frequency')
     plt.title(f'{value_name} distribution')
-    plt.savefig(f'data/data_WF/{save_name}')
+    plt.savefig(f'sample_data/data_WF/{save_name}')
     plt.clf()
 
 
 if __name__ == "__main__":
-    if os.path.exists('data/data_WF/results.txt'):
-        os.remove('data/data_WF/results.txt')
+    if os.path.exists('sample_data/data_WF/results.txt'):
+        os.remove('sample_data/data_WF/results.txt')
     
-    filenames = [file for file in os.listdir('data/data_WF/NhaBe') if not file.endswith('jpg') and not file.endswith('png')]
+    filenames = [file for file in os.listdir('sample_data/data_WF/NhaBe') if not file.endswith('jpg') and not file.endswith('png')]
     reflectivity_list = []
     label_list = []
     
