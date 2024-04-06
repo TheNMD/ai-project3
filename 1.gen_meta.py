@@ -97,12 +97,6 @@ if __name__ == '__main__':
   years = [2020, 2021, 2022, 2023]
   num_processes = len(years)
   
-  if os.path.exists("metadata"):
-    shutil.rmtree("metadata")
-    os.makedirs("metadata")
-  else:
-    os.makedirs("metadata")
-  
   try:
       update_metadata()
       # Use multiprocessing to iterate over the metadata 
