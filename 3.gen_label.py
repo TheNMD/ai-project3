@@ -64,6 +64,7 @@ def view_sample_image():
     plt.savefig("image/3.reflectivity_value_distribution.jpg", dpi=150)
 
 def calculate_avg_reflectivity(reflectivity):
+    reflectivity = sorted(reflectivity)
     # Calculate the percentage of each reflectivity value in each of 8 ranges
     # Count the reflectivity value smaller than 30
     reflectivity_smaller_than_0 = len([ele for ele in reflectivity if ele < 0]) / len(reflectivity)

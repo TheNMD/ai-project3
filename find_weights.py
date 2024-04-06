@@ -19,6 +19,7 @@ import pyart
 # Assign each value a weight according to how important it is
 # Calculate weighted average
 def calculate_avg_reflectivity(reflectivity):
+    reflectivity = sorted(reflectivity)
     # Calculate the percentage of each reflectivity value in each of 8 ranges
     # Count the reflectivity value smaller than 30
     reflectivity_smaller_than_0 = len([ele for ele in reflectivity if ele < 0]) / len(reflectivity)
@@ -93,9 +94,6 @@ def calculate_avg_reflectivity(reflectivity):
             weights += [weight_set[12]]
         elif ele >= 60:
             weights += [weight_set[13]]
-
-    if len(reflectivity) != len(weights):
-        return np.nan, "error"
     
     avg_reflectivity = np.average(reflectivity, weights=weights)
     if avg_reflectivity < 30:
