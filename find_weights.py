@@ -1,11 +1,12 @@
 import os
 import time
 import multiprocessing as mp
-import warnings
+from collections import Counter
+import random
 
+import warnings
 warnings.filterwarnings('ignore')
 import logging
-
 logging.basicConfig(filename='errors.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -30,14 +31,14 @@ def calculate_avg_reflectivity(reflectivity):
     reflectivity_bigger_than_60 = len([ele for ele in reflectivity if ele >= 60]) / len(reflectivity)
     
     # assign weight to each reflectivity range value
-    weight_set = [pow(10, 1) * pow(1, 1 - reflectivity_smaller_than_30), 
-                  pow(10, 2) * 5 * pow(2, 1 - reflectivity_30_to_35),
-                  pow(10, 2) * pow(2, 2 - reflectivity_35_to_40),
-                  pow(10, 4) * 5 * pow(4, 1 - reflectivity_40_to_45),
-                  pow(10, 4) * pow(4, 1 - reflectivity_45_to_50), 
-                  pow(10, 6) * 5 * pow(6, 1 - reflectivity_50_to_55),
-                  pow(10, 6) * pow(6, 1 - reflectivity_55_to_60),
-                  pow(10, 8) * 5 * pow(8, 1 - reflectivity_bigger_than_60)]
+    weight_set = [pow(10, 1) * pow(10, 1 - reflectivity_smaller_than_30), 
+                  pow(10, 2) * pow(10, 1 - reflectivity_30_to_35),
+                  pow(10, 2.5) * 5 * pow(2, 2 - reflectivity_35_to_40),
+                  pow(10, 3) * pow(10, 1 - reflectivity_40_to_45),
+                  pow(10, 3.5) * 5 * pow(3, 1 - reflectivity_45_to_50), 
+                  pow(10, 4) * pow(10, 1 - reflectivity_50_to_55),
+                  pow(10, 4.5) * 5 * pow(4, 1 - reflectivity_55_to_60),
+                  pow(10, 5) * pow(10, 1 - reflectivity_bigger_than_60)]
 
     # print(weight_set)
 
@@ -75,7 +76,7 @@ def calculate_avg_reflectivity(reflectivity):
 
 def run_processes(filenames):
     results = []
-    for name in filenames:
+    for name in sorted(filenames):
         try:
             # Read data
             data = pyart.io.read_sigmet(f"sample_data/data_WF/NhaBe/{name}")
@@ -113,9 +114,8 @@ def update_result(results):
     for result in results:
         full_results += result
     full_results = sorted(full_results)
-    for result in full_results:
-        with open('sample_data/data_WF/results.txt', 'a') as file:
-            file.write(f"{result[0]} - {result[1]} - {result[2]}" + '\n')
+    df = pd.DataFrame(full_results, columns=['timestamp', 'avg_reflectivity', 'label'])
+    df.to_csv('sample_data/data_WF/results.csv', index=False)
     return full_results
 
 
@@ -124,16 +124,15 @@ def plot_distribution(list, value_name, save_name):
     _, _, _ = plt.hist(list, color='skyblue', edgecolor='black')
     plt.xlabel(f'{value_name}')
     plt.ylabel('Frequency')
-    plt.title(f'{value_name} distribution')
+    plt.title(f'{value_name} Distribution')
     plt.savefig(f'sample_data/data_WF/{save_name}')
     plt.clf()
 
 
 if __name__ == "__main__":
-    if os.path.exists('sample_data/data_WF/results.txt'):
-        os.remove('sample_data/data_WF/results.txt')
-    
-    filenames = [file for file in os.listdir('sample_data/data_WF/NhaBe') if not file.endswith('jpg') and not file.endswith('png')]
+    filenames = [file for file in os.listdir('sample_data/data_WF/NhaBe') if not file.endswith('jpg') 
+                                                                         and not file.endswith('png')]
+    random.shuffle(filenames)
     reflectivity_list = []
     label_list = []
     
@@ -160,7 +159,11 @@ if __name__ == "__main__":
     print(f"Time taken: {end_time}")
 
     # Plot avg reflectivity value distribution
-    plot_distribution(sorted(reflectivity_list), "Avg reflectivity", "results-dist-avg_reflectivity.png")
+    plot_distribution(sorted(reflectivity_list), "Avg Reflectivity", "avg_reflectivity_dist.png")
 
     # Plot label distribution
-    plot_distribution(sorted(label_list), "Label", "results-dist-label.png")
+    plot_distribution(sorted(label_list), "Label", "label_dist.png")
+    
+    frequency = Counter(label_list)
+    for key, value in frequency.items():
+        print(f"Label '{key}': {value}")

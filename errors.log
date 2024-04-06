@@ -1,0 +1,81 @@
+2024-04-06 12:39:51,731 - ERROR - Axis must be specified when shapes of a and weights differ.
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 534, in average
+    raise TypeError(
+TypeError: Axis must be specified when shapes of a and weights differ.
+2024-04-06 12:40:48,658 - ERROR - Axis must be specified when shapes of a and weights differ.
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 534, in average
+    raise TypeError(
+TypeError: Axis must be specified when shapes of a and weights differ.
+2024-04-06 12:43:39,451 - ERROR - Axis must be specified when shapes of a and weights differ.
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 100, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 63, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 534, in average
+    raise TypeError(
+TypeError: Axis must be specified when shapes of a and weights differ.
+2024-04-06 14:28:10,077 - ERROR - Axis must be specified when shapes of a and weights differ.
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 101, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 64, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 534, in average
+    raise TypeError(
+TypeError: Axis must be specified when shapes of a and weights differ.
+2024-04-06 14:28:27,182 - ERROR - Axis must be specified when shapes of a and weights differ.
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 101, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 64, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 534, in average
+    raise TypeError(
+TypeError: Axis must be specified when shapes of a and weights differ.
+2024-04-06 14:29:48,175 - ERROR - Axis must be specified when shapes of a and weights differ.
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 101, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 64, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 534, in average
+    raise TypeError(
+TypeError: Axis must be specified when shapes of a and weights differ.
+2024-04-06 14:45:13,562 - ERROR - Axis must be specified when shapes of a and weights differ.
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 101, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 64, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 534, in average
+    raise TypeError(
+TypeError: Axis must be specified when shapes of a and weights differ.
+2024-04-06 14:45:21,549 - ERROR - Axis must be specified when shapes of a and weights differ.
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 101, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 64, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 534, in average
+    raise TypeError(
+TypeError: Axis must be specified when shapes of a and weights differ.
+2024-04-06 14:46:23,636 - ERROR - Axis must be specified when shapes of a and weights differ.
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 101, in run_processes
+    avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/find_weights.py", line 64, in calculate_avg_reflectivity
+    avg_reflectivity = np.average(reflectivity, weights=weights)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/lib/function_base.py", line 534, in average
+    raise TypeError(
+TypeError: Axis must be specified when shapes of a and weights differ.
