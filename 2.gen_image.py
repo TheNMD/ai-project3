@@ -104,20 +104,6 @@ def generate_image(metadata_chunk):
             logging.error(e, exc_info=True)
             continue
 
-def move_alternate_files():
-    source_folder = "image/unlabeled1"
-    destination_folder = "image/unlabeled2"
-    
-    files = os.listdir(source_folder)
-
-    # Iterate over the files and copy every other file
-    for i, file_name in enumerate(files):
-        if i % 2 == 0:  # Every other file
-            source_path = os.path.join(source_folder, file_name)
-            destination_path = os.path.join(destination_folder, file_name)
-            shutil.move(source_path, destination_path)
-            print(f"Copied '{file_name}' to '{destination_folder}'")
-
 def update_metadata():
     old_metadata = pd.read_csv("metadata.csv")
     
@@ -131,6 +117,20 @@ def update_metadata():
     
     updated_metadata = pd.merge(old_metadata, new_metadata, on='timestamp', how='outer')
     updated_metadata.to_csv("metadata.csv", index=False)
+
+def move_alternate_files():
+    source_folder = "image/unlabeled1"
+    destination_folder = "image/unlabeled2"
+    
+    files = os.listdir(source_folder)
+
+    # Iterate over the files and copy every other file
+    for i, file_name in enumerate(files):
+        if i % 2 == 0:  # Every other file
+            source_path = os.path.join(source_folder, file_name)
+            destination_path = os.path.join(destination_folder, file_name)
+            shutil.move(source_path, destination_path)
+            print(f"Copied '{file_name}' to '{destination_folder}'")
 
 if __name__ == '__main__':    
     # view_sample_images()
