@@ -247,6 +247,7 @@ if __name__ == '__main__':
         os.makedirs("image/labeled") 
         os.makedirs("image/labeled/clear")
         os.makedirs("image/labeled/light_rain")
+        os.makedirs("image/labeled/moderate_rain")
         os.makedirs("image/labeled/heavy_rain")
         os.makedirs("image/labeled/very_heavy_rain")
         
