@@ -212,7 +212,6 @@ def plot_distribution():
     metadata = pd.read_csv("metadata_lite.csv")
     
     frequency = metadata['future_label'].value_counts()
-    print(frequency)
     with open('image/label_summary.txt', 'w') as file:
         file.write(str(frequency))
     
