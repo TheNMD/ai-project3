@@ -213,6 +213,8 @@ def plot_distribution():
     
     frequency = metadata['future_label'].value_counts()
     print(frequency)
+    with open('image/label_summary.txt', 'w') as file:
+        file.write(str(frequency))
     
     plt.bar(frequency.index, frequency.values, color='skyblue', edgecolor='black')
     plt.xlabel('Label')
