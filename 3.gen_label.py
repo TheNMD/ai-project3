@@ -250,44 +250,41 @@ if __name__ == '__main__':
         os.makedirs("image/labeled/light_rain")
         os.makedirs("image/labeled/heavy_rain")
         os.makedirs("image/labeled/storm")
-    
-    if os.path.exists("image/3.Avg reflectivity distribution.png"): os.remove("image/3.Avg reflectivity distribution.png")
-    if os.path.exists("image/3.Label distribution.png"): os.remove("image/3.Label distribution.png")  
         
-    # Label images
-    try:
-        counter = 0
-        # Use multiprocessing to iterate over the metadata 
-        with mp.Pool(processes=num_processes) as pool:
-            metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
-            for chunk in metadata_chunks:
-                sub_metadata_chunks = np.array_split(chunk, num_processes)
+    # # Label images
+    # try:
+    #     counter = 0
+    #     # Use multiprocessing to iterate over the metadata 
+    #     with mp.Pool(processes=num_processes) as pool:
+    #         metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
+    #         for chunk in metadata_chunks:
+    #             sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
-                start_time = time.time()
-                results = pool.map(label_image, sub_metadata_chunks)
-                update_metadata(pd.concat(results))
-                end_time = time.time() - start_time
+    #             start_time = time.time()
+    #             results = pool.map(label_image, sub_metadata_chunks)
+    #             update_metadata(pd.concat(results))
+    #             end_time = time.time() - start_time
 
-                counter += 1
-                print(f"### Chunk: {counter} | Time: {end_time} ###")
-    except Exception as e:
-        # If crash due to lack of memory, restart the process (progress is saved)
-        print(e)
-        logging.error(e, exc_info=True)
+    #             counter += 1
+    #             print(f"### Chunk: {counter} | Time: {end_time} ###")
+    # except Exception as e:
+    #     # If crash due to lack of memory, restart the process (progress is saved)
+    #     print(e)
+    #     logging.error(e, exc_info=True)
     
-    updated_metadata = pd.read_csv("metadata_temp.csv")
-    updated_metadata.to_csv("metadata.csv", index=False)
+    # updated_metadata = pd.read_csv("metadata_temp.csv")
+    # updated_metadata.to_csv("metadata.csv", index=False)
     
-    # Make a metadata_lite.csv that contains only relevant info for model
-    metadata_lite = pd.read_csv("metadata.csv")
-    metadata_lite = metadata_lite[metadata_lite['generated'] != "Error"]
-    metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
-    metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
-    metadata_lite = metadata_lite.drop(['path', 'future_path'], axis=1)
-    metadata_lite.to_csv("metadata_lite.csv", index=False)
+    # # Make a metadata_lite.csv that contains only relevant info for model
+    # metadata_lite = pd.read_csv("metadata.csv")
+    # metadata_lite = metadata_lite[metadata_lite['generated'] != "Error"]
+    # metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
+    # metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
+    # metadata_lite = metadata_lite.drop(['path', 'future_path'], axis=1)
+    # metadata_lite.to_csv("metadata_lite.csv", index=False)
     
-    # Plot label and avg reflectivity distribution
-    plot_distribution()
+    # # Plot label and avg reflectivity distribution
+    # plot_distribution()
     
     # Move images from unlabeled to labeled folders
     try:
