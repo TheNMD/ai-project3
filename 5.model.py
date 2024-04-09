@@ -51,11 +51,6 @@ def load_model(name, type="pretrained"):
           f.write(str(model))
   return model
 
-def count_instances(dataset):
-  labels = [dataset.targets[i] for i in dataset.indices]
-  result = Counter(labels)
-  print(result)
-
 def load_data(image_size=256, 
               batch_size=32, 
               num_workers=4):
@@ -80,8 +75,6 @@ def load_data(image_size=256,
   train_set, val_set, test_set = random_split(image_dataset, 
                                               [train_size, val_size, test_size], 
                                               generator=torch.Generator().manual_seed(42))
-  
-  count_instances(val_set)
   
   train_loader = DataLoader(train_set,
                             batch_size=batch_size,
