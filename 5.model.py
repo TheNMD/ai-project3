@@ -38,11 +38,11 @@ if __name__ == '__main__':
   if not os.path.exists("result"):
     os.makedirs("result")
     
-  # Define the SwinV2 Transformer
+  # Define the pre-trained SwinV2 Transformer
   model_name = 'swinv2_tiny_window16_256.ms_in1k'
   model = timm.create_model(model_name, pretrained=True)
   
-  with open('result/swinv2_architecture.txt', 'w') as f:
+  # Save pre-trained model and its architecture
+  with open('model/pretrained/swinv2_pretrained_architecture.txt', 'w') as f:
     f.write(str(model))
-        
-  torch.save(model.state_dict(), 'result/swinv2_pretrained.pth')
+  torch.save(model.state_dict(), 'model/pretrained/swinv2_pretrained.pth')
