@@ -7,6 +7,7 @@ Code: cd /data/DanHoangThu
 docker build -t dht-image-base -f Dockerfile_base .
 docker build -t dht-image -f Dockerfile .
 ## Run image (Mount NhaBe and Image folders from host to container)
+docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image --name dht-cont dht-image
 docker run -v /data/DanHoangThu/image:/app/image --gpus 2 --name dht-cont dht-image
 ## Remove image
 docker rmi -f dht-image
@@ -22,7 +23,7 @@ docker cp dht-cont:/app/metadata_temp.csv .
 docker cp dht-cont:/app/metadata_lite.csv .
 
 docker cp dht-cont:/app/metadata .
-docker cp -rn dht-cont:/app/image .
+docker cp dht-cont:/app/result .
 ## Find container id
 docker ps -aqf "ancestor=dht-image"
 ## Stop container
