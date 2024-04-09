@@ -1,0 +1,11 @@
+.vscode/
+venv/
+
+data/
+metadata/
+sample_data/
+image/
+server/
+result/
+
+image.zip
