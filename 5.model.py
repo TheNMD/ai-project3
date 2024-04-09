@@ -2,7 +2,6 @@ import os
 import sys
 import platform
 import time
-from collections import Counter
 import warnings
 warnings.filterwarnings('ignore')
 import logging
