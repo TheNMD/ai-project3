@@ -45,4 +45,4 @@ if __name__ == '__main__':
   with open('result/swinv2_architecture.txt', 'w') as f:
     f.write(str(model))
         
-        
+  torch.save(model.state_dict(), 'result/swinv2_pretrained.pth')
