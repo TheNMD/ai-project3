@@ -29,7 +29,24 @@ elif ENV == "colab":
   drive.mount('/content/drive')
   image_path = "drive/MyDrive/Coding/image"
   result_path = "drive/MyDrive/Coding/result"
-    
+
+def load_model(name, type="pretrained"):
+  if type == "custom":
+    pass
+  elif type == "pretrained":
+    if name == "vit":
+      pass
+    elif name == "swin":
+      if os.path.exists("model/pretrained/swinv2_pretrained.pth"):
+        model = torch.load("model/pretrained/swinv2_pretrained.pth")
+      else:
+        model_name = 'swinv2_tiny_window16_256.ms_in1k'
+        model = timm.create_model(model_name, pretrained=True)
+        torch.save(model, 'model/pretrained/swinv2_pretrained.pth')
+        with open('model/pretrained/swinv2_pretrained_architecture.txt', 'w') as f:
+          f.write(str(model))
+  return model
+
 if __name__ == '__main__':
   print("Python version: ", sys.version)
   print("Ubuntu version: ", platform.release())
@@ -37,12 +54,5 @@ if __name__ == '__main__':
         
   if not os.path.exists("result"):
     os.makedirs("result")
-    
-  # Define the pre-trained SwinV2 Transformer
-  model_name = 'swinv2_tiny_window16_256.ms_in1k'
-  model = timm.create_model(model_name, pretrained=True)
   
-  # Save pre-trained model and its architecture
-  with open('model/pretrained/swinv2_pretrained_architecture.txt', 'w') as f:
-    f.write(str(model))
-  torch.save(model.state_dict(), 'model/pretrained/swinv2_pretrained.pth')
+  model = load_model("swinv2", "pretrained")
