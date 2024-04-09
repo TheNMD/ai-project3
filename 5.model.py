@@ -36,7 +36,7 @@ def load_model(name, type="pretrained"):
   elif type == "pretrained":
     if name == "vit":
       pass
-    elif name == "swin":
+    elif name == "swinv2":
       if os.path.exists("model/pretrained/swinv2_pretrained.pth"):
         model = torch.load("model/pretrained/swinv2_pretrained.pth")
       else:
