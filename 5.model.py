@@ -15,7 +15,8 @@ from memory_profiler import profile
 import torch
 import torchvision
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
+from sklearn.model_selection import train_test_split
 import timm
 
 # Set ENV to be 'local', 'server' or 'colab'
@@ -49,6 +50,14 @@ def load_model(name, type="pretrained"):
         with open('model/pretrained/swinv2-pretrained_architecture.txt', 'w') as f:
           f.write(str(model))
   return model
+
+def split_dataset(split_size=0.1):
+  metadata = pd.read_csv("metadata_lite.csv")
+  
+  images = metadata['timestamp'].tolist()
+  labels = metadata['future_label'].tolist()
+  
+  X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=split_size, random_state=42)
 
 def load_data(image_size=256, 
               batch_size=32, 
@@ -106,6 +115,8 @@ if __name__ == '__main__':
     os.makedirs("result")
     os.makedirs("result/checkpoint")
   
-  # model = load_model("swinv2", "pretrained")
+  # Load and split data
+  # train_loader, val_loader, test_loader = load_data()
   
-  train_loader, val_loader, test_loader = load_data()
+  # # Load model
+  # model = load_model("swinv2", "pretrained")
