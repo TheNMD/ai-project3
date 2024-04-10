@@ -184,6 +184,7 @@ if __name__ == '__main__':
       for images, labels in train_loader:
         batch_start_time = time.time()
         
+        print(123456)
         images, labels = images.to(device), labels.to(device)
         print(123456)
         outputs = model(images)
