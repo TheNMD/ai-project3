@@ -8,7 +8,7 @@ docker build -t dht-image-base -f Dockerfile_base .
 docker build -t dht-image -f Dockerfile .
 ## Run image (Mount NhaBe and Image folders from host to container)
 docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image --name dht-cont dht-image
-docker run -v /data/DanHoangThu/image:/app/image --gpus 2 --name dht-cont dht-image
+docker run -v /data/DanHoangThu/image:/app/image --shm-size=16g --gpus 2 --name dht-cont dht-image
 ## Remove image
 docker rmi -f dht-image
 

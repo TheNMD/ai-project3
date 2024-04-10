@@ -53,7 +53,7 @@ def load_model(name, type="pretrained"):
 
 def load_data(image_size=256, 
               batch_size=32, 
-              num_workers=4):
+              num_workers=16):
   
   # Preprocessing data
   # 1/ Resize images to fit the image size used when training
@@ -91,15 +91,15 @@ def load_data(image_size=256,
                             shuffle=False,
                             num_workers=num_workers)
   
-  with open("image/train_val_test_summary.txt", 'w') as file:
-    file.write('### Label to Index ###\n')
-    file.write(f'{image_dataset.class_to_idx}\n')
-    file.write('### Train set ###\n')
-    file.write(f'{count_instances(train_loader)}\n')
-    file.write('### Val set ###\n')
-    file.write(f'{count_instances(val_loader)}\n')
-    file.write('### Test set ###\n')
-    file.write(f'{count_instances(test_loader)}\n')
+  # with open("image/train_val_test_summary.txt", 'w') as file:
+  #   file.write('### Label to Index ###\n')
+  #   file.write(f'{image_dataset.class_to_idx}\n')
+  #   file.write('### Train set ###\n')
+  #   file.write(f'{count_instances(train_loader)}\n')
+  #   file.write('### Val set ###\n')
+  #   file.write(f'{count_instances(val_loader)}\n')
+  #   file.write('### Test set ###\n')
+  #   file.write(f'{count_instances(test_loader)}\n')
   
   return train_loader, val_loader, test_loader
 
@@ -128,8 +128,8 @@ if __name__ == '__main__':
     os.makedirs("result")
     os.makedirs("result/checkpoint")
   
-  # Load and split data
-  train_loader, val_loader, test_loader = load_data()
+  # # Load and split data
+  # train_loader, val_loader, test_loader = load_data()
   
-  # # Load model
-  # model = load_model("swinv2", "pretrained")
+  # Load model
+  model = load_model("swinv2", "pretrained")
