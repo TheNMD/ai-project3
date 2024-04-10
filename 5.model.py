@@ -155,7 +155,7 @@ if __name__ == '__main__':
     image_size = 256
   elif name == "vit":
     image_size = 224
-  batch_size = 32
+  batch_size = 128
   
   train_loader, train_size, val_loader, val_size, test_loader, test_size = load_data(image_size=image_size,
                                                                                      batch_size=batch_size)
