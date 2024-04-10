@@ -14,8 +14,6 @@ RUN pip install --upgrade pip
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip freeze > requirements1.txt
-
 RUN chmod +x docker-entrypoint.sh
 
 EXPOSE 5000
