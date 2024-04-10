@@ -63,7 +63,7 @@ def load_model(name, option, checkpoint=False):
           
   return model
 
-def load_data(image_size=256, 
+def load_data(image_size, 
               batch_size=32, 
               num_workers=16):
   
@@ -165,9 +165,9 @@ if __name__ == '__main__':
   criterion = nn.CrossEntropyLoss()
   optimizer = optim.Adam(model.parameters(), lr=learning_rate)
   
-  # # Training loop
-  # best_accuracy = 0.0
-  # epochs = 10
+  # Training loop
+  best_accuracy = 0.0
+  epochs = 10
   
   # model = model.to(device)
   # for epoch in range(epochs):
