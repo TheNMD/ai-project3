@@ -21,8 +21,8 @@ docker cp 1.gen_meta.py dht-cont:/app
 docker cp dht-cont:/app/metadata.csv .
 docker cp dht-cont:/app/metadata_temp.csv .
 docker cp dht-cont:/app/metadata_lite.csv .
-
 docker cp dht-cont:/app/metadata .
+docker cp dht-cont:/app/model .
 docker cp dht-cont:/app/result .
 ## Find container id
 docker ps -aqf "ancestor=dht-image"
