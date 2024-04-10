@@ -151,7 +151,9 @@ if __name__ == '__main__':
   # Load model
   name = "swinv2"
   option = "pretrained"
-  model = load_model(name, option)
+  checkpoint = False
+  
+  model = load_model(name, option, checkpoint)
   
   # Loss function and optimizer
   learning_rate = 0.001
@@ -206,7 +208,7 @@ if __name__ == '__main__':
           
       # Save training results
       training_record = {'epoch' : [epoch], 'val_loss' : [val_loss], 'val_acc': [val_acc], 'time': [end_time]}
-      if not os.path.exists(f"result/{name}-{option}_training.csv"):
+      if not os.path.exists(f"result/{name}-{option}_training.csv") or checkpoint == False:
         training_result = pd.DataFrame(training_record)
       else:
         training_result = pd.read_csv(f"result/{name}-{option}_training.csv")
