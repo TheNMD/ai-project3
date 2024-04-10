@@ -45,7 +45,7 @@ class FinetuneModule(pl.LightningModule):
       self.model = model
       self.train_loader = loader[0]
       self.val_loader = loader[1]
-      self.test_loader = loader[2]
+      # self.test_loader = loader[2]
       self.lr = learning_rate
 
     def forward(self, x):
@@ -94,8 +94,8 @@ class FinetuneModule(pl.LightningModule):
     def val_dataloader(self):
         return self.val_loader
 
-    def test_dataloader(self):
-        return self.test_loader
+    # def test_dataloader(self):
+    #     return self.test_loader
 
 def load_model(name, option, checkpoint=False):
   if checkpoint:
@@ -209,7 +209,8 @@ if __name__ == '__main__':
   train_loader, val_loader, test_loader = load_data(image_size=image_size,
                                                     batch_size=batch_size)
   
-  module = FinetuneModule(model, [train_loader, val_loader, test_loader], learning_rate)
+  # module = FinetuneModule(model, [train_loader, val_loader, test_loader], learning_rate)
+  module = FinetuneModule(model, [val_loader, test_loader, test_loader], learning_rate)
   
   # Initialize a CSV logger
   logger = CSVLogger(save_dir='result', name=f'{model_name}-{option}_results')
@@ -220,6 +221,6 @@ if __name__ == '__main__':
                        max_epochs=10,
                        logger=logger)
 
-  # trainer.fit(module)
+  trainer.fit(module)
 
   
