@@ -2,6 +2,7 @@ import os
 import sys
 import platform
 import time
+from collections import Counter
 import warnings
 from collections import defaultdict
 warnings.filterwarnings('ignore')
@@ -10,12 +11,12 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 import torch
-import torchvision.transforms as transforms
-import torchvision.datasets as datasets
-from torch.utils.data import random_split, DataLoader
-import torch.nn as nn
-import torch.optim as optim
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+from torch import nn
+import pytorch_lightning as pl
 import timm
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -36,6 +37,35 @@ elif ENV == "colab":
   drive.mount('/content/drive')
   image_path = "drive/MyDrive/Coding/image"
   result_path = "drive/MyDrive/Coding/result"
+
+class FinetuneModule(pl.LightningModule):
+    def __init__(self, model, learning_rate=1e-4):
+      super().__init__()
+      self.model = model
+      self.lr = learning_rate
+
+    def forward(self, x):
+      return self.model(x)
+
+    def training_step(self, batch, batch_idx):
+      x, y = batch
+      logits = self(x)
+      loss =  pl.functional.cross_entropy(logits, y)
+      self.log('train_loss', loss)
+      return loss
+
+    def validation_step(self, batch, batch_idx):
+      x, y = batch
+      logits = self(x)
+      loss = pl.functional.cross_entropy(logits, y)
+      preds = torch.argmax(logits, dim=1)
+      acc = (preds == y).float().mean()
+      self.log('val_loss', loss)
+      self.log('val_acc', acc)
+
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
+        return optimizer
 
 def load_model(name, option, checkpoint=False):
   if checkpoint:
@@ -74,55 +104,42 @@ def load_data(image_size,
   data_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
                                         transforms.ToTensor()])
   
-  image_dataset = datasets.ImageFolder(root="image/labeled",
+  train_dataset = datasets.ImageFolder(root="image/sets/train",
                                        transform=data_transforms)
   
-  # Split dataset into train, val, and test sets
-  train_size = int(0.8 * len(image_dataset))
-  val_size   = int(0.1 * len(image_dataset))
-  test_size  = len(image_dataset) - train_size - val_size
+  val_dataset = datasets.ImageFolder(root="image/sets/val",
+                                     transform=data_transforms)
   
-  train_set, val_set, test_set = random_split(image_dataset, 
-                                              [train_size, val_size, test_size], 
-                                              generator=torch.Generator().manual_seed(42))
+  test_dataset = datasets.ImageFolder(root="image/sets/test",
+                                      transform=data_transforms)
   
-  train_loader = DataLoader(train_set,
+  
+  train_loader = DataLoader(train_dataset,
                             batch_size=batch_size,
                             shuffle=True,
                             num_workers=num_workers)
   
-  val_loader   = DataLoader(val_set,
+  val_loader   = DataLoader(val_dataset,
                             batch_size=batch_size,
                             shuffle=False,
                             num_workers=num_workers)
   
-  test_loader  = DataLoader(test_set,
+  test_loader  = DataLoader(test_dataset,
                             batch_size=batch_size,
                             shuffle=False,
                             num_workers=num_workers)
   
-  # with open("image/train_val_test_summary.txt", 'w') as file:
-  #   file.write('### Label to Index ###\n')
-  #   file.write(f'{image_dataset.class_to_idx}\n')
-  #   file.write('### Train set ###\n')
-  #   file.write(f'{count_instances(train_loader)}\n')
-  #   file.write('### Val set ###\n')
-  #   file.write(f'{count_instances(val_loader)}\n')
-  #   file.write('### Test set ###\n')
-  #   file.write(f'{count_instances(test_loader)}\n')
+  with open("image/train_val_test_summary.txt", 'w') as file:
+    file.write('### Label to Index ###\n')
+    file.write(f'{train_dataset.class_to_idx}\n')
+    file.write('### Train set ###\n')
+    file.write(f'{dict(Counter(train_dataset.targets))}\n')
+    file.write('### Val set ###\n')
+    file.write(f'{dict(Counter(train_dataset.targets))}\n')
+    file.write('### Test set ###\n')
+    file.write(f'{dict(Counter(train_dataset.targets))}\n')
   
-  return train_loader, train_size, val_loader, val_size, test_loader, test_size
-
-def count_instances(data_loader):
-  label_counter = defaultdict(int)
-  for _, labels in data_loader:
-      for label in labels:
-          label_counter[label.item()] += 1
-  
-  label_counter = dict(label_counter)
-  label_counter = dict(sorted(label_counter.items()))
-  
-  return label_counter
+  return train_loader, val_loader, test_loader
 
 if __name__ == '__main__':
   print("Python version: ", sys.version)
@@ -143,14 +160,14 @@ if __name__ == '__main__':
     os.makedirs("result")
     os.makedirs("result/checkpoint")
     
-  with open('result/currently_training.txt', 'w') as f: pass
-  
   # Load model
   name = "vit"
   option = "pretrained"
   checkpoint = False
   
-  model = load_model(name, option, checkpoint)
+  # model = load_model(name, option, checkpoint)
+  
+  # model = FinetuneModule(model, 0.0001)
   
   # Load and split data
   if name == "swinv2":
@@ -159,22 +176,8 @@ if __name__ == '__main__':
     image_size = 224
   batch_size = 32
   
-  train_loader, train_size, val_loader, val_size, test_loader, test_size = load_data(image_size=image_size,
-                                                                                     batch_size=batch_size)
+  train_loader, val_loader, test_loader = load_data(image_size=image_size,
+                                                    batch_size=batch_size)
   
-  print(f"Train size: {train_size}")
-  print(f"Train size: {val_size}")
-  print(f"Train size: {test_size}")
-  
-  # Loss function and optimizer
-  learning_rate = 0.001
-  criterion = nn.CrossEntropyLoss()
-  optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-  
-  # Training loop
-  best_accuracy = 0.0
-  epochs = 10
-  
-  model = nn.DataParallel(model)
-  model.to(device)
+
   
