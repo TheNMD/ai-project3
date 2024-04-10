@@ -71,7 +71,7 @@ def load_data(image_size,
   # 1/ Resize images to fit the image size used when training
   # 2/ Convert to Tensor
   # 3/ Normalize based on ImageNet statistics
-  data_transforms = transforms.Compose([transforms.Resize(image_size),
+  data_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
                                         transforms.ToTensor(),
                                         transforms.Normalize(mean=[0.485, 0.456, 0.406], 
                                                              std=[0.229, 0.224, 0.225])])
