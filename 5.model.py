@@ -169,60 +169,60 @@ if __name__ == '__main__':
   best_accuracy = 0.0
   epochs = 10
   
-  # model = model.to(device)
-  # for epoch in range(epochs):
-  #   start_time = time.time()
-  #   try:
-  #     # Training phase
-  #     model.train()
-  #     for inputs, labels in train_loader:
-  #       inputs, labels = inputs.to(device), labels.to(device)
-  #       optimizer.zero_grad()
-  #       outputs = model(inputs)
-  #       loss = criterion(outputs, labels)
-  #       loss.backward()
-  #       optimizer.step()
+  model = model.to(device)
+  for epoch in range(epochs):
+    start_time = time.time()
+    try:
+      # Training phase
+      model.train()
+      for inputs, labels in train_loader:
+        inputs, labels = inputs.to(device), labels.to(device)
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
       
-  #     # Validation phase
-  #     model.eval()
-  #     val_loss = 0.0
-  #     correct = 0
-  #     total = 0
-  #     with torch.no_grad():
-  #       for inputs, labels in val_loader:
-  #           inputs, labels = inputs.to(device), labels.to(device)
-  #           outputs = model(inputs)
-  #           loss = criterion(outputs, labels)
-  #           val_loss += loss.item() * inputs.size(0)
-  #           _, predicted = torch.max(outputs, 1)
-  #           total += labels.size(0)
-  #           correct += (predicted == labels).sum().item()
+      # Validation phase
+      model.eval()
+      val_loss = 0.0
+      correct = 0
+      total = 0
+      with torch.no_grad():
+        for inputs, labels in val_loader:
+            inputs, labels = inputs.to(device), labels.to(device)
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            val_loss += loss.item() * inputs.size(0)
+            _, predicted = torch.max(outputs, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
       
-  #     # Calculate validation accuracy
-  #     val_acc = correct / total
-  #     val_loss /= val_size
-  #     end_time = time.time() - start_time
+      # Calculate validation accuracy
+      val_acc = correct / total
+      val_loss /= val_size
+      end_time = time.time() - start_time
       
-  #     # Print epoch statistics
-  #     print(f'Epoch {epoch + 1}/{epochs} | val_loss: {val_loss} | val_acc: {val_acc} | time: {end_time}')
+      # Print epoch statistics
+      print(f'Epoch {epoch + 1}/{epochs} | val_loss: {val_loss} | val_acc: {val_acc} | time: {end_time}')
       
-  #     # Save the best model
-  #     if val_acc > best_accuracy:
-  #         best_accuracy = val_acc
-  #         torch.save(model, f'result/checkpoint/{name}-{option}.pth')
+      # Save the best model
+      if val_acc > best_accuracy:
+          best_accuracy = val_acc
+          torch.save(model, f'result/checkpoint/{name}-{option}.pth')
           
-  #     # Save training results
-  #     training_record = {'epoch' : [epoch], 'val_loss' : [val_loss], 'val_acc': [val_acc], 'time': [end_time]}
-  #     if not os.path.exists(f"result/{name}-{option}_training.csv") or checkpoint == False:
-  #       training_result = pd.DataFrame(training_record)
-  #     else:
-  #       training_result = pd.read_csv(f"result/{name}-{option}_training.csv")
-  #       training_result = training_result.append(training_record, ignore_index=True)
-  #     training_result.to_csv(f"result/{name}-{option}_training.csv", index=False)
+      # Save training results
+      training_record = {'epoch' : [epoch], 'val_loss' : [val_loss], 'val_acc': [val_acc], 'time': [end_time]}
+      if not os.path.exists(f"result/{name}-{option}_training.csv") or checkpoint == False:
+        training_result = pd.DataFrame(training_record)
+      else:
+        training_result = pd.read_csv(f"result/{name}-{option}_training.csv")
+        training_result = training_result.append(training_record, ignore_index=True)
+      training_result.to_csv(f"result/{name}-{option}_training.csv", index=False)
       
-  #   except Exception as e:
-  #       print(e)
-  #       logging.error(e, exc_info=True)
-  #       break
+    except Exception as e:
+        print(e)
+        logging.error(e, exc_info=True)
+        break
 
   
