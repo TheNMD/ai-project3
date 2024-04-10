@@ -3,6 +3,7 @@ import sys
 import platform
 import time
 import warnings
+from collections import Counter, defaultdict
 warnings.filterwarnings('ignore')
 import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
@@ -15,8 +16,7 @@ from memory_profiler import profile
 import torch
 import torchvision
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
-from sklearn.model_selection import train_test_split
+from torch.utils.data import DataLoader, random_split
 import timm
 
 # Set ENV to be 'local', 'server' or 'colab'
@@ -50,14 +50,6 @@ def load_model(name, type="pretrained"):
         with open('model/pretrained/swinv2-pretrained_architecture.txt', 'w') as f:
           f.write(str(model))
   return model
-
-def split_dataset(split_size=0.1):
-  metadata = pd.read_csv("metadata_lite.csv")
-  
-  images = metadata['timestamp'].tolist()
-  labels = metadata['future_label'].tolist()
-  
-  X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=split_size, random_state=42)
 
 def load_data(image_size=256, 
               batch_size=32, 
@@ -99,7 +91,28 @@ def load_data(image_size=256,
                             shuffle=False,
                             num_workers=num_workers)
   
+  with open("image/train_val_test_summary.txt", 'w') as file:
+    file.write('### Label to Index ###\n')
+    file.write(f'{image_dataset.class_to_idx}\n')
+    file.write('### Train set ###\n')
+    file.write(f'{count_instances(train_loader)}\n')
+    file.write('### Val set ###\n')
+    file.write(f'{count_instances(val_loader)}\n')
+    file.write('### Test set ###\n')
+    file.write(f'{count_instances(test_loader)}\n')
+  
   return train_loader, val_loader, test_loader
+
+def count_instances(data_loader):
+  label_counter = defaultdict(int)
+  for _, labels in data_loader:
+      for label in labels:
+          label_counter[label.item()] += 1
+  
+  label_counter = dict(label_counter)
+  label_counter = dict(sorted(label_counter.items()))
+  
+  return label_counter
 
 if __name__ == '__main__':
   print("Python version: ", sys.version)
@@ -116,7 +129,7 @@ if __name__ == '__main__':
     os.makedirs("result/checkpoint")
   
   # Load and split data
-  # train_loader, val_loader, test_loader = load_data()
+  train_loader, val_loader, test_loader = load_data()
   
   # # Load model
   # model = load_model("swinv2", "pretrained")
