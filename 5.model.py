@@ -212,7 +212,7 @@ if __name__ == '__main__':
   module = FinetuneModule(model, [train_loader, val_loader, test_loader], learning_rate)
   
   # Initialize a CSV logger
-  logger = CSVLogger(save_dir='result', name=f'{model_name}-{option}_results.csv')
+  logger = CSVLogger(save_dir='result', name=f'{model_name}-{option}_results')
   
   trainer = pl.Trainer(devices=2, 
                        accelerator="gpu", 
