@@ -174,6 +174,7 @@ if __name__ == '__main__':
   epochs = 10
   
   model = model.to(device)
+  model = nn.DataParallel(model)
   for epoch in range(epochs):
     epoch_start_time = time.time()
     try:
