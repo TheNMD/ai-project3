@@ -220,6 +220,6 @@ if __name__ == '__main__':
                        max_epochs=10,
                        logger=logger)
 
-  trainer.fit(module)
+  # trainer.fit(module)
 
   
