@@ -14,6 +14,7 @@ import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from torch import nn
+import torch.nn.functional as F
 import pytorch_lightning as pl
 import timm
 
@@ -39,33 +40,64 @@ elif ENV == "colab":
   result_path = "drive/MyDrive/Coding/result"
 
 class FinetuneModule(pl.LightningModule):
-    def __init__(self, model, learning_rate=1e-4):
+    def __init__(self, model, loader, learning_rate=1e-4):
       super().__init__()
       self.model = model
+      self.train_loader = loader[0]
+      self.val_loader = loader[1]
+      self.test_loader = loader[2]
       self.lr = learning_rate
 
     def forward(self, x):
       return self.model(x)
 
+    def common_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self(x)
+
+        criterion = nn.CrossEntropyLoss()
+        loss = criterion(logits, y)
+        predictions = logits.argmax(-1)
+        correct = (predictions == y).sum().item()
+        accuracy = correct / x.shape[0]
+
+        return loss, accuracy
+
     def training_step(self, batch, batch_idx):
-      x, y = batch
-      logits = self(x)
-      loss =  pl.functional.cross_entropy(logits, y)
-      self.log('train_loss', loss)
-      return loss
+        loss, accuracy = self.common_step(batch, batch_idx)     
+        # logs metrics for each training_step,
+        # and the average across the epoch
+        self.log("training_loss", loss)
+        self.log("training_accuracy", accuracy)
 
+        return loss
+    
     def validation_step(self, batch, batch_idx):
-      x, y = batch
-      logits = self(x)
-      loss = pl.functional.cross_entropy(logits, y)
-      preds = torch.argmax(logits, dim=1)
-      acc = (preds == y).float().mean()
-      self.log('val_loss', loss)
-      self.log('val_acc', acc)
+        loss, accuracy = self.common_step(batch, batch_idx)     
+        self.log("validation_loss", loss, on_epoch=True)
+        self.log("validation_accuracy", accuracy, on_epoch=True)
 
+        return loss
+
+    def test_step(self, batch, batch_idx):
+        loss, accuracy = self.common_step(batch, batch_idx)     
+
+        return loss
+      
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
-        return optimizer
+      optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
+      return optimizer
+      
+    def train_dataloader(self):
+        return self.train_loader
+
+    def val_dataloader(self):
+        return self.val_loader
+
+    def test_dataloader(self):
+        return self.test_loader
+      
+
 
 def load_model(name, option, checkpoint=False):
   if checkpoint:
@@ -94,7 +126,7 @@ def load_model(name, option, checkpoint=False):
   return model
 
 def load_data(image_size, 
-              batch_size=32, 
+              batch_size, 
               num_workers=16):
   
   # Preprocessing data
@@ -102,7 +134,8 @@ def load_data(image_size,
   # 2/ Convert to Tensor
   # 3/ Normalize based on ImageNet statistics
   data_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
-                                        transforms.ToTensor()])
+                                        transforms.ToTensor(),
+                                        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
   
   train_dataset = datasets.ImageFolder(root="image/sets/train",
                                        transform=data_transforms)
@@ -135,9 +168,9 @@ def load_data(image_size,
     file.write('### Train set ###\n')
     file.write(f'{dict(Counter(train_dataset.targets))}\n')
     file.write('### Val set ###\n')
-    file.write(f'{dict(Counter(train_dataset.targets))}\n')
+    file.write(f'{dict(Counter(val_dataset.targets))}\n')
     file.write('### Test set ###\n')
-    file.write(f'{dict(Counter(train_dataset.targets))}\n')
+    file.write(f'{dict(Counter(test_dataset.targets))}\n')
   
   return train_loader, val_loader, test_loader
 
@@ -161,23 +194,30 @@ if __name__ == '__main__':
     os.makedirs("result/checkpoint")
     
   # Load model
-  name = "vit"
+  model_name = "vit"
   option = "pretrained"
   checkpoint = False
   
-  # model = load_model(name, option, checkpoint)
-  
-  # model = FinetuneModule(model, 0.0001)
+  model = load_model(model_name, option, checkpoint)
   
   # Load and split data
-  if name == "swinv2":
+  if model_name == "swinv2":
     image_size = 256
-  elif name == "vit":
+  elif model_name == "vit":
     image_size = 224
   batch_size = 32
+  learning_rate = 0.0001
   
   train_loader, val_loader, test_loader = load_data(image_size=image_size,
                                                     batch_size=batch_size)
   
+  module = FinetuneModule(model, [train_loader, val_loader, test_loader], learning_rate)
+  
+  trainer = pl.Trainer(devices=2, 
+                       accelerator="gpu", 
+                       strategy="ddp",
+                       max_epochs=10,)
+
+  trainer.fit(model, train_loader, val_loader, test_loader)
 
   
