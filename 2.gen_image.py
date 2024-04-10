@@ -138,10 +138,7 @@ if __name__ == '__main__':
     num_processes = 20
     chunk_size = 100 * num_processes
     
-    if os.path.exists("image/unlabeled1"):
-        shutil.rmtree("image/unlabeled1")
-        shutil.rmtree("image/unlabeled2")
-    else:
+    if not os.path.exists("image/unlabeled1"):
         os.makedirs("image/unlabeled1")
         os.makedirs("image/unlabeled2")
     
