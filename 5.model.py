@@ -132,6 +132,8 @@ if __name__ == '__main__':
   if torch.cuda.is_available():
     device = torch.device("cuda")
     print("Torch GPU is available")
+    for i in range(torch.cuda.device_count()):
+      print(torch.cuda.get_device_name(i))
   else:
     device = torch.device("cpu")
     print("Only Torch CPU is available")
