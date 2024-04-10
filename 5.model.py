@@ -129,7 +129,7 @@ if __name__ == '__main__':
     os.makedirs("result/checkpoint")
   
   # # Load and split data
-  # train_loader, val_loader, test_loader = load_data()
+  train_loader, val_loader, test_loader = load_data()
   
   # Load model
   model = load_model("swinv2", "pretrained")
