@@ -218,6 +218,6 @@ if __name__ == '__main__':
                        strategy="ddp",
                        max_epochs=10,)
 
-  trainer.fit(module, train_loader, val_loader, test_loader)
+  trainer.fit(module)
 
   
