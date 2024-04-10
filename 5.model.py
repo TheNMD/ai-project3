@@ -40,37 +40,64 @@ elif ENV == "colab":
   result_path = "drive/MyDrive/Coding/result"
 
 class FinetuneModule(pl.LightningModule):
-    def __init__(self, model, learning_rate=1e-4):
+    def __init__(self, model, loader, learning_rate=1e-4):
       super().__init__()
       self.model = model
+      self.train_loader = loader[0]
+      self.val_loader = loader[1]
+      self.test_loader = loader[2]
       self.lr = learning_rate
 
     def forward(self, x):
       return self.model(x)
 
+    def common_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self(x)
+
+        criterion = nn.CrossEntropyLoss()
+        loss = criterion(logits, y)
+        predictions = logits.argmax(-1)
+        correct = (predictions == y).sum().item()
+        accuracy = correct / x.shape[0]
+
+        return loss, accuracy
+
     def training_step(self, batch, batch_idx):
-      x, y = batch
-      logits = self(x)
-      loss =  F.cross_entropy(logits, y)
-      preds = torch.argmax(logits, dim=1)
-      acc = torch.sum(preds == y).item() / len(x)
-      self.log('train_loss', loss, on_step=False, on_epoch=True)
-      self.log('train_acc', acc, on_step=False, on_epoch=True)  
-      return loss
+        loss, accuracy = self.common_step(batch, batch_idx)     
+        # logs metrics for each training_step,
+        # and the average across the epoch
+        self.log("training_loss", loss)
+        self.log("training_accuracy", accuracy)
 
+        return loss
+    
     def validation_step(self, batch, batch_idx):
-      x, y = batch
-      logits = self(x)
-      loss = F.cross_entropy(logits, y)
-      preds = torch.argmax(logits, dim=1)
-      acc = torch.sum(preds == y).item() / len(x)
-      self.log('val_loss', loss, on_step=False, on_epoch=True)
-      self.log('val_acc', acc, on_step=False, on_epoch=True)
-      return loss
+        loss, accuracy = self.common_step(batch, batch_idx)     
+        self.log("validation_loss", loss, on_epoch=True)
+        self.log("validation_accuracy", accuracy, on_epoch=True)
 
+        return loss
+
+    def test_step(self, batch, batch_idx):
+        loss, accuracy = self.common_step(batch, batch_idx)     
+
+        return loss
+      
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
-        return optimizer
+      optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
+      return optimizer
+      
+    def train_dataloader(self):
+        return self.train_loader
+
+    def val_dataloader(self):
+        return self.val_loader
+
+    def test_dataloader(self):
+        return self.test_loader
+      
+
 
 def load_model(name, option, checkpoint=False):
   if checkpoint:
@@ -173,23 +200,24 @@ if __name__ == '__main__':
   
   model = load_model(model_name, option, checkpoint)
   
-  model = FinetuneModule(model, 0.0001)
-  
   # Load and split data
   if model_name == "swinv2":
     image_size = 256
   elif model_name == "vit":
     image_size = 224
   batch_size = 32
+  learning_rate = 0.0001
   
   train_loader, val_loader, test_loader = load_data(image_size=image_size,
                                                     batch_size=batch_size)
   
-  trainer = pl.Trainer(devices=1, 
+  module = FinetuneModule(model, [train_loader, val_loader, test_loader], learning_rate)
+  
+  trainer = pl.Trainer(devices=2, 
                        accelerator="gpu", 
                        strategy="ddp",
                        max_epochs=10,)
 
-  trainer.fit(model, train_loader, val_loader)
+  trainer.fit(model, train_loader, val_loader, test_loader)
 
   
