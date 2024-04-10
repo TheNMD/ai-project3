@@ -14,8 +14,8 @@ import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from torch import nn
-import torch.nn.functional as F
 import pytorch_lightning as pl
+from pytorch_lightning.loggers import CSVLogger
 import timm
 
 import numpy as np
@@ -96,8 +96,6 @@ class FinetuneModule(pl.LightningModule):
 
     def test_dataloader(self):
         return self.test_loader
-      
-
 
 def load_model(name, option, checkpoint=False):
   if checkpoint:
@@ -213,10 +211,14 @@ if __name__ == '__main__':
   
   module = FinetuneModule(model, [train_loader, val_loader, test_loader], learning_rate)
   
+  # Initialize a CSV logger
+  logger = CSVLogger(save_dir='result', name=f'{model_name}-{option}_results')
+  
   trainer = pl.Trainer(devices=2, 
                        accelerator="gpu", 
                        strategy="ddp",
-                       max_epochs=10,)
+                       max_epochs=10,
+                       logger=logger)
 
   trainer.fit(module)
 
