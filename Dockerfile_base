@@ -1,4 +1,4 @@
-FROM dht-image-base
+FROM dht-image-base1
 
 WORKDIR /app
 
