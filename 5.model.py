@@ -143,18 +143,22 @@ if __name__ == '__main__':
     os.makedirs("result")
     os.makedirs("result/checkpoint")
   
-  # Load and split data
-  image_size = 224
-  batch_size = 32
-  train_loader, train_size, val_loader, val_size, test_size, test_loader = load_data(image_size=image_size,
-                                                                                     batch_size=batch_size)
-  
   # Load model
   name = "swinv2"
   option = "pretrained"
   checkpoint = False
   
   model = load_model(name, option, checkpoint)
+  
+  # Load and split data
+  if name == "swinv2":
+    image_size = 256
+  elif name == "vit":
+    image_size = 224
+  batch_size = 32
+  
+  train_loader, train_size, val_loader, val_size, test_size, test_loader = load_data(image_size=image_size,
+                                                                                     batch_size=batch_size)
   
   # Loss function and optimizer
   learning_rate = 0.001
