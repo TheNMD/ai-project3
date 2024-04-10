@@ -177,32 +177,33 @@ if __name__ == '__main__':
   
   model = nn.DataParallel(model)
   model.to(device)
+  print(12321312321)
   for epoch in range(epochs):
     epoch_start_time = time.time()
     try:
       # Training phase
       model.train()
       batch = 0
-      for images, labels in train_loader:
-        batch_start_time = time.time()
+      # for images, labels in train_loader:
+      #   batch_start_time = time.time()
         
-        with open('result/currently_training.txt', 'a') as f:
-          f.write(f"Train: Epoch {epoch} | Batch {batch}\n")
-        images, labels = images.to(device), labels.to(device)
-        with open('result/currently_training.txt', 'a') as f:
-          f.write(f"Train: Epoch {epoch} | Batch {batch}\n")
-        outputs = model(images)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
-        optimizer.zero_grad()
-        batch += 1
+      #   # with open('result/currently_training.txt', 'a') as f:
+      #   #   f.write(f"Train: Epoch {epoch} | Batch {batch}\n")
+      #   # images, labels = images.to(device), labels.to(device)
+      #   # with open('result/currently_training.txt', 'a') as f:
+      #   #   f.write(f"Train: Epoch {epoch} | Batch {batch}\n")
+      #   outputs = model(images)
+      #   loss = criterion(outputs, labels)
+      #   loss.backward()
+      #   optimizer.step()
+      #   optimizer.zero_grad()
+      #   batch += 1
         
-        batch_end_time = time.time() - batch_start_time
+      #   batch_end_time = time.time() - batch_start_time
         
-        print(f"Train: Epoch {epoch} | Batch {batch} | {batch_end_time}")
-        with open('result/currently_training.txt', 'a') as f:
-          f.write(f"Train: Epoch {epoch} | Batch {batch} | {batch_end_time}\n")
+      #   print(f"Train: Epoch {epoch} | Batch {batch} | {batch_end_time}")
+      #   with open('result/currently_training.txt', 'a') as f:
+      #     f.write(f"Train: Epoch {epoch} | Batch {batch} | {batch_end_time}\n")
       
       # # Validation phase
       # model.eval()
