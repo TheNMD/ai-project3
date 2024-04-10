@@ -9,20 +9,18 @@ import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+import torch
+import torchvision.transforms as transforms
+import torchvision.datasets as datasets
+from torch.utils.data import random_split, DataLoader
+import torch.nn as nn
+import torch.optim as optim
+import timm
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from memory_profiler import profile
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import torchvision
-import torchvision.transforms as transforms
-import torchvision.datasets as datasets
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, random_split
-from sklearn.metrics import accuracy_score
-import timm
+
 
 # Set ENV to be 'local', 'server' or 'colab'
 ENV = "server".lower()
