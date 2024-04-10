@@ -113,7 +113,7 @@ def load_data(image_size,
   #   file.write('### Test set ###\n')
   #   file.write(f'{count_instances(test_loader)}\n')
   
-  return train_loader, train_size, val_loader, val_size, test_size, test_loader
+  return train_loader, train_size, val_loader, val_size, test_loader, test_size
 
 def count_instances(data_loader):
   label_counter = defaultdict(int)
@@ -157,7 +157,7 @@ if __name__ == '__main__':
     image_size = 224
   batch_size = 32
   
-  train_loader, train_size, val_loader, val_size, test_size, test_loader = load_data(image_size=image_size,
+  train_loader, train_size, val_loader, val_size, test_loader, test_size = load_data(image_size=image_size,
                                                                                      batch_size=batch_size)
   
   # Loss function and optimizer
