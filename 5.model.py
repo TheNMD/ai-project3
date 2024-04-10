@@ -160,8 +160,6 @@ if __name__ == '__main__':
   train_loader, train_size, val_loader, val_size, test_loader, test_size = load_data(image_size=image_size,
                                                                                      batch_size=batch_size)
   
-  print(train_size + val_size + test_size)
-  
   # Loss function and optimizer
   learning_rate = 0.001
   criterion = nn.CrossEntropyLoss()
