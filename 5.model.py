@@ -53,7 +53,7 @@ def load_model(name, type="pretrained"):
 
 def load_data(image_size=256, 
               batch_size=32, 
-              num_workers=16):
+              num_workers=4):
   
   # Preprocessing data
   # 1/ Resize images to fit the image size used when training
