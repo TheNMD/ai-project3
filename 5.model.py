@@ -177,15 +177,16 @@ if __name__ == '__main__':
   
   model = nn.DataParallel(model)
   model.to(device)
-  print(12321312321)
   for epoch in range(epochs):
     epoch_start_time = time.time()
     try:
       # Training phase
       model.train()
       batch = 0
-      # for images, labels in train_loader:
-      #   batch_start_time = time.time()
+      for images, labels in train_loader:
+        batch_start_time = time.time()
+        print(batch_start_time)
+        break
         
       #   # with open('result/currently_training.txt', 'a') as f:
       #   #   f.write(f"Train: Epoch {epoch} | Batch {batch}\n")
