@@ -72,9 +72,7 @@ def load_data(image_size,
   # 2/ Convert to Tensor
   # 3/ Normalize based on ImageNet statistics
   data_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
-                                        transforms.ToTensor(),
-                                        transforms.Normalize(mean=[0.485, 0.456, 0.406], 
-                                                             std=[0.229, 0.224, 0.225])])
+                                        transforms.ToTensor()])
   
   image_dataset = datasets.ImageFolder(root="image/labeled",
                                        transform=data_transforms)
@@ -157,7 +155,7 @@ if __name__ == '__main__':
     image_size = 256
   elif name == "vit":
     image_size = 224
-  batch_size = 128
+  batch_size = 32
   
   train_loader, train_size, val_loader, val_size, test_loader, test_size = load_data(image_size=image_size,
                                                                                      batch_size=batch_size)
