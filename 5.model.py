@@ -220,6 +220,8 @@ if __name__ == '__main__':
             
             batch_end_time = time.time() - batch_start_time
             print(f"Val: Epoch {epoch} | Batch {batch} | {batch_end_time}")
+            with open('result/currently_training.txt', 'a') as f:
+              f.write(f"Val: Epoch {epoch} | Batch {batch} | {batch_end_time}\n")
       
       # Calculate validation accuracy
       val_acc = correct / total
@@ -227,7 +229,9 @@ if __name__ == '__main__':
       epoch_end_time = time.time() - epoch_start_time
       
       # Print epoch statistics
-      print(f'Epoch {epoch + 1}/{epochs} | val_loss: {val_loss} | val_acc: {val_acc} | time: {epoch_end_time}')
+      print(f"Epoch {epoch + 1}/{epochs} | val_loss: {val_loss} | val_acc: {val_acc} | time: {epoch_end_time}")
+      with open('result/currently_training.txt', 'a') as f:
+        f.write(f"Epoch {epoch + 1}/{epochs} | val_loss: {val_loss} | val_acc: {val_acc} | time: {epoch_end_time}\n")
       
       # Save the best model
       if val_acc > best_accuracy:
