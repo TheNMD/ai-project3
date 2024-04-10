@@ -3,21 +3,24 @@ import sys
 import platform
 import time
 import warnings
-from collections import Counter, defaultdict
+from collections import defaultdict
 warnings.filterwarnings('ignore')
 import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+import torch
+import torchvision.transforms as transforms
+import torchvision.datasets as datasets
+from torch.utils.data import random_split, DataLoader
+import torch.nn as nn
+import torch.optim as optim
+import timm
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from memory_profiler import profile
-import torch
-import torchvision
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, random_split
-import timm
+
 
 # Set ENV to be 'local', 'server' or 'colab'
 ENV = "server".lower()
@@ -34,21 +37,30 @@ elif ENV == "colab":
   image_path = "drive/MyDrive/Coding/image"
   result_path = "drive/MyDrive/Coding/result"
 
-def load_model(name, type="pretrained"):
-  if type == "custom":
+def load_model(name, option, checkpoint=False):
+  if checkpoint:
     pass
-  elif type == "pretrained":
-    if name == "vit":
-      pass
-    elif name == "swinv2":
-      if os.path.exists("model/pretrained/swinv2-pretrained.pth"):
-        model = torch.load("model/pretrained/swinv2-pretrained.pth")
-      else:
-        model_name = 'swinv2_tiny_window16_256.ms_in1k'
-        model = timm.create_model(model_name, pretrained=True)
-        torch.save(model, 'model/pretrained/swinv2-pretrained.pth')
-        with open('model/pretrained/swinv2-pretrained_architecture.txt', 'w') as f:
-          f.write(str(model))
+  else:
+    if os.path.exists(f"model/{name}-{option}.pth"):
+      model = torch.load(f"model/{name}-{option}.pth")
+    else:
+      if name == "swinv2":
+        model = timm.create_model('swinv2_base_window16_256.ms_in1k', pretrained=True)
+        # Replace the final classification layer to match the dataset
+        # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain    
+        num_feature = model.head.fc.in_features
+        model.head.fc = nn.Linear(in_features=num_feature, out_features=5) 
+      elif name == "vit":
+        model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
+        # Replace the final classification layer to match the dataset
+        # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+        num_feature = model.head.in_features
+        model.head = nn.Linear(in_features=num_feature, out_features=5)  
+        
+      torch.save(model, f'model/{name}-{option}.pth')
+      with open(f'model/{name}-{option}_architecture.txt', 'w') as f:
+        f.write(str(model))
+          
   return model
 
 def load_data(image_size=256, 
@@ -101,7 +113,7 @@ def load_data(image_size=256,
   #   file.write('### Test set ###\n')
   #   file.write(f'{count_instances(test_loader)}\n')
   
-  return train_loader, val_loader, test_loader
+  return train_loader, train_size, val_loader, val_size, test_size, test_loader
 
 def count_instances(data_loader):
   label_counter = defaultdict(int)
@@ -117,19 +129,100 @@ def count_instances(data_loader):
 if __name__ == '__main__':
   print("Python version: ", sys.version)
   print("Ubuntu version: ", platform.release())
-  print("Torch GPU is available: ", torch.cuda.is_available())
+  if torch.cuda.is_available():
+    device = torch.device("cuda")
+    print("Torch GPU is available")
+  else:
+    device = torch.device("cpu")
+    print("Only Torch CPU is available")
   
   if not os.path.exists("model"):
     os.makedirs("model")
-    os.makedirs("model/pretrained")
-    os.makedirs("model/custom")
      
   if not os.path.exists("result"):
     os.makedirs("result")
     os.makedirs("result/checkpoint")
   
-  # # Load and split data
-  train_loader, val_loader, test_loader = load_data()
-  
   # Load model
-  model = load_model("swinv2", "pretrained")
+  name = "swinv2"
+  option = "pretrained"
+  checkpoint = False
+  
+  model = load_model(name, option, checkpoint)
+  
+  # Load and split data
+  if name == "swinv2":
+    image_size = 256
+  elif name == "vit":
+    image_size = 224
+  batch_size = 32
+  
+  train_loader, train_size, val_loader, val_size, test_size, test_loader = load_data(image_size=image_size,
+                                                                                     batch_size=batch_size)
+  
+  # Loss function and optimizer
+  learning_rate = 0.001
+  criterion = nn.CrossEntropyLoss()
+  optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+  
+  # # Training loop
+  # best_accuracy = 0.0
+  # epochs = 10
+  
+  # model = model.to(device)
+  # for epoch in range(epochs):
+  #   start_time = time.time()
+  #   try:
+  #     # Training phase
+  #     model.train()
+  #     for inputs, labels in train_loader:
+  #       inputs, labels = inputs.to(device), labels.to(device)
+  #       optimizer.zero_grad()
+  #       outputs = model(inputs)
+  #       loss = criterion(outputs, labels)
+  #       loss.backward()
+  #       optimizer.step()
+      
+  #     # Validation phase
+  #     model.eval()
+  #     val_loss = 0.0
+  #     correct = 0
+  #     total = 0
+  #     with torch.no_grad():
+  #       for inputs, labels in val_loader:
+  #           inputs, labels = inputs.to(device), labels.to(device)
+  #           outputs = model(inputs)
+  #           loss = criterion(outputs, labels)
+  #           val_loss += loss.item() * inputs.size(0)
+  #           _, predicted = torch.max(outputs, 1)
+  #           total += labels.size(0)
+  #           correct += (predicted == labels).sum().item()
+      
+  #     # Calculate validation accuracy
+  #     val_acc = correct / total
+  #     val_loss /= val_size
+  #     end_time = time.time() - start_time
+      
+  #     # Print epoch statistics
+  #     print(f'Epoch {epoch + 1}/{epochs} | val_loss: {val_loss} | val_acc: {val_acc} | time: {end_time}')
+      
+  #     # Save the best model
+  #     if val_acc > best_accuracy:
+  #         best_accuracy = val_acc
+  #         torch.save(model, f'result/checkpoint/{name}-{option}.pth')
+          
+  #     # Save training results
+  #     training_record = {'epoch' : [epoch], 'val_loss' : [val_loss], 'val_acc': [val_acc], 'time': [end_time]}
+  #     if not os.path.exists(f"result/{name}-{option}_training.csv") or checkpoint == False:
+  #       training_result = pd.DataFrame(training_record)
+  #     else:
+  #       training_result = pd.read_csv(f"result/{name}-{option}_training.csv")
+  #       training_result = training_result.append(training_record, ignore_index=True)
+  #     training_result.to_csv(f"result/{name}-{option}_training.csv", index=False)
+      
+  #   except Exception as e:
+  #       print(e)
+  #       logging.error(e, exc_info=True)
+  #       break
+
+  
