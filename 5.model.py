@@ -144,7 +144,7 @@ if __name__ == '__main__':
     os.makedirs("result/checkpoint")
   
   # Load model
-  name = "swinv2"
+  name = "vit"
   option = "pretrained"
   checkpoint = False
   
@@ -185,6 +185,7 @@ if __name__ == '__main__':
         batch_start_time = time.time()
         
         images, labels = images.to(device), labels.to(device)
+        print(123456)
         outputs = model(images)
         loss = criterion(outputs, labels)
         loss.backward()
@@ -195,49 +196,49 @@ if __name__ == '__main__':
         batch_end_time = time.time() - batch_start_time
         print(f"Train: Epoch {epoch} | Batch {batch} | {batch_end_time}")
       
-      # # Validation phase
-      # model.eval()
-      # val_loss = 0.0
-      # correct = 0
-      # total = 0
-      # batch = 0
-      # with torch.no_grad():
-      #   for images, labels in val_loader:
-      #       batch_start_time = time.time()
+      # Validation phase
+      model.eval()
+      val_loss = 0.0
+      correct = 0
+      total = 0
+      batch = 0
+      with torch.no_grad():
+        for images, labels in val_loader:
+            batch_start_time = time.time()
             
-      #       images, labels = images.to(device), labels.to(device)
-      #       outputs = model(images)
-      #       loss = criterion(outputs, labels)
-      #       val_loss += loss.item()
-      #       _, predicted = torch.max(outputs, 1)
-      #       total += labels.size(0)
-      #       correct += (predicted == labels).sum().item()
-      #       batch += 1
+            images, labels = images.to(device), labels.to(device)
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+            val_loss += loss.item()
+            _, predicted = torch.max(outputs, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+            batch += 1
             
-      #       batch_end_time = time.time() - batch_start_time
-      #       print(f"Val: Epoch {epoch} | Batch {batch} | {batch_end_time}")
+            batch_end_time = time.time() - batch_start_time
+            print(f"Val: Epoch {epoch} | Batch {batch} | {batch_end_time}")
       
-      # # Calculate validation accuracy
-      # val_acc = correct / total
-      # val_loss /= val_size
-      # epoch_end_time = time.time() - epoch_start_time
+      # Calculate validation accuracy
+      val_acc = correct / total
+      val_loss /= val_size
+      epoch_end_time = time.time() - epoch_start_time
       
-      # # Print epoch statistics
-      # print(f'Epoch {epoch + 1}/{epochs} | val_loss: {val_loss} | val_acc: {val_acc} | time: {epoch_end_time}')
+      # Print epoch statistics
+      print(f'Epoch {epoch + 1}/{epochs} | val_loss: {val_loss} | val_acc: {val_acc} | time: {epoch_end_time}')
       
-      # # Save the best model
-      # if val_acc > best_accuracy:
-      #     best_accuracy = val_acc
-      #     torch.save(model, f'result/checkpoint/{name}-{option}.pth')
+      # Save the best model
+      if val_acc > best_accuracy:
+          best_accuracy = val_acc
+          torch.save(model, f'result/checkpoint/{name}-{option}.pth')
           
-      # # Save training results
-      # training_record = {'epoch' : [epoch], 'val_loss' : [val_loss], 'val_acc': [val_acc], 'time': [epoch_end_time]}
-      # if not os.path.exists(f"result/{name}-{option}_training.csv") or checkpoint == False:
-      #   training_result = pd.DataFrame(training_record)
-      # else:
-      #   training_result = pd.read_csv(f"result/{name}-{option}_training.csv")
-      #   training_result = training_result.append(training_record, ignore_index=True)
-      # training_result.to_csv(f"result/{name}-{option}_training.csv", index=False)
+      # Save training results
+      training_record = {'epoch' : [epoch], 'val_loss' : [val_loss], 'val_acc': [val_acc], 'time': [epoch_end_time]}
+      if not os.path.exists(f"result/{name}-{option}_training.csv") or checkpoint == False:
+        training_result = pd.DataFrame(training_record)
+      else:
+        training_result = pd.read_csv(f"result/{name}-{option}_training.csv")
+        training_result = training_result.append(training_record, ignore_index=True)
+      training_result.to_csv(f"result/{name}-{option}_training.csv", index=False)
       
     except Exception as e:
         print(e)
