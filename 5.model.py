@@ -182,17 +182,15 @@ if __name__ == '__main__':
     try:
       # Training phase
       model.train()
-      batch = 0
-      for images, labels in train_loader:
+      batch_counter = 0
+      for batch in train_loader:
         batch_start_time = time.time()
+        
+        images, labels = batch
+        
         print(batch_start_time)
         break
         
-      #   # with open('result/currently_training.txt', 'a') as f:
-      #   #   f.write(f"Train: Epoch {epoch} | Batch {batch}\n")
-      #   # images, labels = images.to(device), labels.to(device)
-      #   # with open('result/currently_training.txt', 'a') as f:
-      #   #   f.write(f"Train: Epoch {epoch} | Batch {batch}\n")
       #   outputs = model(images)
       #   loss = criterion(outputs, labels)
       #   loss.backward()
