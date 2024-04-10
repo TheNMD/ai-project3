@@ -127,7 +127,7 @@ def load_model(name, option, checkpoint=False):
 
 def load_data(image_size, 
               batch_size, 
-              num_workers=16):
+              num_workers=20):
   
   # Preprocessing data
   # 1/ Resize images to fit the image size used when training
@@ -218,6 +218,6 @@ if __name__ == '__main__':
                        strategy="ddp",
                        max_epochs=10,)
 
-  trainer.fit(model, train_loader, val_loader, test_loader)
+  trainer.fit(module, train_loader, val_loader, test_loader)
 
   
