@@ -187,22 +187,24 @@ if __name__ == '__main__':
         batch_start_time = time.time()
         
         images, labels = batch
+        images, labels = images.to(device), labels.to(device)
         
         print(batch_start_time)
-        break
         
-      #   outputs = model(images)
-      #   loss = criterion(outputs, labels)
-      #   loss.backward()
-      #   optimizer.step()
-      #   optimizer.zero_grad()
-      #   batch += 1
+        # outputs = model(images)
+        # loss = criterion(outputs, labels)
+        # loss.backward()
+        # optimizer.step()
+        # optimizer.zero_grad()
+        # batch_counter += 1
+        
+        break
         
       #   batch_end_time = time.time() - batch_start_time
         
       #   print(f"Train: Epoch {epoch} | Batch {batch} | {batch_end_time}")
       #   with open('result/currently_training.txt', 'a') as f:
-      #     f.write(f"Train: Epoch {epoch} | Batch {batch} | {batch_end_time}\n")
+      #     f.write(f"Train: Epoch {epoch} | Batch {batch_counter} | {batch_end_time}\n")
       
       # # Validation phase
       # model.eval()
