@@ -160,6 +160,10 @@ if __name__ == '__main__':
   train_loader, train_size, val_loader, val_size, test_loader, test_size = load_data(image_size=image_size,
                                                                                      batch_size=batch_size)
   
+  print(f"Train size: {train_size}")
+  print(f"Train size: {val_size}")
+  print(f"Train size: {test_size}")
+  
   # Loss function and optimizer
   learning_rate = 0.001
   criterion = nn.CrossEntropyLoss()
@@ -171,40 +175,54 @@ if __name__ == '__main__':
   
   model = model.to(device)
   for epoch in range(epochs):
-    start_time = time.time()
+    epoch_start_time = time.time()
     try:
       # Training phase
       model.train()
-      for inputs, labels in train_loader:
-        inputs, labels = inputs.to(device), labels.to(device)
+      batch = 0
+      for images, labels in train_loader:
+        batch_start_time = time.time()
+        
+        images, labels = images.to(device), labels.to(device)
         optimizer.zero_grad()
-        outputs = model(inputs)
+        outputs = model(images)
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
+        batch += 1
+        
+        batch_end_time = time.time() - batch_start_time
+        print(f"Train: Epoch {epoch} | Batch {batch} | {batch_end_time}")
       
       # Validation phase
       model.eval()
       val_loss = 0.0
       correct = 0
       total = 0
+      batch = 0
       with torch.no_grad():
-        for inputs, labels in val_loader:
-            inputs, labels = inputs.to(device), labels.to(device)
-            outputs = model(inputs)
+        for images, labels in val_loader:
+            batch_start_time = time.time()
+            
+            images, labels = images.to(device), labels.to(device)
+            images = model(images)
             loss = criterion(outputs, labels)
-            val_loss += loss.item() * inputs.size(0)
+            val_loss += loss.item() * images.size(0)
             _, predicted = torch.max(outputs, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
+            batch += 1
+            
+            batch_end_time = time.time() - batch_start_time
+            print(f"Val: Epoch {epoch} | Batch {batch} | {batch_end_time}")
       
       # Calculate validation accuracy
       val_acc = correct / total
       val_loss /= val_size
-      end_time = time.time() - start_time
+      epoch_end_time = time.time() - epoch_start_time
       
       # Print epoch statistics
-      print(f'Epoch {epoch + 1}/{epochs} | val_loss: {val_loss} | val_acc: {val_acc} | time: {end_time}')
+      print(f'Epoch {epoch + 1}/{epochs} | val_loss: {val_loss} | val_acc: {val_acc} | time: {epoch_end_time}')
       
       # Save the best model
       if val_acc > best_accuracy:
@@ -212,7 +230,7 @@ if __name__ == '__main__':
           torch.save(model, f'result/checkpoint/{name}-{option}.pth')
           
       # Save training results
-      training_record = {'epoch' : [epoch], 'val_loss' : [val_loss], 'val_acc': [val_acc], 'time': [end_time]}
+      training_record = {'epoch' : [epoch], 'val_loss' : [val_loss], 'val_acc': [val_acc], 'time': [epoch_end_time]}
       if not os.path.exists(f"result/{name}-{option}_training.csv") or checkpoint == False:
         training_result = pd.DataFrame(training_record)
       else:
