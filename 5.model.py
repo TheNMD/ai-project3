@@ -142,6 +142,8 @@ if __name__ == '__main__':
   if not os.path.exists("result"):
     os.makedirs("result")
     os.makedirs("result/checkpoint")
+    
+  with open('result/currently_training.txt', 'w') as f: pass
   
   # Load model
   name = "vit"
@@ -184,9 +186,7 @@ if __name__ == '__main__':
       for images, labels in train_loader:
         batch_start_time = time.time()
         
-        print(123456)
         images, labels = images.to(device), labels.to(device)
-        print(123456)
         outputs = model(images)
         loss = criterion(outputs, labels)
         loss.backward()
@@ -196,6 +196,8 @@ if __name__ == '__main__':
         
         batch_end_time = time.time() - batch_start_time
         print(f"Train: Epoch {epoch} | Batch {batch} | {batch_end_time}")
+        with open('result/currently_training.txt', 'a') as f:
+          f.write(f"Train: Epoch {epoch} | Batch {batch} | {batch_end_time}\n")
       
       # Validation phase
       model.eval()
