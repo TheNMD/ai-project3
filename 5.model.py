@@ -188,11 +188,10 @@ if __name__ == '__main__':
         
         images, labels = batch
         images, labels = images.to(device), labels.to(device)
+        outputs = model(images)
+        loss = criterion(outputs, labels)
         
-        print(batch_start_time)
-        
-        # outputs = model(images)
-        # loss = criterion(outputs, labels)
+        print(123123)
         # loss.backward()
         # optimizer.step()
         # optimizer.zero_grad()
