@@ -133,7 +133,7 @@ if __name__ == '__main__':
     print("Torch GPU is available")
   else:
     device = torch.device("cpu")
-    print("Torch CPU is available")
+    print("Only Torch CPU is available")
   
   if not os.path.exists("model"):
     os.makedirs("model")
