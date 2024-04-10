@@ -110,7 +110,7 @@ def load_data(image_size=256,
   #   file.write('### Test set ###\n')
   #   file.write(f'{count_instances(test_loader)}\n')
   
-  return train_loader, val_loader, test_loader
+  return train_loader, train_size, val_loader, val_size, test_size, test_loader
 
 def count_instances(data_loader):
   label_counter = defaultdict(int)
@@ -135,8 +135,6 @@ if __name__ == '__main__':
   
   if not os.path.exists("model"):
     os.makedirs("model")
-    os.makedirs("model/pretrained")
-    os.makedirs("model/custom")
      
   if not os.path.exists("result"):
     os.makedirs("result")
@@ -144,7 +142,7 @@ if __name__ == '__main__':
   
   # Load and split data
   batch_size = 32
-  train_loader, val_loader, test_loader = load_data(batch_size=batch_size)
+  train_loader, train_size, val_loader, val_size, test_size, test_loader = load_data(batch_size=batch_size)
   
   # Load model
   name = "swinv2"
@@ -193,7 +191,7 @@ if __name__ == '__main__':
       
       # Calculate validation accuracy
       val_acc = correct / total
-      val_loss /= (len(val_loader) * batch_size)
+      val_loss /= val_size
       end_time = time.time() - start_time
       
       # Print epoch statistics
