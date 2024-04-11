@@ -3,7 +3,6 @@ import shutil
 import zipfile
 import sys
 import platform
-from collections import Counter
 import warnings
 warnings.filterwarnings('ignore')
 import logging
@@ -47,12 +46,13 @@ elif ENV == "colab":
   result_path = "drive/MyDrive/Coding/result"
 
 class FinetuneModule(pl.LightningModule):
-  def __init__(self, model, loader, learning_rate):
+  def __init__(self, model, loader, optimizer, learning_rate):
     super().__init__()
     self.model = model
     self.train_loader = loader[0]
     self.val_loader = loader[1]
     self.test_loader = loader[2]
+    self.optimizer = optimizer
     self.learning_rate = learning_rate
 
   def forward(self, x):
@@ -92,7 +92,11 @@ class FinetuneModule(pl.LightningModule):
       return loss
     
   def configure_optimizers(self):
-    optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
+    if self.optimizer == "adam":
+      optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
+    elif self.optimizer == "sgd":
+      optimizer = torch.optim.SGD(self.model.parameters(), lr=self.learning_rate, momentum=0.9, weight_decay=0)
+    # TODO Add scheduler to addjust learning_rate
     return optimizer
     
   def train_dataloader(self):
@@ -173,19 +177,21 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "vit" # vit, swinv2, effnetv2, convnext
+  model_name = "vit"
   option = "pretrained"
   checkpoint = False
 
   ## For optimizer
-  learning_rate = 1e-4
+  learning_rate = 1e-3
+  optimizer = "adam"
 
   ## For callbacks
   patience = 3
-  min_delta = 0.001
+  min_delta = 1e-3
 
   ## For training loop
-  batch_size = 64
+  # batch_size = 16
+  batch_size = 8
   num_epochs = 10
   
   # Load model
@@ -206,7 +212,7 @@ if __name__ == '__main__':
     test_loader  = load_data(option="test", image_size=480, batch_size=batch_size, shuffle=True)
 
   # Make Lightning module
-  module = FinetuneModule(model, [train_loader, val_loader, test_loader], learning_rate)
+  module = FinetuneModule(model, [train_loader, val_loader, test_loader], optimizer, learning_rate)
   if checkpoint:
     module = module.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{option}.ckpt")
   
@@ -239,15 +245,16 @@ if __name__ == '__main__':
     accelerator = 'cpu'
     devices = 'auto'
     strategy = 'auto'
-  
+
   trainer = pl.Trainer(accelerator=accelerator, 
                       devices=devices, 
                       strategy=strategy,
                       max_epochs=num_epochs,
                       logger=logger,
                       callbacks=[early_stop_callback, checkpoint_callback],
-                      log_every_n_steps=100,   # log train_loss and train_acc every 100 batches
-                      val_check_interval=1.0,) # check val_set after every train epoch
+                      log_every_n_steps=50,   # log train_loss and train_acc every 100 batches
+                      val_check_interval=1.0, # check val_set after every train epoch
+                      precision=16)           # use mixed precision to speed up training
 
   # # Training loop
   # trainer.fit(module)
