@@ -47,13 +47,13 @@ elif ENV == "colab":
   result_path = "drive/MyDrive/Coding/result"
 
 class FinetuneModule(pl.LightningModule):
-  def __init__(self, model, loader, learning_rate=1e-4):
+  def __init__(self, model, loader, learning_rate):
     super().__init__()
     self.model = model
     self.train_loader = loader[0]
     self.val_loader = loader[1]
     self.test_loader = loader[2]
-    self.lr = learning_rate
+    self.learning_rate = learning_rate
 
   def forward(self, x):
     return self.model(x)
@@ -92,7 +92,7 @@ class FinetuneModule(pl.LightningModule):
       return loss
     
   def configure_optimizers(self):
-    optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
+    optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
     return optimizer
     
   def train_dataloader(self):
@@ -181,11 +181,11 @@ if __name__ == '__main__':
   checkpoint = False
 
   ## For optimizer
-  learning_rate = 0.001
+  learning_rate = 1e-4
 
   ## For callbacks
-  patience=3
-  min_delta=0.001
+  patience = 3
+  min_delta = 0.001
 
   ## For training loop
   batch_size = 64
