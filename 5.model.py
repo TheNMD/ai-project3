@@ -104,37 +104,34 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
       return self.test_loader
 
-def load_model(name, option, checkpoint=False):
-  if checkpoint:
-    pass
+def load_model(name, option):
+  if os.path.exists(f"{model_path}/{name}-{option}.pth"):
+    model = torch.load(f"{model_path}/{name}-{option}.pth")
   else:
-    if os.path.exists(f"{model_path}/{name}-{option}.pth"):
-      model = torch.load(f"{model_path}/{name}-{option}.pth")
-    else:
-      if name == "vit":
-        model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
-        # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
-        num_feature = model.head.in_features
-        model.head = nn.Linear(in_features=num_feature, out_features=5)  
-      elif name == "swinv2":
-        model = timm.create_model('swinv2_base_window16_256.ms_in1k', pretrained=True)
-        # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain    
-        num_feature = model.head.fc.in_features
-        model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-      elif name == "effnetv2":
-        model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
-        # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain    
-        num_feature = model.classifier.in_features
-        model.classifier = nn.Linear(in_features=num_feature, out_features=5)
-      elif name == "convnext":
-        model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
-        # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain    
-        num_feature = model.head.fc.in_features
-        model.head.fc = nn.Linear(in_features=num_feature, out_features=5)  
-        
-      torch.save(model, f'{model_path}/{name}-{option}.pth')
-      with open(f'{model_path}/{name}-{option}_architecture.txt', 'w') as f:
-        f.write(str(model))
+    if name == "vit":
+      model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
+      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+      num_feature = model.head.in_features
+      model.head = nn.Linear(in_features=num_feature, out_features=5)  
+    elif name == "swinv2":
+      model = timm.create_model('swinv2_base_window16_256.ms_in1k', pretrained=True)
+      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain    
+      num_feature = model.head.fc.in_features
+      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    elif name == "effnetv2":
+      model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
+      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain    
+      num_feature = model.classifier.in_features
+      model.classifier = nn.Linear(in_features=num_feature, out_features=5)
+    elif name == "convnext":
+      model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
+      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain    
+      num_feature = model.head.fc.in_features
+      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)  
+      
+    torch.save(model, f'{model_path}/{name}-{option}.pth')
+    with open(f'{model_path}/{name}-{option}_architecture.txt', 'w') as f:
+      f.write(str(model))
           
   return model
 
@@ -192,7 +189,7 @@ if __name__ == '__main__':
   num_epochs = 10
   
   # Load model
-  model = load_model(model_name, option, checkpoint)
+  model = load_model(model_name, option)
 
   # Load data
   if model_name == "vit" or model_name == "convnext":
@@ -210,9 +207,11 @@ if __name__ == '__main__':
 
   # Make Lightning module
   module = FinetuneModule(model, [train_loader, val_loader, test_loader], learning_rate)
+  if checkpoint:
+    module = module.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{option}.ckpt")
   
   # Logger
-  logger = CSVLogger(save_dir=f'{result_path}', name=f'{model_name}-{option}_results')
+  logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{option}_results')
 
   # Callbacks
   early_stop_callback = EarlyStopping(monitor='val_acc',
