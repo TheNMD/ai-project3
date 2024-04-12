@@ -168,6 +168,37 @@ def load_data(option, image_size, batch_size, shuffle, num_workers=20):
   
   return data_loader
 
+def plot_results(model_name, model_option):
+  log_results = pd.read_csv(f"{result_path}/checkpoint/{model_name}-{model_option}/version_0/metrics.csv")
+  train_results = log_results[['epoch', 'step', 'train_loss', 'train_acc']].dropna()
+  val_results = log_results[['epoch', 'step', 'val_loss', 'val_acc']].dropna()
+  test_results = log_results[['epoch', 'step', 'test_loss', 'test_acc']].dropna()
+
+  # Plotting loss
+  plt.plot(train_results['step'], train_results['train_loss'], label='train_loss')
+  plt.plot(val_results['step'], val_results['val_loss'], label='val_loss')
+  plt.legend()
+  plt.xlabel('step')
+  plt.ylabel('value')
+  plt.title(f'Loss of {model_name}-{model_option}')
+  plt.legend()
+  plt.savefig(f'{result_path}/checkpoint/{model_name}-{model_option}/graph_loss.png')
+
+  plt.clf()
+
+  # Plotting acc
+  plt.plot(train_results['step'], train_results['train_acc'], label='train_acc')
+  plt.plot(val_results['step'], val_results['val_acc'], label='val_acc')
+  plt.legend()
+  plt.xlabel('step')
+  plt.ylabel('value')
+  plt.title(f'Accuracy of {model_name}-{model_option}')
+  plt.legend()
+  plt.savefig(f'{result_path}/checkpoint/{model_name}-{model_option}/graph_acc.png')
+
+  print(f"Testing loss: {test_results['test_loss'].tolist()[0]}")
+  print(f"Testing acc: {test_results['test_acc'].tolist()[0]}")
+
 if __name__ == '__main__':
   print("Python version: ", sys.version)
   print("Ubuntu version: ", platform.release())
@@ -269,5 +300,8 @@ if __name__ == '__main__':
   trainer.test()
   end_time = time.time()
   print(f"Evaluation time: {end_time - start_time} seconds")
+  
+  # Plot loss and accuracy
+  plot_results(model_name, model_option)
 
   
