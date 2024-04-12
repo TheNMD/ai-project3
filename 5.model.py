@@ -222,6 +222,7 @@ if __name__ == '__main__':
   model_name = "effnetv2-m" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s | convnext-b
   model_option = "pretrained"
   checkpoint = False
+  print(f"Model: {model_name}-{model_option}")
 
   ## For optimizer
   optimizer_name = "adam"
@@ -286,8 +287,8 @@ if __name__ == '__main__':
                        logger=logger,
                        callbacks=[early_stop_callback, checkpoint_callback],
                        val_check_interval=epoch_ratio,
-                       log_every_n_steps=50,    # log train_loss and train_acc every 50 batches
-                       precision=16)            # use mixed precision to speed up training
+                       log_every_n_steps=200,    # log train_loss and train_acc every 200 batches
+                       precision=16)             # use mixed precision to speed up training
 
   # Training loop
   start_time = time.time()
