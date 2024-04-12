@@ -191,7 +191,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "vit"
+  model_name = "swinv2"
   model_option = "pretrained"
   checkpoint = False
 
