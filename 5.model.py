@@ -47,97 +47,110 @@ elif ENV == "colab":
   result_path = "drive/MyDrive/Coding/result"
 
 class FinetuneModule(pl.LightningModule):
-  def __init__(self, model, loader, optimizer, learning_rate):
+  def __init__(self, model_settings, image_settings, optimizer_settings, loop_settings):
     super().__init__()
-    self.model = model
-    self.train_loader = loader[0]
-    self.val_loader = loader[1]
-    self.test_loader = loader[2]
-    self.optimizer = optimizer
-    self.learning_rate = learning_rate
+    self.save_hyperparameters()
+
+    self.model_name = model_settings[0]
+    self.model_option = model_settings[1]
+
+    self.train_size = image_settings[0]
+    self.test_size = image_settings[1]
+
+    self.optimizer_name = optimizer_settings[0]
+    self.learning_rate = optimizer_settings[1]
+
+    self.batch_size = loop_settings[0]
+
+  def setup(self, stage=None):
+    self.model = load_model(self.model_name, self.model_option)
+
+    self.train_loader = load_data(option="train", image_size=self.train_size, batch_size=self.batch_size, shuffle=True)
+    self.val_loader   = load_data(option="val", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
+    self.test_loader  = load_data(option="test", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
 
   def forward(self, x):
     return self.model(x)
 
   def common_step(self, batch, batch_idx):
-      x, y = batch
-      logits = self(x)
-
-      criterion = nn.CrossEntropyLoss()
-      loss = criterion(logits, y)
-      predictions = logits.argmax(-1)
-      correct = (predictions == y).sum().item()
-      accuracy = correct / x.shape[0]
-
-      return loss, accuracy
+    x, y = batch
+    logits = self(x)
+    criterion = nn.CrossEntropyLoss()
+    loss = criterion(logits, y)
+    predictions = logits.argmax(-1)
+    correct = (predictions == y).sum().item()
+    accuracy = correct / x.shape[0]
+    return loss, accuracy
 
   def training_step(self, batch, batch_idx):
-      train_loss, train_acc = self.common_step(batch, batch_idx)
+    self.start_epoch_time = time.time()
+    train_loss, train_acc = self.common_step(batch, batch_idx)
+    self.log("train_loss", train_loss)
+    self.log("train_acc", train_acc)
+    return train_loss
 
-      self.log("train_loss", train_loss)
-      self.log("train_acc", train_acc)
+  def on_train_epoch_end(self):
+    epoch_time = time.time() - self.start_epoch_time
+    self.log("train_epoch_time", epoch_time, on_epoch=True) 
 
-      return train_loss
-  
   def validation_step(self, batch, batch_idx):
-      val_loss, val_acc = self.common_step(batch, batch_idx)   
-
-      self.log("val_loss", val_loss, on_epoch=True)
-      self.log("val_acc", val_acc, on_epoch=True)
-
-      return val_loss
+    val_loss, val_acc = self.common_step(batch, batch_idx)
+    self.log("val_loss", val_loss, on_epoch=True)
+    self.log("val_acc", val_acc, on_epoch=True)
+    return val_loss
 
   def test_step(self, batch, batch_idx):
-      loss, accuracy = self.common_step(batch, batch_idx)     
+    test_loss, test_acc = self.common_step(batch, batch_idx)
+    self.log("test_loss", test_loss)
+    self.log("test_acc", test_acc)
+    return test_loss
 
-      return loss
-    
   def configure_optimizers(self):
-    if self.optimizer == "adam":
+    if self.optimizer_name == "adam":
       optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
-    elif self.optimizer == "sgd":
+    elif self.optimizer_name == "sgd":
       optimizer = torch.optim.SGD(self.model.parameters(), lr=self.learning_rate, momentum=0.9, weight_decay=0)
-    # TODO Add scheduler to addjust learning_rate
+    # TODO Add scheduler to adjust learning_rate
     return optimizer
-    
+
   def train_dataloader(self):
-      return self.train_loader
+    return self.train_loader
 
   def val_dataloader(self):
-      return self.val_loader
+    return self.val_loader
 
   def test_dataloader(self):
-      return self.test_loader
+    return self.test_loader
 
-def load_model(name, option):
-  if os.path.exists(f"{model_path}/{name}-{option}.pth"):
-    model = torch.load(f"{model_path}/{name}-{option}.pth")
+def load_model(model_name, model_option):
+  if os.path.exists(f"{model_path}/{model_name}-{model_option}.pth"):
+    model = torch.load(f"{model_path}/{model_name}-{model_option}.pth")
   else:
-    if name == "vit":
+    if model_name == "vit":
       model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
       # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
       num_feature = model.head.in_features
-      model.head = nn.Linear(in_features=num_feature, out_features=5)  
-    elif name == "swinv2":
+      model.head = nn.Linear(in_features=num_feature, out_features=5)
+    elif model_name == "swinv2":
       model = timm.create_model('swinv2_base_window16_256.ms_in1k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain    
+      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
       num_feature = model.head.fc.in_features
       model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    elif name == "effnetv2":
+    elif model_name == "effnetv2":
       model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain    
+      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
       num_feature = model.classifier.in_features
       model.classifier = nn.Linear(in_features=num_feature, out_features=5)
-    elif name == "convnext":
+    elif model_name == "convnext":
       model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain    
+      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
       num_feature = model.head.fc.in_features
-      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)  
-      
-    torch.save(model, f'{model_path}/{name}-{option}.pth')
-    with open(f'{model_path}/{name}-{option}_architecture.txt', 'w') as f:
+      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+
+    torch.save(model, f'{model_path}/{model_name}-{model_option}.pth')
+    with open(f'{model_path}/{model_name}-{model_option}_architecture.txt', 'w') as f:
       f.write(str(model))
-          
+
   return model
 
 def load_data(option, image_size, batch_size, shuffle, num_workers=20):
@@ -179,12 +192,12 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   model_name = "vit"
-  option = "pretrained"
+  model_option = "pretrained"
   checkpoint = False
 
   ## For optimizer
+  optimizer_name = "adam"
   learning_rate = 1e-4
-  optimizer = "adam"
 
   ## For callbacks
   patience = 5
@@ -195,30 +208,27 @@ if __name__ == '__main__':
   num_epochs = 20
   epoch_ratio = 0.5 # check val every percent of an epoch
   
-  # Load model
-  model = load_model(model_name, option)
-
-  # Load data
+  # Set image sizes
   if model_name == "vit" or model_name == "convnext":
-    train_loader = load_data(option="train", image_size=224, batch_size=batch_size, shuffle=True)
-    val_loader   = load_data(option="val", image_size=224, batch_size=batch_size, shuffle=True)
-    test_loader  = load_data(option="test", image_size=224, batch_size=batch_size, shuffle=True)
+    train_size, test_size = 224, 224
   elif model_name == "swinv2":
-    train_loader = load_data(option="train", image_size=256, batch_size=batch_size, shuffle=True)
-    val_loader   = load_data(option="val", image_size=256, batch_size=batch_size, shuffle=True)
-    test_loader  = load_data(option="test", image_size=256, batch_size=batch_size, shuffle=True)
+    train_size, test_size = 256, 256
   elif model_name == "effnetv2":
-    train_loader = load_data(option="train", image_size=384, batch_size=batch_size, shuffle=True)
-    val_loader   = load_data(option="val", image_size=480, batch_size=batch_size, shuffle=True)
-    test_loader  = load_data(option="test", image_size=480, batch_size=batch_size, shuffle=True)
+    train_size, test_size = 384, 480
 
   # Make Lightning module
-  module = FinetuneModule(model, [train_loader, val_loader, test_loader], optimizer, learning_rate)
+  model_settings = [model_name, model_option]
+  image_settings = [train_size, test_size]
+  optimizer_settings = [optimizer_name, learning_rate]
+  loop_settings = [batch_size]
+
   if checkpoint:
-    module = module.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{option}/best_model.ckpt")
+    module = FinetuneModule.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{model_option}/best_model.ckpt")
+  else:
+    module = FinetuneModule(model_settings, image_settings, optimizer_settings, loop_settings)
   
   # Logger
-  logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{option}')
+  logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{model_option}')
 
   # Callbacks
   early_stop_callback = EarlyStopping(monitor='val_acc',
@@ -231,7 +241,7 @@ if __name__ == '__main__':
                                         mode='max',
                                         save_top_k=1,
                                         filename='best_model',
-                                        dirpath=f'{result_path}/checkpoint/{model_name}-{option}')
+                                        dirpath=f'{result_path}/checkpoint/{model_name}-{model_option}')
   
   # Combine all elements
   if num_gpus > 1:
