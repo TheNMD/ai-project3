@@ -20,7 +20,7 @@ docker logs -f dht-cont
 ## Copy from host to container
 docker cp 1.gen_meta.py dht-cont:/app
 ## Copy from container to host
-docker cp dht-cont:/app/result .
+docker cp dht-cont:/app/result/checkpoint/. result/checkpoint
 ## Stop container
 docker stop dht-cont
 ## Remove container

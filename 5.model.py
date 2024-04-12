@@ -181,7 +181,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "convnext-t" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-t
+  model_name = "vit-b" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-t
   model_option = "pretrained"
   checkpoint = False
 
@@ -195,7 +195,7 @@ if __name__ == '__main__':
 
   ## For training loop
   batch_size = 32
-  num_epochs = 2
+  num_epochs = 20
   epoch_ratio = 0.5 # check val every percent of an epoch
   
   # Set image sizes
