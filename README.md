@@ -6,6 +6,7 @@ Code: cd /data/DanHoangThu
 ## Create image
 docker build -t dht-image-base -f Dockerfile_base .
 docker build -t dht-image -f Dockerfile .
+docker build -t dht-image -f Dockerfile_model .
 ## Run image (Mount NhaBe and Image folders from host to container)
 docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image --name dht-cont dht-image
 docker run --shm-size=32g --gpus '"device=0,1"' --name dht-cont dht-image
