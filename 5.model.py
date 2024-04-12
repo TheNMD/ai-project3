@@ -17,8 +17,8 @@ from torchvision import datasets, transforms
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import CSVLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
-
 import timm
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -125,11 +125,6 @@ def load_model(model_name, model_option):
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
     train_size, test_size = 256, 256
-  elif model_name == "swinv2-b":
-    model = timm.create_model('swinv2_base_window12to24_192to384.ms_in22k_ft_in1k', pretrained=True)
-    num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 384, 384
   elif model_name == "effnetv2-s":
     model = timm.create_model('tf_efficientnetv2_s.in21k_ft_in1k', pretrained=True)
     num_feature = model.classifier.in_features
@@ -140,12 +135,16 @@ def load_model(model_name, model_option):
     num_feature = model.classifier.in_features
     model.classifier = nn.Linear(in_features=num_feature, out_features=5)
     train_size, test_size = 384, 480
-  elif model_name == "convnext-t":
+  elif model_name == "convnext-s":
     model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
-    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
     train_size, test_size = 224, 224
+  elif model_name == "convnext-b":
+    model = timm.create_model('convnext_base.fb_in22k_ft_in1k', pretrained=True)
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 288
 
   if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
@@ -189,7 +188,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "swinv2-t" # vit-b | vit-l | swinv2-t| swinv2-b | effnetv2-s | effnetv2-m | convnext-t
+  model_name = "convnext-b" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s | convnext-b
   model_option = "pretrained"
   checkpoint = False
 
