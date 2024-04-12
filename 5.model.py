@@ -181,7 +181,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "convnext-t" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-t
+  model_name = "vit-l" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-t
   model_option = "pretrained"
   checkpoint = False
 
@@ -241,7 +241,7 @@ if __name__ == '__main__':
   if num_gpus > 1:
     accelerator = 'gpu'
     devices = num_gpus
-    strategy = 'auto'
+    strategy = 'ddp'
   elif num_gpus == 1:
     accelerator = 'gpu'
     devices = 1
