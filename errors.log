@@ -1,8 +1,0 @@
-2024-04-10 23:29:07,781 - INFO - GPU available: True (cuda), used: True
-2024-04-10 23:29:08,038 - INFO - TPU available: False, using: 0 TPU cores
-2024-04-10 23:29:08,038 - INFO - IPU available: False, using: 0 IPUs
-2024-04-10 23:29:08,039 - INFO - HPU available: False, using: 0 HPUs
-2024-04-10 23:34:57,767 - INFO - GPU available: True (cuda), used: True
-2024-04-10 23:34:58,017 - INFO - TPU available: False, using: 0 TPU cores
-2024-04-10 23:34:58,017 - INFO - IPU available: False, using: 0 IPUs
-2024-04-10 23:34:58,018 - INFO - HPU available: False, using: 0 HPUs
