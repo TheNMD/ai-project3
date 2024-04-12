@@ -5,12 +5,12 @@ WORKDIR /app
 # Copy the current directory contents into the container at /usr/src/app
 COPY . .
 
-RUN apt-get update && apt-get install -y unzip
-
 # Make some required folders inside the container
 RUN mkdir data
 # RUN mkdir image
+RUN apt-get install -y unzip
 RUN unzip image.zip -d .
+RUN rm image.zip
 
 # Update pip and install packages
 RUN pip install --upgrade pip
