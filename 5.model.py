@@ -181,7 +181,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "vit-b" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s
+  model_name = "convnext-s" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s
   model_option = "pretrained"
   checkpoint = False
 
