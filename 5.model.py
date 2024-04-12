@@ -267,16 +267,16 @@ if __name__ == '__main__':
                       log_every_n_steps=50,    # log train_loss and train_acc every 50 batches
                       precision=16)            # use mixed precision to speed up training
 
-  # Training loop
-  start_time = time.time()
-  trainer.fit(module)
-  end_time = time.time()
-  print(f"Training time: {end_time - start_time} seconds")
+  # # Training loop
+  # start_time = time.time()
+  # trainer.fit(module)
+  # end_time = time.time()
+  # print(f"Training time: {end_time - start_time} seconds")
   
-  # Inference
-  start_time = time.time()
-  trainer.test()
-  end_time = time.time()
-  print(f"Inference time: {end_time - start_time} seconds")
+  # # Evaluation
+  # start_time = time.time()
+  # trainer.test()
+  # end_time = time.time()
+  # print(f"Evaluation time: {end_time - start_time} seconds")
 
   
