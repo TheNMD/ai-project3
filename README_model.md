@@ -13,7 +13,10 @@ docker rmi -f dht-image
 
 ## Start container
 docker start dht-cont
-docker exec -it dht-cont /bin/bash 
+# Access container
+docker exec -it dht-cont /bin/bash
+# Access container's terminal output
+docker logs -f dht-cont
 ## Copy from host to container
 docker cp 1.gen_meta.py dht-cont:/app
 ## Copy from container to host
@@ -22,23 +25,3 @@ docker cp dht-cont:/app/result .
 docker stop dht-cont
 ## Remove container
 docker rm -f dht-cont
-
-# Hyerparameter
-## VIT
-## For model
-model_name = "vit"
-option = "pretrained"
-checkpoint = False
-
-## For optimizer
-learning_rate = 1e-4
-optimizer = "adam"
-
-## For callbacks
-patience = 5
-min_delta = 1e-3
-
-## For training loop
-batch_size = 64
-num_epochs = 20
-epoch_ratio = 0.5
