@@ -46,10 +46,11 @@ elif ENV == "colab":
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, image_settings, optimizer_settings, loop_settings):
     super().__init__()
-    self.save_hyperparameters()
+    # self.save_hyperparameters()
 
     self.model_name = model_settings[0]
     self.model_option = model_settings[1]
+    self.model = load_model(self.model_name, self.model_option)
 
     self.train_size = image_settings[0]
     self.test_size = image_settings[1]
@@ -58,16 +59,13 @@ class FinetuneModule(pl.LightningModule):
     self.learning_rate = optimizer_settings[1]
 
     self.batch_size = loop_settings[0]
-    
-    if not os.path.exists(f"{result_path}/checkpoint/{self.model_name}-{self.model_option}"):
-      os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
-  def setup(self, stage=None):
-    self.model = load_model(self.model_name, self.model_option)
-    
     self.train_loader = load_data(option="train", image_size=self.train_size, batch_size=self.batch_size, shuffle=True)
     self.val_loader   = load_data(option="val", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
     self.test_loader  = load_data(option="test", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
+
+    if not os.path.exists(f"{result_path}/checkpoint/{self.model_name}-{self.model_option}"):
+      os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   def forward(self, x):
     return self.model(x)
@@ -83,15 +81,10 @@ class FinetuneModule(pl.LightningModule):
     return loss, accuracy
 
   def training_step(self, batch, batch_idx):
-    self.start_epoch_time = time.time()
     train_loss, train_acc = self.common_step(batch, batch_idx)
     self.log("train_loss", train_loss)
     self.log("train_acc", train_acc)
     return train_loss
-
-  def on_train_epoch_end(self):
-    epoch_time = time.time() - self.start_epoch_time
-    self.log("train_epoch_time", epoch_time, on_epoch=True) 
 
   def validation_step(self, batch, batch_idx):
     val_loss, val_acc = self.common_step(batch, batch_idx)
@@ -184,7 +177,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "swinv2"
+  model_name = "swinv2" # vit | swinv2 | effnetv2 | convnext
   model_option = "pretrained"
   checkpoint = False
 
@@ -216,7 +209,9 @@ if __name__ == '__main__':
   loop_settings = [batch_size]
 
   if checkpoint:
-    module = FinetuneModule.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{model_option}/best_model.ckpt")
+    module = FinetuneModule.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{model_option}/best_model.ckpt", 
+                                                 model_settings=model_settings, image_settings=image_settings, 
+                                                 optimizer_settings=optimizer_settings, loop_settings=loop_settings)
   else:
     module = FinetuneModule(model_settings, image_settings, optimizer_settings, loop_settings)
   
