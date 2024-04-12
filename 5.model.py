@@ -64,9 +64,6 @@ class FinetuneModule(pl.LightningModule):
     self.val_loader   = load_data(option="val", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
     self.test_loader  = load_data(option="test", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
 
-    if not os.path.exists(f"{result_path}/checkpoint/{self.model_name}-{self.model_option}"):
-      os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
-
   def forward(self, x):
     return self.model(x)
 
@@ -137,6 +134,8 @@ def load_model(model_name, model_option):
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
 
+  if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
+    os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write(str(model))
 
