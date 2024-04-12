@@ -113,22 +113,27 @@ class FinetuneModule(pl.LightningModule):
     return self.test_loader
 
 def load_model(model_name, model_option):
-  if model_name == "vit":
+  if model_name == "vit-b":
     model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
-    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
     num_feature = model.head.in_features
     model.head = nn.Linear(in_features=num_feature, out_features=5)
-  elif model_name == "swinv2":
-    model = timm.create_model('swinv2_base_window16_256.ms_in1k', pretrained=True)
-    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+  elif model_name == "vit-l":
+    model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=True)
+    num_feature = model.head.in_features
+    model.head = nn.Linear(in_features=num_feature, out_features=5)
+  elif model_name == "swinv2-t":
+    model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=True)
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-  elif model_name == "effnetv2":
-    model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
-    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+  elif model_name == "effnetv2-s":
+    model = timm.create_model('tf_efficientnetv2_s.in21k_ft_in1k', pretrained=True)
     num_feature = model.classifier.in_features
     model.classifier = nn.Linear(in_features=num_feature, out_features=5)
-  elif model_name == "convnext":
+  elif model_name == "effnetv2-m":
+    model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
+    num_feature = model.classifier.in_features
+    model.classifier = nn.Linear(in_features=num_feature, out_features=5)
+  elif model_name == "convnext-t":
     model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
     # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
     num_feature = model.head.fc.in_features
@@ -176,7 +181,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "vit" # vit | swinv2 | effnetv2 | convnext
+  model_name = "vit-b" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s
   model_option = "pretrained"
   checkpoint = False
 
@@ -189,16 +194,18 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 64
-  num_epochs = 20
+  batch_size = 32
+  num_epochs = 2
   epoch_ratio = 0.5 # check val every percent of an epoch
   
   # Set image sizes
-  if model_name == "vit" or model_name == "convnext":
+  if model_name == "vit-b" or model_name == "vit-l" or model_name == "convnext-t":
     train_size, test_size = 224, 224
-  elif model_name == "swinv2":
+  elif model_name == "swinv2-t":
     train_size, test_size = 256, 256
-  elif model_name == "effnetv2":
+  elif model_name == "effnetv2-s":
+    train_size, test_size = 300, 384
+  elif model_name == "effnetv2-m":
     train_size, test_size = 384, 480
 
   # Make Lightning module

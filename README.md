@@ -16,7 +16,10 @@ docker rmi -f dht-image
 
 ## Start container
 docker start dht-cont
-docker exec -it dht-cont /bin/bash 
+# Access container
+docker exec -it dht-cont /bin/bash
+# Access container's terminal output
+docker logs -f dht-cont
 ## Copy from host to container
 docker cp 1.gen_meta.py dht-cont:/app
 ## Copy from container to host
@@ -41,22 +44,15 @@ Total RAW files: 259999
 Total images files: 251507
 Total labeled images files: 250167
 
-# Hyerparameter
-## VIT
-## For model
-model_name = "vit"
-option = "pretrained"
-checkpoint = False
+# Models
+## On server
+vit-base
+swinv2-tiny
+effnetv2-m
+convnext-s
 
-## For optimizer
-learning_rate = 1e-4
-optimizer = "adam"
-
-## For callbacks
-patience = 5
-min_delta = 1e-3
-
-## For training loop
-batch_size = 16
-num_epochs = 30
-epoch_ratio = 0.5
+## On Colab
+vit-base
+swinv2-tiny
+effnetv2-s
+convnext-s
