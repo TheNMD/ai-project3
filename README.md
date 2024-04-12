@@ -9,7 +9,7 @@ docker build -t dht-image -f Dockerfile .
 ## Run image (Mount NhaBe and Image folders from host to container)
 docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image --name dht-cont dht-image
 
-docker run -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/image:/app/model --shm-size=32g --gpus '"device=0,1"' --name dht-cont dht-image
+docker run -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/image:/app/model --shm-size=16g --memory=16g --gpus '"device=0"' --name dht-cont dht-image
 ## Remove image
 docker rmi -f dht-image
 
