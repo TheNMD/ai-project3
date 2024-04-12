@@ -225,7 +225,7 @@ if __name__ == '__main__':
     module = module.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{option}.ckpt")
   
   # Logger
-  logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{option}_results')
+  logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{option}')
 
   # Callbacks
   early_stop_callback = EarlyStopping(monitor='val_acc',
@@ -237,8 +237,8 @@ if __name__ == '__main__':
   checkpoint_callback = ModelCheckpoint(monitor='val_acc',
                                         mode='max',
                                         save_top_k=1,
-                                        filename=f'{model_name}-{option}',
-                                        dirpath=f'{result_path}/checkpoint')
+                                        filename='best_model',
+                                        dirpath=f'{result_path}/checkpoint/{model_name}-{option}')
   
   # Combine all elements
   if num_gpus > 1:
