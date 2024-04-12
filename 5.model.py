@@ -29,11 +29,9 @@ ENV = "server".lower()
 
 if ENV == "local":
   image_path = "image"
-  model_path = "model"
   result_path = "result"
 elif ENV == "server":
   image_path = "image"
-  model_path = "model"
   result_path = "result"
 elif ENV == "colab":
   from google.colab import drive
@@ -43,7 +41,6 @@ elif ENV == "colab":
     with zipfile.ZipFile('image.zip', 'r') as zip_ref:
       zip_ref.extractall()
   image_path = "image"
-  model_path = "drive/MyDrive/Coding/model"
   result_path = "drive/MyDrive/Coding/result"
 
 class FinetuneModule(pl.LightningModule):
@@ -61,10 +58,13 @@ class FinetuneModule(pl.LightningModule):
     self.learning_rate = optimizer_settings[1]
 
     self.batch_size = loop_settings[0]
+    
+    if not os.path.exists(f"{result_path}/checkpoint/{self.model_name}-{self.model_option}"):
+      os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   def setup(self, stage=None):
     self.model = load_model(self.model_name, self.model_option)
-
+    
     self.train_loader = load_data(option="train", image_size=self.train_size, batch_size=self.batch_size, shuffle=True)
     self.val_loader   = load_data(option="val", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
     self.test_loader  = load_data(option="test", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
@@ -144,7 +144,7 @@ def load_model(model_name, model_option):
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
 
-  with open(f'{model_path}/{model_name}-{model_option}_architecture.txt', 'w') as f:
+  with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write(str(model))
 
   return model
@@ -176,9 +176,6 @@ if __name__ == '__main__':
   else:
     device = torch.device("cpu")
     print("Only Torch CPU is available")
-  
-  if not os.path.exists("model"):
-    os.makedirs("model")
      
   if not os.path.exists("result"):
     os.makedirs("result")
@@ -254,14 +251,14 @@ if __name__ == '__main__':
     strategy = 'auto'
 
   trainer = pl.Trainer(accelerator=accelerator, 
-                      devices=devices, 
-                      strategy=strategy,
-                      max_epochs=num_epochs,
-                      logger=logger,
-                      callbacks=[early_stop_callback, checkpoint_callback],
-                      val_check_interval=epoch_ratio,
-                      log_every_n_steps=50,    # log train_loss and train_acc every 50 batches
-                      precision=16)            # use mixed precision to speed up training
+                       devices=devices, 
+                       strategy=strategy,
+                       max_epochs=num_epochs,
+                       logger=logger,
+                       callbacks=[early_stop_callback, checkpoint_callback],
+                       val_check_interval=epoch_ratio,
+                       log_every_n_steps=50,    # log train_loss and train_acc every 50 batches
+                       precision=16)            # use mixed precision to speed up training
 
   # Training loop
   start_time = time.time()
