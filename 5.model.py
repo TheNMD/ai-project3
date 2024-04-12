@@ -29,11 +29,9 @@ ENV = "server".lower()
 
 if ENV == "local":
   image_path = "image"
-  model_path = "model"
   result_path = "result"
 elif ENV == "server":
   image_path = "image"
-  model_path = "model"
   result_path = "result"
 elif ENV == "colab":
   from google.colab import drive
@@ -43,16 +41,16 @@ elif ENV == "colab":
     with zipfile.ZipFile('image.zip', 'r') as zip_ref:
       zip_ref.extractall()
   image_path = "image"
-  model_path = "drive/MyDrive/Coding/model"
   result_path = "drive/MyDrive/Coding/result"
 
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, image_settings, optimizer_settings, loop_settings):
     super().__init__()
-    self.save_hyperparameters()
+    # self.save_hyperparameters()
 
     self.model_name = model_settings[0]
     self.model_option = model_settings[1]
+    self.model = load_model(self.model_name, self.model_option)
 
     self.train_size = image_settings[0]
     self.test_size = image_settings[1]
@@ -62,12 +60,12 @@ class FinetuneModule(pl.LightningModule):
 
     self.batch_size = loop_settings[0]
 
-  def setup(self, stage=None):
-    self.model = load_model(self.model_name, self.model_option)
-
     self.train_loader = load_data(option="train", image_size=self.train_size, batch_size=self.batch_size, shuffle=True)
     self.val_loader   = load_data(option="val", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
     self.test_loader  = load_data(option="test", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
+
+    if not os.path.exists(f"{result_path}/checkpoint/{self.model_name}-{self.model_option}"):
+      os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   def forward(self, x):
     return self.model(x)
@@ -83,15 +81,10 @@ class FinetuneModule(pl.LightningModule):
     return loss, accuracy
 
   def training_step(self, batch, batch_idx):
-    self.start_epoch_time = time.time()
     train_loss, train_acc = self.common_step(batch, batch_idx)
     self.log("train_loss", train_loss)
     self.log("train_acc", train_acc)
     return train_loss
-
-  def on_train_epoch_end(self):
-    epoch_time = time.time() - self.start_epoch_time
-    self.log("train_epoch_time", epoch_time, on_epoch=True) 
 
   def validation_step(self, batch, batch_idx):
     val_loss, val_acc = self.common_step(batch, batch_idx)
@@ -123,33 +116,29 @@ class FinetuneModule(pl.LightningModule):
     return self.test_loader
 
 def load_model(model_name, model_option):
-  if os.path.exists(f"{model_path}/{model_name}-{model_option}.pth"):
-    model = torch.load(f"{model_path}/{model_name}-{model_option}.pth")
-  else:
-    if model_name == "vit":
-      model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
-      num_feature = model.head.in_features
-      model.head = nn.Linear(in_features=num_feature, out_features=5)
-    elif model_name == "swinv2":
-      model = timm.create_model('swinv2_base_window16_256.ms_in1k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
-      num_feature = model.head.fc.in_features
-      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    elif model_name == "effnetv2":
-      model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
-      num_feature = model.classifier.in_features
-      model.classifier = nn.Linear(in_features=num_feature, out_features=5)
-    elif model_name == "convnext":
-      model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
-      num_feature = model.head.fc.in_features
-      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+  if model_name == "vit":
+    model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
+    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+    num_feature = model.head.in_features
+    model.head = nn.Linear(in_features=num_feature, out_features=5)
+  elif model_name == "swinv2":
+    model = timm.create_model('swinv2_base_window16_256.ms_in1k', pretrained=True)
+    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+  elif model_name == "effnetv2":
+    model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
+    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+    num_feature = model.classifier.in_features
+    model.classifier = nn.Linear(in_features=num_feature, out_features=5)
+  elif model_name == "convnext":
+    model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
+    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
 
-    torch.save(model, f'{model_path}/{model_name}-{model_option}.pth')
-    with open(f'{model_path}/{model_name}-{model_option}_architecture.txt', 'w') as f:
-      f.write(str(model))
+  with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
+    f.write(str(model))
 
   return model
 
@@ -180,9 +169,6 @@ if __name__ == '__main__':
   else:
     device = torch.device("cpu")
     print("Only Torch CPU is available")
-  
-  if not os.path.exists("model"):
-    os.makedirs("model")
      
   if not os.path.exists("result"):
     os.makedirs("result")
@@ -191,7 +177,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "vit"
+  model_name = "swinv2" # vit | swinv2 | effnetv2 | convnext
   model_option = "pretrained"
   checkpoint = False
 
@@ -223,7 +209,9 @@ if __name__ == '__main__':
   loop_settings = [batch_size]
 
   if checkpoint:
-    module = FinetuneModule.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{model_option}/best_model.ckpt")
+    module = FinetuneModule.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{model_option}/best_model.ckpt", 
+                                                 model_settings=model_settings, image_settings=image_settings, 
+                                                 optimizer_settings=optimizer_settings, loop_settings=loop_settings)
   else:
     module = FinetuneModule(model_settings, image_settings, optimizer_settings, loop_settings)
   
@@ -258,14 +246,14 @@ if __name__ == '__main__':
     strategy = 'auto'
 
   trainer = pl.Trainer(accelerator=accelerator, 
-                      devices=devices, 
-                      strategy=strategy,
-                      max_epochs=num_epochs,
-                      logger=logger,
-                      callbacks=[early_stop_callback, checkpoint_callback],
-                      val_check_interval=epoch_ratio,
-                      log_every_n_steps=50,    # log train_loss and train_acc every 50 batches
-                      precision=16)            # use mixed precision to speed up training
+                       devices=devices, 
+                       strategy=strategy,
+                       max_epochs=num_epochs,
+                       logger=logger,
+                       callbacks=[early_stop_callback, checkpoint_callback],
+                       val_check_interval=epoch_ratio,
+                       log_every_n_steps=50,    # log train_loss and train_acc every 50 batches
+                       precision=16)            # use mixed precision to speed up training
 
   # Training loop
   start_time = time.time()
