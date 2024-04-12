@@ -44,25 +44,22 @@ elif ENV == "colab":
   result_path = "drive/MyDrive/Coding/result"
 
 class FinetuneModule(pl.LightningModule):
-  def __init__(self, model_settings, image_settings, optimizer_settings, loop_settings):
+  def __init__(self, model_settings, optimizer_settings, loop_settings):
     super().__init__()
     # self.save_hyperparameters()
 
     self.model_name = model_settings[0]
     self.model_option = model_settings[1]
-    self.model = load_model(self.model_name, self.model_option)
-
-    self.train_size = image_settings[0]
-    self.test_size = image_settings[1]
+    self.model, train_size, test_size = load_model(self.model_name, self.model_option)
 
     self.optimizer_name = optimizer_settings[0]
     self.learning_rate = optimizer_settings[1]
 
     self.batch_size = loop_settings[0]
 
-    self.train_loader = load_data(option="train", image_size=self.train_size, batch_size=self.batch_size, shuffle=True)
-    self.val_loader   = load_data(option="val", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
-    self.test_loader  = load_data(option="test", image_size=self.test_size, batch_size=self.batch_size, shuffle=False)
+    self.train_loader = load_data(option="train", image_size=train_size, batch_size=self.batch_size, shuffle=True)
+    self.val_loader   = load_data(option="val", image_size=test_size, batch_size=self.batch_size, shuffle=False)
+    self.test_loader  = load_data(option="test", image_size=test_size, batch_size=self.batch_size, shuffle=False)
 
   def forward(self, x):
     return self.model(x)
@@ -117,38 +114,45 @@ def load_model(model_name, model_option):
     model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
     num_feature = model.head.in_features
     model.head = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 224
   elif model_name == "vit-l":
     model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=True)
     num_feature = model.head.in_features
     model.head = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 224
   elif model_name == "swinv2-t":
     model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=True)
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 256, 256
   elif model_name == "swinv2-b":
     model = timm.create_model('swinv2_base_window12to24_192to384.ms_in22k_ft_in1k', pretrained=True)
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 384, 384
   elif model_name == "effnetv2-s":
     model = timm.create_model('tf_efficientnetv2_s.in21k_ft_in1k', pretrained=True)
     num_feature = model.classifier.in_features
     model.classifier = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 300, 384
   elif model_name == "effnetv2-m":
     model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
     num_feature = model.classifier.in_features
     model.classifier = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 384, 480
   elif model_name == "convnext-t":
     model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
     # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 224
 
   if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write(str(model))
 
-  return model
+  return model, train_size, test_size
 
 def load_data(option, image_size, batch_size, shuffle, num_workers=20):
   # Preprocessing data
@@ -201,29 +205,19 @@ if __name__ == '__main__':
   batch_size = 32
   num_epochs = 20
   epoch_ratio = 0.5 # check val every percent of an epoch
-  
-  # Set image sizes
-  if model_name == "vit-b" or model_name == "vit-l" or model_name == "convnext-t":
-    train_size, test_size = 224, 224
-  elif model_name == "swinv2-t":
-    train_size, test_size = 256, 256
-  elif model_name == "effnetv2-s":
-    train_size, test_size = 300, 384
-  elif model_name == "effnetv2-m":
-    train_size, test_size = 384, 480
 
   # Make Lightning module
   model_settings = [model_name, model_option]
-  image_settings = [train_size, test_size]
   optimizer_settings = [optimizer_name, learning_rate]
   loop_settings = [batch_size]
 
   if checkpoint:
     module = FinetuneModule.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{model_option}/best_model.ckpt", 
-                                                 model_settings=model_settings, image_settings=image_settings, 
-                                                 optimizer_settings=optimizer_settings, loop_settings=loop_settings)
+                                                 model_settings=model_settings,
+                                                 optimizer_settings=optimizer_settings, 
+                                                 loop_settings=loop_settings)
   else:
-    module = FinetuneModule(model_settings, image_settings, optimizer_settings, loop_settings)
+    module = FinetuneModule(model_settings, optimizer_settings, loop_settings)
   
   # Logger
   logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{model_option}')
