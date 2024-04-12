@@ -9,8 +9,9 @@ docker build -t dht-image -f Dockerfile .
 ## Run image (Mount NhaBe and Image folders from host to container)
 docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image --name dht-cont dht-image
 
-docker run -v /data/DanHoangThu/image:/app/image --shm-size=16g --gpus '"device=0"' --name dht-cont dht-image
-docker run -v /data/DanHoangThu/image:/app/image --shm-size=16g --gpus '"device=1"' --name dht-cont1 dht-image1
+docker run -v /data/DanHoangThu/result:/app/result -v /data/DanHoangThu/image:/app/image --shm-size=16g --gpus '"device=2"' --name dht-cont dht-image
+
+docker run -v /data/DanHoangThu/result:/app/result -v /data/DanHoangThu/image:/app/image --shm-size=16g --gpus '"device=3"' --name dht-cont1 dht-image1
 ## Remove image
 docker rmi -f dht-image
 
@@ -27,7 +28,6 @@ docker cp dht-cont:/app/metadata.csv .
 docker cp dht-cont:/app/metadata_temp.csv .
 docker cp dht-cont:/app/metadata_lite.csv .
 docker cp dht-cont:/app/metadata .
-docker cp dht-cont:/app/result/checkpoint/. result/checkpoint
 ## Find container id
 docker ps -aqf "ancestor=dht-image"
 ## Stop container
