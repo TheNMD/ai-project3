@@ -125,6 +125,10 @@ def load_model(model_name, model_option):
     model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=True)
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+  elif model_name == "swinv2-b":
+    model = timm.create_model('swinv2_base_window12to24_192to384.ms_in22k_ft_in1k', pretrained=True)
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
   elif model_name == "effnetv2-s":
     model = timm.create_model('tf_efficientnetv2_s.in21k_ft_in1k', pretrained=True)
     num_feature = model.classifier.in_features
@@ -181,7 +185,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "vit-l" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-t
+  model_name = "swinv2-b" # vit-b | vit-l | swinv2-t| swinv2-b | effnetv2-s | effnetv2-m | convnext-t
   model_option = "pretrained"
   checkpoint = False
 
