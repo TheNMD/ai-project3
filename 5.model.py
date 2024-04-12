@@ -2,6 +2,7 @@ import os
 import shutil
 import zipfile
 import sys
+import time
 import platform
 import warnings
 warnings.filterwarnings('ignore')
@@ -182,17 +183,24 @@ if __name__ == '__main__':
   checkpoint = False
 
   ## For optimizer
-  learning_rate = 1e-3
+  learning_rate = 1e-4
   optimizer = "adam"
 
   ## For callbacks
-  patience = 3
+  patience = 5
   min_delta = 1e-3
+
+  ## For training loop
+  batch_size = 16
+  # batch_size = 8
+  # num_epochs = 10
+  num_epochs = 30
 
   ## For training loop
   # batch_size = 16
   batch_size = 8
   num_epochs = 10
+  epoch_ratio = 0.5 # check val every percent of an epoch
   
   # Load model
   model = load_model(model_name, option)
@@ -252,14 +260,20 @@ if __name__ == '__main__':
                       max_epochs=num_epochs,
                       logger=logger,
                       callbacks=[early_stop_callback, checkpoint_callback],
-                      log_every_n_steps=50,   # log train_loss and train_acc every 100 batches
-                      val_check_interval=1.0, # check val_set after every train epoch
-                      precision=16)           # use mixed precision to speed up training
+                      val_check_interval=epoch_ratio,
+                      log_every_n_steps=50,    # log train_loss and train_acc every 50 batches
+                      precision=16)            # use mixed precision to speed up training
 
-  # # Training loop
-  # trainer.fit(module)
+  # Training loop
+  start_time = time.time()
+  trainer.fit(module)
+  end_time = time.time()
+  print(f"Training time: {end_time - start_time} seconds")
   
-  # # Inference
-  # trainer.test()
+  # Inference
+  start_time = time.time()
+  trainer.test()
+  end_time = time.time()
+  print(f"Inference time: {end_time - start_time} seconds")
 
   
