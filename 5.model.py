@@ -123,33 +123,29 @@ class FinetuneModule(pl.LightningModule):
     return self.test_loader
 
 def load_model(model_name, model_option):
-  if os.path.exists(f"{model_path}/{model_name}-{model_option}.pth"):
-    model = torch.load(f"{model_path}/{model_name}-{model_option}.pth")
-  else:
-    if model_name == "vit":
-      model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
-      num_feature = model.head.in_features
-      model.head = nn.Linear(in_features=num_feature, out_features=5)
-    elif model_name == "swinv2":
-      model = timm.create_model('swinv2_base_window16_256.ms_in1k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
-      num_feature = model.head.fc.in_features
-      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    elif model_name == "effnetv2":
-      model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
-      num_feature = model.classifier.in_features
-      model.classifier = nn.Linear(in_features=num_feature, out_features=5)
-    elif model_name == "convnext":
-      model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
-      # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
-      num_feature = model.head.fc.in_features
-      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+  if model_name == "vit":
+    model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
+    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+    num_feature = model.head.in_features
+    model.head = nn.Linear(in_features=num_feature, out_features=5)
+  elif model_name == "swinv2":
+    model = timm.create_model('swinv2_base_window16_256.ms_in1k', pretrained=True)
+    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+  elif model_name == "effnetv2":
+    model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
+    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+    num_feature = model.classifier.in_features
+    model.classifier = nn.Linear(in_features=num_feature, out_features=5)
+  elif model_name == "convnext":
+    model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
+    # clear, light_rain, moderate_rain, heavy_rain, very_heavy_rain
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
 
-    torch.save(model, f'{model_path}/{model_name}-{model_option}.pth')
-    with open(f'{model_path}/{model_name}-{model_option}_architecture.txt', 'w') as f:
-      f.write(str(model))
+  with open(f'{model_path}/{model_name}-{model_option}_architecture.txt', 'w') as f:
+    f.write(str(model))
 
   return model
 
