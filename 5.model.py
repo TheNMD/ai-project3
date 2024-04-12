@@ -191,15 +191,8 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 16
-  # batch_size = 8
-  # num_epochs = 10
-  num_epochs = 30
-
-  ## For training loop
-  # batch_size = 16
-  batch_size = 8
-  num_epochs = 10
+  batch_size = 64
+  num_epochs = 20
   epoch_ratio = 0.5 # check val every percent of an epoch
   
   # Load model
@@ -222,7 +215,7 @@ if __name__ == '__main__':
   # Make Lightning module
   module = FinetuneModule(model, [train_loader, val_loader, test_loader], optimizer, learning_rate)
   if checkpoint:
-    module = module.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{option}.ckpt")
+    module = module.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{option}/best_model.ckpt")
   
   # Logger
   logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{option}')
