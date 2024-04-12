@@ -42,16 +42,3 @@ exit
 Total RAW files: 259999
 Total images files: 251507
 Total labeled images files: 250167
-
-# Models
-## On server
-vit-base
-swinv2-tiny
-effnetv2-m
-convnext-s
-
-## On Colab
-vit-base
-swinv2-tiny
-effnetv2-s
-convnext-s
