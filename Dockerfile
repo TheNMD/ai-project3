@@ -8,7 +8,7 @@ COPY . .
 # Make some required folders inside the container
 RUN mkdir data
 # RUN mkdir image
-RUN apt-get install -y unzip
+RUN apt-get update && apt-get install -y unzip
 RUN unzip image.zip -d .
 RUN rm image.zip
 
