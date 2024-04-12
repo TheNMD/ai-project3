@@ -7,10 +7,7 @@ COPY . .
 
 # Make some required folders inside the container
 RUN mkdir data
-# RUN mkdir image
-RUN apt-get update && apt-get install -y unzip
-RUN unzip image.zip -d .
-RUN rm image.zip
+RUN mkdir image
 
 # Update pip and install packages
 RUN pip install --upgrade pip
