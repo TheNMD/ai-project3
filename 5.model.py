@@ -141,10 +141,10 @@ def load_model(model_name, model_option):
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
     train_size, test_size = 224, 224
   elif model_name == "convnext-b":
-    model = timm.create_model('convnext_base.fb_in22k_ft_in1k', pretrained=True)
+    model = timm.create_model('convnext_base.fb_in22k', pretrained=True)
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 224, 288
+    train_size, test_size = 224, 224
 
   if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
