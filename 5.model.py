@@ -176,7 +176,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "effnetv2" # vit | swinv2 | effnetv2 | convnext
+  model_name = "vit" # vit | swinv2 | effnetv2 | convnext
   model_option = "pretrained"
   checkpoint = False
 
