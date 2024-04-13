@@ -225,7 +225,7 @@ if __name__ == '__main__':
   print(f"Model: {model_name}-{model_option}")
 
   ## For optimizer
-  optimizer_name = "sgd"
+  optimizer_name = "adam"
   learning_rate = 1e-4
 
   ## For callbacks
@@ -305,18 +305,37 @@ if __name__ == '__main__':
                          precision=16)             # use mixed precision to speed up training
 
     # Training loop
-    start_time = time.time()
+    train_start_time = time.time()
     trainer.fit(module)
-    end_time = time.time()
-    print(f"Training time: {end_time - start_time} seconds")
+    train_end_time = time.time() - train_start_time
+    print(f"Training time: {train_end_time} seconds")
     
     # Evaluation
-    start_time = time.time()
+    test_start_time = time.time()
     trainer.test(module)
-    end_time = time.time()
-    print(f"Evaluation time: {end_time - start_time} seconds")
+    test_end_time = time.time() - test_start_time
+    print(f"Evaluation time: {test_end_time} seconds")
     
     # Plot loss and accuracy
     plot_results(model_name, model_option, latest_version)
-
+    
+    with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
+      file.write('### For models ###\n')
+      file.write(f'Model name: {model_name}\n')
+      file.write(f'Model Option: {model_option}\n\n')
+      file.write('### For optimizer ###\n')
+      file.write(f'Optimizer: {optimizer_name}\n')
+      file.write(f'Learning rate: {learning_rate}\n\n')
+      file.write('### For callbacks ###\n')
+      file.write(f'Patience: {patience}\n')
+      file.write(f'Min delta: {min_delta}\n\n')
+      file.write('### For training loop ###\n')
+      file.write(f'Batch size: {batch_size}\n')
+      file.write(f'Epochs: {num_epochs}\n')
+      file.write(f'Epoch ratio: {epoch_ratio}\n')
+      file.write(f'Num GPUs: {num_gpus}\n\n')
+      file.write('### Time taken ###\n')
+      file.write(f"Training time: {train_end_time} seconds\n")
+      file.write(f"Evaluation time: {test_end_time} seconds\n")
+    
   
