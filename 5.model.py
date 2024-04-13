@@ -158,6 +158,11 @@ def load_model(model_name, model_option):
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
     train_size, test_size = 224, 224
+  elif model_name == "convnext-l":
+    model = timm.create_model('convnext_large.fb_in22k', pretrained=True)
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 224
 
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write(str(model))
@@ -230,7 +235,9 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "swinv2-b" # vit-b | vit-l | swinv2-t | swinv2-b | effnetv2-s | effnetv2-m | convnext-s | convnext-b
+  # vit-b | vit-l | swinv2-t | swinv2-b
+  # effnetv2-s | effnetv2-m | convnext-s | convnext-b | convnext-l 
+  model_name = "convnext-l" 
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -238,16 +245,16 @@ if __name__ == '__main__':
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
-  optimizer_name = "sgd" # adam | sgd
-  learning_rate = 1e-3
-  scheduler_name = "cosine" # none | cosine
+  optimizer_name = "adam" # adam | sgd
+  learning_rate = 1e-4
+  scheduler_name = "none" # none | cosine
 
   ## For callbacks
   patience = 10
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 16
+  batch_size = 32
   num_epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
 
