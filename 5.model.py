@@ -284,7 +284,7 @@ if __name__ == '__main__':
     if num_gpus > 1:
       accelerator = 'gpu'
       devices = num_gpus
-      strategy = 'auto'
+      strategy = 'ddp'
     elif num_gpus == 1:
       accelerator = 'gpu'
       devices = 1
