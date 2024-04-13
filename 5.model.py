@@ -219,7 +219,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "vit-b" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s | convnext-b
+  model_name = "convnext-b" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s | convnext-b
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -229,7 +229,7 @@ if __name__ == '__main__':
   learning_rate = 1e-4
 
   ## For callbacks
-  patience = 5
+  patience = 8
   min_delta = 1e-3
 
   ## For training loop
@@ -284,7 +284,7 @@ if __name__ == '__main__':
     if num_gpus > 1:
       accelerator = 'gpu'
       devices = num_gpus
-      strategy = 'ddp'
+      strategy = 'auto'
     elif num_gpus == 1:
       accelerator = 'gpu'
       devices = 1
