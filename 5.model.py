@@ -225,7 +225,7 @@ if __name__ == '__main__':
   print(f"Model: {model_name}-{model_option}")
 
   ## For optimizer
-  optimizer_name = "adam"
+  optimizer_name = "sgd"
   learning_rate = 1e-4
 
   ## For callbacks
@@ -233,7 +233,7 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 32
+  batch_size = 8
   num_epochs = 20
   epoch_ratio = 0.5 # check val every percent of an epoch
 
@@ -283,7 +283,7 @@ if __name__ == '__main__':
     # Combine all elements
     if num_gpus > 1:
       accelerator = 'gpu'
-      devices = num_gpus
+      devices = 2
       strategy = 'ddp'
     elif num_gpus == 1:
       accelerator = 'gpu'
