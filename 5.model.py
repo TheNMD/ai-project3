@@ -260,7 +260,7 @@ if __name__ == '__main__':
   else:
     versions = sorted([folder for folder in os.listdir(f'{result_path}/checkpoint/{model_name}-{model_option}') 
                        if os.path.isdir(f'{result_path}/checkpoint/{model_name}-{model_option}/{folder}')])
-    latest_version = f"version_{len(versions) + 1}"
+    latest_version = f"version_{len(versions)}"
     
     module = FinetuneModule(model_settings, optimizer_settings, loop_settings)
   
