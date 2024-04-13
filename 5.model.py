@@ -242,7 +242,7 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 32
+  batch_size = 8
   num_epochs = 40
   epoch_ratio = 0.5 # check val every percent of an epoch
 
