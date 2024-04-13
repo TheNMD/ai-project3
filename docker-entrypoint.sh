@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 testing4.py
+python3 5.model.py
