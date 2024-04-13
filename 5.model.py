@@ -318,5 +318,21 @@ if __name__ == '__main__':
     
     # Plot loss and accuracy
     plot_results(model_name, model_option, latest_version)
-
+    
+    with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/hyperparameters.txt', 'w') as file:
+      file.write('### For models ###\n')
+      file.write(f'Model name: {model_name}\n')
+      file.write(f'Model Option: {model_option}\n')
+      file.write('### For optimizer ###\n')
+      file.write(f'Optimizer: {optimizer_name}\n')
+      file.write(f'Learning rate: {learning_rate}\n')
+      file.write('### For callbacks ###\n')
+      file.write(f'Patience: {patience}\n')
+      file.write(f'Min delta: {min_delta}\n')
+      file.write('### For training loop ###\n')
+      file.write(f'Batch size: {batch_size}\n')
+      file.write(f'Epochs: {num_epochs}\n')
+      file.write(f'Val check epoch ratio: {epoch_ratio}\n')
+      file.write(f'Num GPUs: {num_gpus}\n')
+    
   
