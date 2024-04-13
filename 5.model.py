@@ -295,14 +295,14 @@ if __name__ == '__main__':
       strategy = 'auto'
 
     trainer = pl.Trainer(accelerator=accelerator, 
-                        devices=devices, 
-                        strategy=strategy,
-                        max_epochs=num_epochs,
-                        logger=logger,
-                        callbacks=[early_stop_callback, checkpoint_callback],
-                        val_check_interval=epoch_ratio,
-                        log_every_n_steps=200,    # log train_loss and train_acc every 200 batches
-                        precision=16)             # use mixed precision to speed up training
+                         devices=devices, 
+                         strategy=strategy,
+                         max_epochs=num_epochs,
+                         logger=logger,
+                         callbacks=[early_stop_callback, checkpoint_callback],
+                         val_check_interval=epoch_ratio,
+                         log_every_n_steps=200,    # log train_loss and train_acc every 200 batches
+                         precision=16)             # use mixed precision to speed up training
 
     # Training loop
     start_time = time.time()
