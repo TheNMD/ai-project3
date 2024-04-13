@@ -225,16 +225,16 @@ if __name__ == '__main__':
   print(f"Model: {model_name}-{model_option}")
 
   ## For optimizer
-  optimizer_name = "adam"
+  optimizer_name = "sgd"
   learning_rate = 1e-4
 
   ## For callbacks
-  patience = 10
+  patience = 8
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 32
-  num_epochs = 30
+  batch_size = 8
+  num_epochs = 20
   epoch_ratio = 0.5 # check val every percent of an epoch
 
   # Make Lightning module
