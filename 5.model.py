@@ -102,10 +102,10 @@ class FinetuneModule(pl.LightningModule):
       optimizer = SGD(self.model.parameters(), lr=self.learning_rate, momentum=0.9, weight_decay=0)
       
     if self.scheduler_name == "none":
-      scheduler = None
+      return {"optimizer": optimizer}
     elif self.scheduler_name == "cosine":
       scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=int(len(self.train_loader) * 0.4), T_mult=1) 
-      
+
     return {"optimizer": optimizer, "lr_scheduler": scheduler}
 
   def train_dataloader(self):
