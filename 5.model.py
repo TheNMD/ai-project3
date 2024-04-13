@@ -225,7 +225,7 @@ if __name__ == '__main__':
   print(f"Model: {model_name}-{model_option}")
 
   ## For optimizer
-  optimizer_name = "sgd"
+  optimizer_name = "adam"
   learning_rate = 1e-4
 
   ## For callbacks
