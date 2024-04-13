@@ -9,5 +9,6 @@ server/
 model/
 result/
 
+data.zip
 image.zip
-model.zip
+result.zip

@@ -15,6 +15,8 @@ RUN pip install --upgrade pip
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN pip install google-api-python-client oauth2client
+
 RUN chmod +x docker-entrypoint.sh
 
 EXPOSE 5000
