@@ -13,7 +13,9 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
+from torch.optim import SGD, Adam
 from torchvision import datasets, transforms
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import CSVLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
@@ -54,6 +56,7 @@ class FinetuneModule(pl.LightningModule):
 
     self.optimizer_name = optimizer_settings[0]
     self.learning_rate = optimizer_settings[1]
+    self.scheduler_name = optimizer_settings[2]
 
     self.batch_size = loop_settings[0]
 
@@ -94,11 +97,16 @@ class FinetuneModule(pl.LightningModule):
 
   def configure_optimizers(self):
     if self.optimizer_name == "adam":
-      optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
+      optimizer = Adam(self.model.parameters(), lr=self.learning_rate)
     elif self.optimizer_name == "sgd":
-      optimizer = torch.optim.SGD(self.model.parameters(), lr=self.learning_rate, momentum=0.9, weight_decay=0)
-    # TODO Add scheduler to adjust learning_rate
-    return optimizer
+      optimizer = SGD(self.model.parameters(), lr=self.learning_rate, momentum=0.9, weight_decay=0)
+      
+    if self.scheduler_name == "none":
+      scheduler = None
+    elif self.scheduler_name == "cosine":
+      scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=(len(self.train_loader) * 0.4), T_mult=1) 
+      
+    return {"optimizer": optimizer, "lr_scheduler": scheduler}
 
   def train_dataloader(self):
     return self.train_loader
@@ -219,14 +227,15 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "convnext-b" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s | convnext-b
+  model_name = "vit-b" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s | convnext-b
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
 
-  ## For optimizer
-  optimizer_name = "sgd"
-  learning_rate = 1e-4
+  ## For optimizer & scheduler
+  optimizer_name = "sgd" # adam | sgd
+  learning_rate = 1e-3
+  scheduler_name = "cosine" # none | cosine
 
   ## For callbacks
   patience = 8
@@ -234,12 +243,12 @@ if __name__ == '__main__':
 
   ## For training loop
   batch_size = 32
-  num_epochs = 20
+  num_epochs = 40
   epoch_ratio = 0.5 # check val every percent of an epoch
 
   # Make Lightning module
   model_settings = [model_name, model_option]
-  optimizer_settings = [optimizer_name, learning_rate]
+  optimizer_settings = [optimizer_name, learning_rate, scheduler_name]
   loop_settings = [batch_size]
 
   if checkpoint:
@@ -323,9 +332,10 @@ if __name__ == '__main__':
       file.write('### For models ###\n')
       file.write(f'Model name: {model_name}\n')
       file.write(f'Model Option: {model_option}\n\n')
-      file.write('### For optimizer ###\n')
+      file.write('### For optimizer & scheduler ###\n')
       file.write(f'Optimizer: {optimizer_name}\n')
-      file.write(f'Learning rate: {learning_rate}\n\n')
+      file.write(f'Learning rate: {learning_rate}\n')
+      file.write(f'Scheduler: {scheduler_name}\n')
       file.write('### For callbacks ###\n')
       file.write(f'Patience: {patience}\n')
       file.write(f'Min delta: {min_delta}\n\n')
