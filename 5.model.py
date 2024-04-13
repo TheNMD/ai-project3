@@ -237,7 +237,7 @@ if __name__ == '__main__':
   ## For model
   # vit-b | vit-l | swinv2-t | swinv2-b
   # effnetv2-s | effnetv2-m | convnext-s | convnext-b | convnext-l 
-  model_name = "swinv2-b" 
+  model_name = "convnext-b" 
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -245,9 +245,9 @@ if __name__ == '__main__':
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
-  optimizer_name = "adam" # adam | sgd
-  learning_rate = 1e-4
-  scheduler_name = "none" # none | cosine
+  optimizer_name = "sgd" # adam | sgd
+  learning_rate = 1e-3
+  scheduler_name = "cosine" # none | cosine
 
   ## For callbacks
   patience = 10
@@ -255,7 +255,7 @@ if __name__ == '__main__':
 
   ## For training loop
   batch_size = 32
-  num_epochs = 30
+  num_epochs = 40
   epoch_ratio = 0.5 # check val every percent of an epoch
 
   # Make Lightning module
