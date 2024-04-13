@@ -104,7 +104,7 @@ class FinetuneModule(pl.LightningModule):
     if self.scheduler_name == "none":
       scheduler = None
     elif self.scheduler_name == "cosine":
-      scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=(len(self.train_loader) * 0.4), T_mult=1) 
+      scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=int(len(self.train_loader) * 0.4), T_mult=1) 
       
     return {"optimizer": optimizer, "lr_scheduler": scheduler}
 
