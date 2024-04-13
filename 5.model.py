@@ -238,12 +238,12 @@ if __name__ == '__main__':
   scheduler_name = "cosine" # none | cosine
 
   ## For callbacks
-  patience = 8
+  patience = 10
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 8
-  num_epochs = 20
+  batch_size = 32
+  num_epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
 
   # Make Lightning module
