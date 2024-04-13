@@ -219,7 +219,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "effnetv2-m" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s | convnext-b
+  model_name = "vit-b" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s | convnext-b
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
