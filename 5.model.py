@@ -154,8 +154,6 @@ def load_model(model_name, model_option):
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
     train_size, test_size = 224, 224
 
-  if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
-    os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write(str(model))
 
@@ -231,6 +229,8 @@ if __name__ == '__main__':
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
+  if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
+    os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
   optimizer_name = "sgd" # adam | sgd
