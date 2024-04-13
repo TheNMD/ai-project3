@@ -168,11 +168,10 @@ def load_data(option, image_size, batch_size, shuffle, num_workers=20):
   
   return data_loader
 
-def plot_results(model_name, model_option):
-  log_results = pd.read_csv(f"{result_path}/checkpoint/{model_name}-{model_option}/version_0/metrics.csv")
+def plot_results(model_name, model_option, latest_version):
+  log_results = pd.read_csv(f"{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/metrics.csv")
   train_results = log_results[['epoch', 'step', 'train_loss', 'train_acc']].dropna()
   val_results = log_results[['epoch', 'step', 'val_loss', 'val_acc']].dropna()
-  test_results = log_results[['epoch', 'step', 'test_loss', 'test_acc']].dropna()
 
   # Plotting loss
   plt.plot(train_results['step'], train_results['train_loss'], label='train_loss')
@@ -182,7 +181,7 @@ def plot_results(model_name, model_option):
   plt.ylabel('value')
   plt.title(f'Loss of {model_name}-{model_option}')
   plt.legend()
-  plt.savefig(f'{result_path}/checkpoint/{model_name}-{model_option}/graph_loss.png')
+  plt.savefig(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/graph_loss.png')
 
   plt.clf()
 
@@ -194,8 +193,9 @@ def plot_results(model_name, model_option):
   plt.ylabel('value')
   plt.title(f'Accuracy of {model_name}-{model_option}')
   plt.legend()
-  plt.savefig(f'{result_path}/checkpoint/{model_name}-{model_option}/graph_acc.png')
+  plt.savefig(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/graph_acc.png')
 
+  test_results = log_results[['epoch', 'step', 'test_loss', 'test_acc']].dropna()
   print(f"Testing loss: {test_results['test_loss'].tolist()[0]}")
   print(f"Testing acc: {test_results['test_acc'].tolist()[0]}")
 
@@ -219,9 +219,10 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  model_name = "effnetv2-m" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s | convnext-b
+  model_name = "vit-b" # vit-b | vit-l | swinv2-t | effnetv2-s | effnetv2-m | convnext-s | convnext-b
   model_option = "pretrained"
   checkpoint = False
+  print(f"Model: {model_name}-{model_option}")
 
   ## For optimizer
   optimizer_name = "adam"
@@ -242,66 +243,80 @@ if __name__ == '__main__':
   loop_settings = [batch_size]
 
   if checkpoint:
+    version = "version_0"
+    
     module = FinetuneModule.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{model_option}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
                                                  loop_settings=loop_settings)
+    
+    trainer = pl.Trainer()
+    
+    # Evaluation
+    start_time = time.time()
+    trainer.test(module)
+    end_time = time.time()
+    print(f"Evaluation time: {end_time - start_time} seconds")
   else:
+    versions = sorted([folder for folder in os.listdir(f'{result_path}/checkpoint/{model_name}-{model_option}') 
+                       if os.path.isdir(f'{result_path}/checkpoint/{model_name}-{model_option}/{folder}')])
+    latest_version = f"version_{len(versions) + 1}"
+    
     module = FinetuneModule(model_settings, optimizer_settings, loop_settings)
   
-  # Logger
-  logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{model_option}')
+    # Logger
+    logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{model_option}')
 
-  # Callbacks
-  early_stop_callback = EarlyStopping(monitor='val_acc',
-                                      mode='max',
-                                      patience=patience,
-                                      min_delta=min_delta,
-                                      verbose=True)
-
-  checkpoint_callback = ModelCheckpoint(monitor='val_acc',
+    # Callbacks
+    early_stop_callback = EarlyStopping(monitor='val_acc',
                                         mode='max',
-                                        save_top_k=1,
-                                        filename='best_model',
-                                        dirpath=f'{result_path}/checkpoint/{model_name}-{model_option}')
-  
-  # Combine all elements
-  if num_gpus > 1:
-    accelerator = 'gpu'
-    devices = num_gpus
-    strategy = 'ddp'
-  elif num_gpus == 1:
-    accelerator = 'gpu'
-    devices = 1
-    strategy = 'auto'
-  else:
-    accelerator = 'cpu'
-    devices = 'auto'
-    strategy = 'auto'
+                                        patience=patience,
+                                        min_delta=min_delta,
+                                        verbose=True)
 
-  trainer = pl.Trainer(accelerator=accelerator, 
-                       devices=devices, 
-                       strategy=strategy,
-                       max_epochs=num_epochs,
-                       logger=logger,
-                       callbacks=[early_stop_callback, checkpoint_callback],
-                       val_check_interval=epoch_ratio,
-                       log_every_n_steps=50,    # log train_loss and train_acc every 50 batches
-                       precision=16)            # use mixed precision to speed up training
+    checkpoint_callback = ModelCheckpoint(monitor='val_acc',
+                                          mode='max',
+                                          save_top_k=1,
+                                          filename='best_model',
+                                          dirpath=f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
+    
+    # Combine all elements
+    if num_gpus > 1:
+      accelerator = 'gpu'
+      devices = num_gpus
+      strategy = 'ddp'
+    elif num_gpus == 1:
+      accelerator = 'gpu'
+      devices = 1
+      strategy = 'auto'
+    else:
+      accelerator = 'cpu'
+      devices = 'auto'
+      strategy = 'auto'
 
-  # Training loop
-  start_time = time.time()
-  trainer.fit(module)
-  end_time = time.time()
-  print(f"Training time: {end_time - start_time} seconds")
-  
-  # Evaluation
-  start_time = time.time()
-  trainer.test()
-  end_time = time.time()
-  print(f"Evaluation time: {end_time - start_time} seconds")
-  
-  # Plot loss and accuracy
-  plot_results(model_name, model_option)
+    trainer = pl.Trainer(accelerator=accelerator, 
+                        devices=devices, 
+                        strategy=strategy,
+                        max_epochs=num_epochs,
+                        logger=logger,
+                        callbacks=[early_stop_callback, checkpoint_callback],
+                        val_check_interval=epoch_ratio,
+                        log_every_n_steps=200,    # log train_loss and train_acc every 200 batches
+                        precision=16)             # use mixed precision to speed up training
+
+    # Training loop
+    start_time = time.time()
+    trainer.fit(module)
+    end_time = time.time()
+    print(f"Training time: {end_time - start_time} seconds")
+    
+    # Evaluation
+    start_time = time.time()
+    trainer.test(module)
+    end_time = time.time()
+    print(f"Evaluation time: {end_time - start_time} seconds")
+    
+    # Plot loss and accuracy
+    plot_results(model_name, model_option, latest_version)
 
   
