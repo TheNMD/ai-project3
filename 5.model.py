@@ -243,7 +243,7 @@ if __name__ == '__main__':
 
   ## For training loop
   batch_size = 8
-  num_epochs = 40
+  num_epochs = 20
   epoch_ratio = 0.5 # check val every percent of an epoch
 
   # Make Lightning module
