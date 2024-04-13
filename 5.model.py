@@ -229,12 +229,12 @@ if __name__ == '__main__':
   learning_rate = 1e-4
 
   ## For callbacks
-  patience = 8
+  patience = 10
   min_delta = 1e-3
 
   ## For training loop
   batch_size = 32
-  num_epochs = 20
+  num_epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
 
   # Make Lightning module
@@ -283,7 +283,7 @@ if __name__ == '__main__':
     # Combine all elements
     if num_gpus > 1:
       accelerator = 'gpu'
-      devices = num_gpus
+      devices = 2
       strategy = 'ddp'
     elif num_gpus == 1:
       accelerator = 'gpu'
