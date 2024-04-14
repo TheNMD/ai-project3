@@ -169,7 +169,7 @@ def load_model(model_name, model_option):
 
   return model, train_size, test_size
 
-def load_data(option, image_size, batch_size, shuffle, num_workers=20):
+def load_data(option, image_size, batch_size, shuffle, num_workers=8):
   # Preprocessing data
   # 1/ Resize images to fit the image size used when training
   # 2/ Convert to Tensor
@@ -212,8 +212,12 @@ def plot_results(model_name, model_option, latest_version):
   plt.savefig(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/graph_acc.png')
 
   test_results = log_results[['epoch', 'step', 'test_loss', 'test_acc']].dropna()
-  print(f"Testing loss: {test_results['test_loss'].tolist()[0]}")
-  print(f"Testing acc: {test_results['test_acc'].tolist()[0]}")
+  test_loss = test_results['test_loss'].tolist()[0]
+  test_acc = test_results['test_acc'].tolist()[0]
+  print(f"Testing loss: {test_loss}")
+  print(f"Testing acc: {test_acc}")
+  
+  return test_loss, test_acc
 
 if __name__ == '__main__':
   print("Python version: ", sys.version)
@@ -226,18 +230,20 @@ if __name__ == '__main__':
       print(torch.cuda.get_device_name(i))
   else:
     device = torch.device("cpu")
+    num_gpus = 0
     print("Only Torch CPU is available")
      
   if not os.path.exists("result"):
     os.makedirs("result")
     os.makedirs("result/checkpoint")
     os.makedirs("result/final")
+    
   
   # Hyperparameters
   ## For model
   # vit-b | vit-l | swinv2-t | swinv2-b
-  # effnetv2-s | effnetv2-m | convnext-s | convnext-b | convnext-l 
-  model_name = "convnext-b" 
+  # convnext-s | convnext-b | convnext-l | effnetv2-s | effnetv2-m
+  model_name = "convnext-l" 
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -245,17 +251,17 @@ if __name__ == '__main__':
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
-  optimizer_name = "sgd" # adam | sgd
+  optimizer_name = "adam" # adam | sgd
   learning_rate = 1e-3
-  scheduler_name = "cosine" # none | cosine
+  scheduler_name = "none" # none | cosine
 
   ## For callbacks
-  patience = 10
+  patience = 5
   min_delta = 1e-3
 
   ## For training loop
   batch_size = 32
-  num_epochs = 40
+  num_epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
 
   # Make Lightning module
@@ -338,7 +344,7 @@ if __name__ == '__main__':
     print(f"Evaluation time: {test_end_time} seconds")
     
     # Plot loss and accuracy
-    plot_results(model_name, model_option, latest_version)
+    test_loss, tess_acc = plot_results(model_name, model_option, latest_version)
     
     with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
       file.write('### For models ###\n')
@@ -356,7 +362,9 @@ if __name__ == '__main__':
       file.write(f'Epochs: {num_epochs}\n')
       file.write(f'Epoch ratio: {epoch_ratio}\n')
       file.write(f'Num GPUs: {num_gpus}\n\n')
-      file.write('### Time taken ###\n')
+      file.write('### Results ###\n')
+      file.write(f"Test loss: {test_loss}\n")
+      file.write(f"Test accuracy: {tess_acc}\n")
       file.write(f"Training time: {train_end_time} seconds\n")
       file.write(f"Evaluation time: {test_end_time} seconds\n")
     
