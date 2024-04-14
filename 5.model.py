@@ -169,7 +169,7 @@ def load_model(model_name, model_option):
 
   return model, train_size, test_size
 
-def load_data(option, image_size, batch_size, shuffle, num_workers=8):
+def load_data(option, image_size, batch_size, shuffle, num_workers=4):
   # Preprocessing data
   # 1/ Resize images to fit the image size used when training
   # 2/ Convert to Tensor
@@ -251,11 +251,11 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adam" # adam | sgd
-  learning_rate = 1e-3
+  learning_rate = 1e-4
   scheduler_name = "none" # none | cosine
 
   ## For callbacks
-  patience = 5
+  patience = 10
   min_delta = 1e-3
 
   ## For training loop
