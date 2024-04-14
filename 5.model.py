@@ -288,85 +288,90 @@ if __name__ == '__main__':
   else:
     versions = sorted([folder for folder in os.listdir(f'{result_path}/checkpoint/{model_name}-{model_option}') 
                        if os.path.isdir(f'{result_path}/checkpoint/{model_name}-{model_option}/{folder}')])
-    latest_version = f"version_{len(versions)}"
+    latest_version = f"version_{len(versions) - 1}"
     
-    module = FinetuneModule(model_settings, optimizer_settings, loop_settings)
+    # module = FinetuneModule(model_settings, optimizer_settings, loop_settings)
   
-    # Logger
-    logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{model_option}')
+    # # Logger
+    # logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{model_option}')
 
-    # Callbacks
-    early_stop_callback = EarlyStopping(monitor='val_acc',
-                                        mode='max',
-                                        patience=patience,
-                                        min_delta=min_delta,
-                                        verbose=True)
+    # # Callbacks
+    # early_stop_callback = EarlyStopping(monitor='val_acc',
+    #                                     mode='max',
+    #                                     patience=patience,
+    #                                     min_delta=min_delta,
+    #                                     verbose=True)
 
-    checkpoint_callback = ModelCheckpoint(monitor='val_acc',
-                                          mode='max',
-                                          save_top_k=1,
-                                          filename='best_model',
-                                          dirpath=f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
+    # checkpoint_callback = ModelCheckpoint(monitor='val_acc',
+    #                                       mode='max',
+    #                                       save_top_k=1,
+    #                                       filename='best_model',
+    #                                       dirpath=f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
     
-    # Combine all elements
-    if num_gpus > 1:
-      accelerator = 'gpu'
-      devices = 2
-      strategy = 'ddp'
-    elif num_gpus == 1:
-      accelerator = 'gpu'
-      devices = 1
-      strategy = 'auto'
-    else:
-      accelerator = 'cpu'
-      devices = 'auto'
-      strategy = 'auto'
+    # # Combine all elements
+    # if num_gpus > 1:
+    #   accelerator = 'gpu'
+    #   devices = 2
+    #   strategy = 'ddp'
+    # elif num_gpus == 1:
+    #   accelerator = 'gpu'
+    #   devices = 1
+    #   strategy = 'auto'
+    # else:
+    #   accelerator = 'cpu'
+    #   devices = 'auto'
+    #   strategy = 'auto'
 
-    trainer = pl.Trainer(accelerator=accelerator, 
-                         devices=devices, 
-                         strategy=strategy,
-                         max_epochs=num_epochs,
-                         logger=logger,
-                         callbacks=[early_stop_callback, checkpoint_callback],
-                         val_check_interval=epoch_ratio,
-                         log_every_n_steps=200,    # log train_loss and train_acc every 200 batches
-                         precision=16)             # use mixed precision to speed up training
+    # trainer = pl.Trainer(accelerator=accelerator, 
+    #                      devices=devices, 
+    #                      strategy=strategy,
+    #                      max_epochs=num_epochs,
+    #                      logger=logger,
+    #                      callbacks=[early_stop_callback, checkpoint_callback],
+    #                      val_check_interval=epoch_ratio,
+    #                      log_every_n_steps=200,    # log train_loss and train_acc every 200 batches
+    #                      precision=16)             # use mixed precision to speed up training
 
-    # Training loop
-    train_start_time = time.time()
-    trainer.fit(module)
-    train_end_time = time.time() - train_start_time
-    print(f"Training time: {train_end_time} seconds")
+    # # Training loop
+    # train_start_time = time.time()
+    # trainer.fit(module)
+    # train_end_time = time.time() - train_start_time
+    # print(f"Training time: {train_end_time} seconds")
     
-    # Evaluation
-    test_start_time = time.time()
-    trainer.test(module)
-    test_end_time = time.time() - test_start_time
-    print(f"Evaluation time: {test_end_time} seconds")
+    # # Evaluation
+    # test_start_time = time.time()
+    # trainer.test(module)
+    # test_end_time = time.time() - test_start_time
+    # print(f"Evaluation time: {test_end_time} seconds")
     
     # Plot loss and accuracy
     test_loss, tess_acc = plot_results(model_name, model_option, latest_version)
     
-    with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
-      file.write('### For models ###\n')
-      file.write(f'Model name: {model_name}\n')
-      file.write(f'Model Option: {model_option}\n\n')
-      file.write('### For optimizer & scheduler ###\n')
-      file.write(f'Optimizer: {optimizer_name}\n')
-      file.write(f'Learning rate: {learning_rate}\n')
-      file.write(f'Scheduler: {scheduler_name}\n')
-      file.write('### For callbacks ###\n')
-      file.write(f'Patience: {patience}\n')
-      file.write(f'Min delta: {min_delta}\n\n')
-      file.write('### For training loop ###\n')
-      file.write(f'Batch size: {batch_size}\n')
-      file.write(f'Epochs: {num_epochs}\n')
-      file.write(f'Epoch ratio: {epoch_ratio}\n')
-      file.write(f'Num GPUs: {num_gpus}\n\n')
-      file.write('### Results ###\n')
-      file.write(f"Test loss: {test_loss}\n")
-      file.write(f"Test accuracy: {tess_acc}\n")
-      file.write(f"Training time: {train_end_time} seconds\n")
-      file.write(f"Evaluation time: {test_end_time} seconds\n")
+    # # Write down hyperparameters and results
+    # with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
+    #   file.write('### For models ###\n')
+    #   file.write(f'Model name: {model_name}\n')
+    #   file.write(f'Model Option: {model_option}\n\n')
+      
+    #   file.write('### For optimizer & scheduler ###\n')
+    #   file.write(f'Optimizer: {optimizer_name}\n')
+    #   file.write(f'Learning rate: {learning_rate}\n')
+    #   file.write(f'Scheduler: {scheduler_name}\n\n')
+      
+    #   file.write('### For callbacks ###\n')
+    #   file.write(f'Patience: {patience}\n')
+    #   file.write(f'Min delta: {min_delta}\n\n')
+      
+    #   file.write('### For training loop ###\n')
+    #   file.write(f'Batch size: {batch_size}\n')
+    #   file.write(f'Epochs: {num_epochs}\n')
+    #   file.write(f'Epoch ratio: {epoch_ratio}\n')
+    #   file.write(f'Num GPUs: {num_gpus}\n\n')
+      
+    #   file.write('### Results ###\n')
+    #   file.write(f"Test loss: {test_loss}\n")
+    #   file.write(f"Test accuracy: {tess_acc}\n")
+    #   file.write(f"Training time: {train_end_time} seconds\n")
+    #   file.write(f"Evaluation time: {test_end_time} seconds\n")
     
   
