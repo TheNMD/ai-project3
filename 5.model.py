@@ -243,7 +243,7 @@ if __name__ == '__main__':
   ## For model
   # vit-b | vit-l | swinv2-t | swinv2-b
   # convnext-s | convnext-b | convnext-l | effnetv2-s | effnetv2-m
-  model_name = "convnext-b" 
+  model_name = "convnext-l" 
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -253,14 +253,14 @@ if __name__ == '__main__':
   ## For optimizer & scheduler
   optimizer_name = "adam" # adam | sgd
   learning_rate = 1e-3
-  scheduler_name = "cosine" # none | cosine
+  scheduler_name = "none" # none | cosine
 
   ## For callbacks
   patience = 5
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 16
+  batch_size = 32
   num_epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
 
