@@ -252,16 +252,16 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adam" # adam | sgd
-  learning_rate = 1e-4
-  scheduler_name = "none" # none | cosine
+  learning_rate = 1e-3
+  scheduler_name = "cosine" # none | cosine
 
   ## For callbacks
   patience = 5
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 32
-  num_epochs = 20
+  batch_size = 16
+  num_epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
 
   # Make Lightning module

@@ -43,5 +43,5 @@ exit
 
 # Other
 Total RAW files: 259999
-Total images files: 251507
+Total images files: 251486
 Total labeled images files: 250167
