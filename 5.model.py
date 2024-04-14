@@ -244,7 +244,7 @@ if __name__ == '__main__':
   ## For model
   # vit-b | vit-l | swinv2-t | swinv2-b
   # convnext-s | convnext-b | convnext-l | effnetv2-s | effnetv2-m
-  model_name = "convnext-l" 
+  model_name = "convnext-b" 
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -261,7 +261,7 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 8
+  batch_size = 16
   num_epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
 
