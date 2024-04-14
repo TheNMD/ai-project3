@@ -244,7 +244,7 @@ if __name__ == '__main__':
   ## For model
   # vit-b | vit-l | swinv2-t | swinv2-b
   # convnext-s | convnext-b | convnext-l | effnetv2-s | effnetv2-m
-  model_name = "convnext-l" 
+  model_name = "convnext-b" 
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -347,22 +347,27 @@ if __name__ == '__main__':
     # Plot loss and accuracy
     test_loss, tess_acc = plot_results(model_name, model_option, latest_version)
     
+    # Write down hyperparameters and results
     with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
       file.write('### For models ###\n')
       file.write(f'Model name: {model_name}\n')
       file.write(f'Model Option: {model_option}\n\n')
+      
       file.write('### For optimizer & scheduler ###\n')
       file.write(f'Optimizer: {optimizer_name}\n')
       file.write(f'Learning rate: {learning_rate}\n')
-      file.write(f'Scheduler: {scheduler_name}\n')
+      file.write(f'Scheduler: {scheduler_name}\n\n')
+      
       file.write('### For callbacks ###\n')
       file.write(f'Patience: {patience}\n')
       file.write(f'Min delta: {min_delta}\n\n')
+      
       file.write('### For training loop ###\n')
       file.write(f'Batch size: {batch_size}\n')
       file.write(f'Epochs: {num_epochs}\n')
       file.write(f'Epoch ratio: {epoch_ratio}\n')
       file.write(f'Num GPUs: {num_gpus}\n\n')
+      
       file.write('### Results ###\n')
       file.write(f"Test loss: {test_loss}\n")
       file.write(f"Test accuracy: {tess_acc}\n")
