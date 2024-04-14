@@ -6,9 +6,10 @@ metadata/
 sample_data/
 image/
 server/
-model/
-result/
+result
 
 data.zip
 image.zip
 result.zip
+
+*.ckpt
