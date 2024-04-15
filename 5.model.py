@@ -138,16 +138,6 @@ def load_model(model_name, model_option):
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
     train_size, test_size = 256, 256
-  elif model_name == "effnetv2-s":
-    model = timm.create_model('tf_efficientnetv2_s.in21k_ft_in1k', pretrained=True)
-    num_feature = model.classifier.in_features
-    model.classifier = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 300, 384
-  elif model_name == "effnetv2-m":
-    model = timm.create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
-    num_feature = model.classifier.in_features
-    model.classifier = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 384, 480
   elif model_name == "convnext-s":
     model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
     num_feature = model.head.fc.in_features
