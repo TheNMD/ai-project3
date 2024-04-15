@@ -178,10 +178,11 @@ def load_data(option, image_size, batch_size, shuffle, num_workers=4):
   # 3/ Normalize based on ImageNet statistics
   # TODO Add more preprocessing methods
   data_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
-                                        transforms.RandomVerticalFlip(p=0.1),
-                                        transforms.RandomHorizontalFlip(p=0.1),
+                                        # transforms.RandomVerticalFlip(p=0.1),
+                                        # transforms.RandomHorizontalFlip(p=0.1),
                                         transforms.ToTensor(),
-                                        transforms.Lambda(lambda x: pepper_noise(x, density=0.01)),
+                                        # transforms.Lambda(lambda x: pepper_noise(x, density=0.01)),
+                                        transforms.Lambda(lambda x: gaussian_noise(x, mean=0.0, std=0.1)),
                                         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
                                       ])
   
