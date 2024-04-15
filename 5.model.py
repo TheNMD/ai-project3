@@ -160,12 +160,21 @@ def load_model(model_name, model_option):
   return model, train_size, test_size
 
 def load_data(option, image_size, batch_size, shuffle, num_workers=4):
+  def pepper_noise(image_tensor, density=0.01):
+    image_np = image_tensor.numpy()
+    noise_mask = np.random.Generator(*image_np.shape)
+    image_np[noise_mask < density] = 0
+    return torch.from_numpy(image_np)
+  
   # Preprocessing data
   # 1/ Resize images to fit the image size used when training
   # 2/ Convert to Tensor
   # 3/ Normalize based on ImageNet statistics
   data_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
+                                        transforms.RandomVerticalFlip(p=0.1),
+                                        transforms.RandomHorizontalFlip(p=0.1),
                                         transforms.ToTensor(),
+                                        transforms.Lambda(lambda x: pepper_noise(x, density=0.01)),
                                         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
   
   dataset = datasets.ImageFolder(root=f"{image_path}/sets/{option}", transform=data_transforms)
@@ -233,8 +242,8 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   # vit-b | vit-l | swinv2-t | swinv2-b
-  # convnext-s | convnext-b | convnext-l | effnetv2-s | effnetv2-m
-  model_name = "convnext-l" 
+  # convnext-s | convnext-b | convnext-l
+  model_name = "convnext-b" 
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -245,15 +254,19 @@ if __name__ == '__main__':
   optimizer_name = "adam" # adam | sgd
   learning_rate = 1e-4
   scheduler_name = "none" # none | cosine
+  print(f"Optimizer: {optimizer_name}")
+  print(f"Learning rate: {learning_rate}")
+  print(f"Scheduler: {scheduler_name}")
 
   ## For callbacks
-  patience = 10
+  patience = 5
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 16
-  num_epochs = 30
+  batch_size = 32
+  num_epochs = 10
   epoch_ratio = 0.5 # check val every percent of an epoch
+  print(f"Batch size: {batch_size}")
 
   # Make Lightning module
   model_settings = [model_name, model_option]
