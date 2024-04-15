@@ -160,11 +160,17 @@ def load_model(model_name, model_option):
   return model, train_size, test_size
 
 def load_data(option, image_size, batch_size, shuffle, num_workers=4):
+  def gaussian_noise(image, mean=0.0, std=0.1):
+    noise = torch.randn(image.size()) * std + mean
+    noisy_image = image + noise
+    return noisy_image
+  
   def pepper_noise(image, density=0.01):
-      random_mask = torch.rand(image.size()) < density
-      noisy_image_tensor = image.clone()
-      noisy_image_tensor[random_mask] = 0  # Black for salt
-      noisy_image_tensor[~random_mask] = 1  # White for pepper
+    random_mask = torch.rand(image.size()) < density
+    noisy_image = image.clone()
+    noisy_image[random_mask] = 0  # Black
+    noisy_image[~random_mask] = 1  # White
+    return noisy_image
   
   # Preprocessing data
   # 1/ Resize images to fit the image size used when training
