@@ -234,7 +234,7 @@ if __name__ == '__main__':
   ## For model
   # vit-b | vit-l | swinv2-t | swinv2-b
   # convnext-s | convnext-b | convnext-l | effnetv2-s | effnetv2-m
-  model_name = "convnext-b" 
+  model_name = "convnext-l" 
   model_option = "pretrained"
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
