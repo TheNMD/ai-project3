@@ -170,6 +170,7 @@ def load_data(option, image_size, batch_size, shuffle, num_workers=4):
   # 1/ Resize images to fit the image size used when training
   # 2/ Convert to Tensor
   # 3/ Normalize based on ImageNet statistics
+  # TODO Add more preprocessing methods
   data_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
                                         transforms.RandomVerticalFlip(p=0.1),
                                         transforms.RandomHorizontalFlip(p=0.1),
