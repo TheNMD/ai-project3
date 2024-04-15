@@ -160,11 +160,11 @@ def load_model(model_name, model_option):
   return model, train_size, test_size
 
 def load_data(option, image_size, batch_size, shuffle, num_workers=4):
-  def pepper_noise(image_tensor, density=0.01):
-    image_np = image_tensor.numpy()
-    noise_mask = np.random.Generator(*image_np.shape)
-    image_np[noise_mask < density] = 0
-    return torch.from_numpy(image_np)
+  def pepper_noise(image, density=0.01):
+      random_mask = torch.rand(image.size()) < density
+      noisy_image_tensor = image.clone()
+      noisy_image_tensor[random_mask] = 0  # Black for salt
+      noisy_image_tensor[~random_mask] = 1  # White for pepper
   
   # Preprocessing data
   # 1/ Resize images to fit the image size used when training
@@ -176,7 +176,8 @@ def load_data(option, image_size, batch_size, shuffle, num_workers=4):
                                         transforms.RandomHorizontalFlip(p=0.1),
                                         transforms.ToTensor(),
                                         transforms.Lambda(lambda x: pepper_noise(x, density=0.01)),
-                                        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+                                        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                                      ])
   
   dataset = datasets.ImageFolder(root=f"{image_path}/sets/{option}", transform=data_transforms)
   
