@@ -1,6 +1,4 @@
-import os
-import shutil
-import time
+import os, sys, platform, shutil, time
 import multiprocessing as mp
 import warnings
 warnings.filterwarnings('ignore')
@@ -63,7 +61,10 @@ def move_to_test(metadata_chunk):
         future_label = row['future_label']
         shutil.copy(f"image/labeled/{future_label}/{timestamp}.jpg", f"image/sets/test/{future_label}/{timestamp}.jpg")
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
+    print("Python version: ", sys.version)
+    print("Ubuntu version: ", platform.release())
+        
     # view_sample_images()
     
     num_processes = 4

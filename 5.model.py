@@ -1,9 +1,5 @@
-import os
-import shutil
+import os, sys, platform, shutil, time
 import zipfile
-import sys
-import time
-import platform
 import warnings
 warnings.filterwarnings('ignore')
 import logging
@@ -299,7 +295,7 @@ if __name__ == '__main__':
 
   ## For training loop
   batch_size = 32
-  num_epochs = 20
+  num_epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
   print(f"Batch size: {batch_size}")
 
@@ -415,5 +411,5 @@ if __name__ == '__main__':
         file.write(f"Evaluation time: {test_end_time} seconds\n")
     except Exception as e:
       print(e)
-      os.rmdir(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
+      shutil.rmtree(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
   
