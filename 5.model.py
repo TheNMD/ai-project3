@@ -187,13 +187,13 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
   # Preprocessing data
   # TODO Add more preprocessing methods
   # TODO Different methods for train and val and test
-  transforms = v2.Compose([v2.Resize((image_size, image_size)),
-                           v2.ToImage(), 
+  transforms = v2.Compose([v2.ToImage(), 
+                           v2.Resize((image_size, image_size)),
                            # v2.RandomVerticalFlip(p=0.1),
                            # v2.RandomHorizontalFlip(p=0.1),
-                           v2.RandomEqualize(p=1),
+                           v2.Grayscale(num_output_channels=1),
                            v2.ToDtype(torch.float32, scale=True),
-                           v2.GaussianBlur(kernel_size=3),
+                          #  v2.GaussianBlur(kernel_size=3, sigma=0.2),
                            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                           ])
 
