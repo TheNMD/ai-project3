@@ -12,27 +12,22 @@ docker build -t dht-image1 -f Dockerfile .
 ## Run image (Mount NhaBe and Image folders from host to container)
 docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image --name dht-cont dht-image
 
-docker run -v /data/DanHoangThu/result:/app/result -v /data/DanHoangThu/image:/app/image --shm-size=32g --gpus '"device=1"' --name dht-cont dht-image
+docker run -v /data/DanHoangThu/result:/app/result -v /data/DanHoangThu/image:/app/image -d --shm-size=16g --gpus '"device=0"' --name dht-cont dht-image
 
-docker run -v /data/DanHoangThu/result:/app/result -v /data/DanHoangThu/image:/app/image --shm-size=16g --gpus '"device=2"' --name dht-cont1 dht-image1
+docker run -v /data/DanHoangThu/result:/app/result -v /data/DanHoangThu/image:/app/image -d --shm-size=16g --gpus '"device=1"' --name dht-cont1 dht-image1
 ## Remove image
 docker rmi -f dht-image
 
 ## Start container
 docker start dht-cont
-# Access container
+## Access container
 docker exec -it dht-cont /bin/bash
-# Access container's terminal output
+## Access container's terminal output
 docker logs -f dht-cont
-## Copy from host to container
-docker cp 1.gen_meta.py dht-cont:/app
 ## Copy from container to host
-docker cp dht-cont:/app/metadata.csv .
-docker cp dht-cont:/app/metadata_temp.csv .
-docker cp dht-cont:/app/metadata_lite.csv .
 docker cp dht-cont:/app/metadata .
-## Find container id
-docker ps -aqf "ancestor=dht-image"
+docker cp dht-cont:/app/metadata.csv .
+docker cp dht-cont:/app/metadata_lite.csv .
 ## Stop container
 docker stop dht-cont
 ## Remove container
