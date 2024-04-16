@@ -52,7 +52,8 @@ class FinetuneModule(pl.LightningModule):
 
     self.model_name = model_settings[0]
     self.model_option = model_settings[1]
-    self.model, train_size, test_size = load_model(self.model_name, self.model_option)
+    self.freeze = model_settings[2]
+    self.model, train_size, test_size = load_model(self.model_name, self.model_option, self.freeze)
 
     self.optimizer_name = optimizer_settings[0]
     self.learning_rate = optimizer_settings[1]
@@ -60,9 +61,9 @@ class FinetuneModule(pl.LightningModule):
 
     self.batch_size = loop_settings[0]
 
-    self.train_loader = load_data(option="train", image_size=train_size, batch_size=self.batch_size, shuffle=True)
-    self.val_loader   = load_data(option="val", image_size=test_size, batch_size=self.batch_size, shuffle=False)
-    self.test_loader  = load_data(option="test", image_size=test_size, batch_size=self.batch_size, shuffle=False)
+    self.train_loader = load_data(set_name="train", image_size=train_size, batch_size=self.batch_size, shuffle=True)
+    self.val_loader   = load_data(set_name="val", image_size=test_size, batch_size=self.batch_size, shuffle=False)
+    self.test_loader  = load_data(set_name="test", image_size=test_size, batch_size=self.batch_size, shuffle=False)
 
   def forward(self, x):
     return self.model(x)
@@ -97,13 +98,13 @@ class FinetuneModule(pl.LightningModule):
 
   def configure_optimizers(self):
     if self.optimizer_name == "adam":
-      optimizer = Adam(self.model.parameters(), lr=self.learning_rate)
+      optimizer = Adam(self.model.parameters(), lr=self.learning_rate, betas=(0.9, 0.999), weight_decay=0)
     elif self.optimizer_name == "sgd":
       optimizer = SGD(self.model.parameters(), lr=self.learning_rate, momentum=0.9, weight_decay=0)
       
     if self.scheduler_name == "none":
       return {"optimizer": optimizer}
-    elif self.scheduler_name == "cosine":
+    elif self.scheduler_name == "cawr":
       scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=int(len(self.train_loader) * 0.4), T_mult=1) 
 
     return {"optimizer": optimizer, "lr_scheduler": scheduler}
@@ -117,50 +118,74 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
     return self.test_loader
 
-def load_model(model_name, model_option):
-  if model_name == "vit-b":
-    model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
-    num_feature = model.head.in_features
-    model.head = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 224, 224
-  elif model_name == "vit-l":
-    model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=True)
-    num_feature = model.head.in_features
-    model.head = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 224, 224
-  elif model_name == "swinv2-t":
-    model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=True)
-    num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 256, 256
-  elif model_name == "swinv2-b":
-    model = timm.create_model('swinv2_base_window8_256.ms_in1k', pretrained=True)
-    num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 256, 256
-  elif model_name == "convnext-s":
-    model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
-    num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 224, 224
-  elif model_name == "convnext-b":
-    model = timm.create_model('convnext_base.fb_in22k', pretrained=True)
-    num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 224, 224
-  elif model_name == "convnext-l":
-    model = timm.create_model('convnext_large.fb_in22k', pretrained=True)
-    num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 224, 224
+def load_model(model_name, model_option, freeze=False):
+  if model_option == "custom":
+    pass
+  elif model_option == "pretrained":
+    if model_name == "vit-b":
+      model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
+      if freeze:
+        for param in model.parameters():
+          param.requires_grad = False
+      num_feature = model.head.in_features
+      model.head = nn.Linear(in_features=num_feature, out_features=5)
+      train_size, test_size = 224, 224
+    elif model_name == "vit-l":
+      model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=True)
+      if freeze:
+        for param in model.parameters():
+          param.requires_grad = False
+      num_feature = model.head.in_features
+      model.head = nn.Linear(in_features=num_feature, out_features=5)
+      train_size, test_size = 224, 224
+    elif model_name == "swinv2-t":
+      model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=True)
+      if freeze:
+        for param in model.parameters():
+          param.requires_grad = False
+      num_feature = model.head.fc.in_features
+      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+      train_size, test_size = 256, 256
+    elif model_name == "swinv2-b":
+      model = timm.create_model('swinv2_base_window8_256.ms_in1k', pretrained=True)
+      if freeze:
+        for param in model.parameters():
+          param.requires_grad = False
+      num_feature = model.head.fc.in_features
+      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+      train_size, test_size = 256, 256
+    elif model_name == "convnext-s":
+      model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
+      if freeze:
+        for param in model.parameters():
+          param.requires_grad = False
+      num_feature = model.head.fc.in_features
+      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+      train_size, test_size = 224, 224
+    elif model_name == "convnext-b":
+      model = timm.create_model('convnext_base.fb_in22k', pretrained=True)
+      if freeze:
+        for param in model.parameters():
+          param.requires_grad = False
+      num_feature = model.head.fc.in_features
+      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+      train_size, test_size = 224, 224
+    elif model_name == "convnext-l":
+      model = timm.create_model('convnext_large.fb_in22k', pretrained=True)
+      if freeze:
+        for param in model.parameters():
+          param.requires_grad = False
+      num_feature = model.head.fc.in_features
+      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+      train_size, test_size = 224, 224
 
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write(str(model))
 
   return model, train_size, test_size
 
-def load_data(option, image_size, batch_size, shuffle, num_workers=4):
-  def gaussian_noise(image, mean=0.0, std=0.1):
+def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
+  def gaussian_noise(image, mean, std):
     noise = torch.randn(image.size()) * std + mean
     noisy_image = image + noise
     return noisy_image
@@ -182,11 +207,11 @@ def load_data(option, image_size, batch_size, shuffle, num_workers=4):
                                         # transforms.RandomHorizontalFlip(p=0.1),
                                         transforms.ToTensor(),
                                         # transforms.Lambda(lambda x: pepper_noise(x, density=0.01)),
-                                        transforms.Lambda(lambda x: gaussian_noise(x, mean=0.0, std=0.2)),
-                                        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                                        # transforms.Lambda(lambda x: gaussian_noise(x, mean=0.0, std=0.2)),
+                                        # transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
                                       ])
   
-  dataset = datasets.ImageFolder(root=f"{image_path}/sets/{option}", transform=data_transforms)
+  dataset = datasets.ImageFolder(root=f"{image_path}/sets/{set_name}", transform=data_transforms)
   
   dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
   
@@ -254,15 +279,16 @@ if __name__ == '__main__':
   # convnext-s | convnext-b | convnext-l
   model_name = "convnext-b" 
   model_option = "pretrained"
+  freeze = False
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
   if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
-  optimizer_name = "adam" # adam | sgd
-  learning_rate = 1e-4
-  scheduler_name = "none" # none | cosine
+  optimizer_name = "adam" # adam | sgdr
+  learning_rate = 1e-2
+  scheduler_name = "cawr" # none | cawr
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
   print(f"Scheduler: {scheduler_name}")
@@ -278,7 +304,7 @@ if __name__ == '__main__':
   print(f"Batch size: {batch_size}")
 
   # Make Lightning module
-  model_settings = [model_name, model_option]
+  model_settings = [model_name, model_option, freeze]
   optimizer_settings = [optimizer_name, learning_rate, scheduler_name]
   loop_settings = [batch_size]
 
@@ -364,7 +390,8 @@ if __name__ == '__main__':
       with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
         file.write('### For models ###\n')
         file.write(f'Model name: {model_name}\n')
-        file.write(f'Model Option: {model_option}\n\n')
+        file.write(f'Model Option: {model_option}\n')
+        file.write(f'Freeze: {model_option}\n\n')
         
         file.write('### For optimizer & scheduler ###\n')
         file.write(f'Optimizer: {optimizer_name}\n')
