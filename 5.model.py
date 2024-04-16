@@ -188,9 +188,9 @@ def load_data(option, image_size, batch_size, shuffle, num_workers=4):
   
   dataset = datasets.ImageFolder(root=f"{image_path}/sets/{option}", transform=data_transforms)
   
-  data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
+  dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
   
-  return data_loader
+  return dataloader
 
 def plot_results(model_name, model_option, latest_version):
   log_results = pd.read_csv(f"{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/metrics.csv")
