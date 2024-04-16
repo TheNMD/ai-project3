@@ -1,6 +1,4 @@
-import os
-import shutil
-import time
+import os, sys, platform, shutil, time
 import multiprocessing as mp
 import warnings
 warnings.filterwarnings('ignore')
@@ -94,8 +92,14 @@ def find_future_images(interval=7200):
     metadata.to_csv("metadata.csv", index=False)
 
 if __name__ == '__main__':
+  print("Python version: ", sys.version)
+  print("Ubuntu version: ", platform.release())
+  
   years = [2020, 2021, 2022, 2023]
   num_processes = len(years)
+  
+  if not os.path.exists("metadata"):
+    os.makedirs("metadata")
   
   try:
       update_metadata()
@@ -114,3 +118,6 @@ if __name__ == '__main__':
       logging.error(e, exc_info=True)
       
   find_future_images(interval=7200)
+  
+  if not os.path.exists("metadata"):
+    shutil.rmtree("metadata")
