@@ -183,30 +183,18 @@ def load_model(model_name, model_option, freeze=False):
   return model, train_size, test_size
 
 def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
-  def gaussian_noise(image, mean, std):
-    noise = torch.randn(image.size()) * std + mean
-    noisy_image = image + noise
-    return noisy_image
-  
-  def pepper_noise(image, density=0.01):
-    random_mask = torch.rand(image.size()) < density
-    noisy_image = image.clone()
-    noisy_image[random_mask] = 0  # Black
-    noisy_image[~random_mask] = 1  # White
-    return noisy_image
-  
   # Preprocessing data
   # 1/ Resize images to fit the image size used when training
   # 2/ Convert to Tensor
   # 3/ Normalize based on ImageNet statistics
   # TODO Add more preprocessing methods
   data_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
-                                        # transforms.RandomVerticalFlip(p=0.1),
+                                        # transforms.RandomVerticalFlip(p=0.1,
                                         # transforms.RandomHorizontalFlip(p=0.1),
                                         transforms.ToTensor(),
-                                        # transforms.Lambda(lambda x: pepper_noise(x, density=0.01)),
-                                        # transforms.Lambda(lambda x: gaussian_noise(x, mean=0.0, std=0.2)),
-                                        # transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                                        transforms.Lambda(lambda image: transforms.functional.equalize(image)),
+                                        transforms.GaussianBlur(kernel_size=3),
+                                        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                                       ])
   
   dataset = datasets.ImageFolder(root=f"{image_path}/sets/{set_name}", transform=data_transforms)
@@ -247,8 +235,6 @@ def plot_results(model_name, model_option, latest_version):
   test_results = log_results[['test_loss', 'test_acc']].dropna()
   test_loss = test_results['test_loss'].tolist()[0]
   test_acc = test_results['test_acc'].tolist()[0]
-  print(f"Testing loss: {test_loss}")
-  print(f"Testing acc: {test_acc}")
   
   return test_loss, test_acc
 
@@ -329,88 +315,88 @@ if __name__ == '__main__':
     try:
       module = FinetuneModule(model_settings, optimizer_settings, loop_settings)
     
-      # # Logger
-      # logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{model_option}')
+      # Logger
+      logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{model_option}')
 
-      # # Callbacks
-      # early_stop_callback = EarlyStopping(monitor='val_acc',
-      #                                     mode='max',
-      #                                     patience=patience,
-      #                                     min_delta=min_delta,
-      #                                     verbose=True)
+      # Callbacks
+      early_stop_callback = EarlyStopping(monitor='val_acc',
+                                          mode='max',
+                                          patience=patience,
+                                          min_delta=min_delta,
+                                          verbose=True)
 
-      # checkpoint_callback = ModelCheckpoint(monitor='val_acc',
-      #                                       mode='max',
-      #                                       save_top_k=1,
-      #                                       filename='best_model',
-      #                                       dirpath=f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
+      checkpoint_callback = ModelCheckpoint(monitor='val_acc',
+                                            mode='max',
+                                            save_top_k=1,
+                                            filename='best_model',
+                                            dirpath=f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
       
-      # # Combine all elements
-      # if num_gpus > 1:
-      #   accelerator = 'gpu'
-      #   devices = 2
-      #   strategy = 'ddp'
-      # elif num_gpus == 1:
-      #   accelerator = 'gpu'
-      #   devices = 1
-      #   strategy = 'auto'
-      # else:
-      #   accelerator = 'cpu'
-      #   devices = 'auto'
-      #   strategy = 'auto'
+      # Combine all elements
+      if num_gpus > 1:
+        accelerator = 'gpu'
+        devices = 2
+        strategy = 'ddp'
+      elif num_gpus == 1:
+        accelerator = 'gpu'
+        devices = 1
+        strategy = 'auto'
+      else:
+        accelerator = 'cpu'
+        devices = 'auto'
+        strategy = 'auto'
 
-      # trainer = pl.Trainer(accelerator=accelerator, 
-      #                     devices=devices, 
-      #                     strategy=strategy,
-      #                     max_epochs=num_epochs,
-      #                     logger=logger,
-      #                     callbacks=[early_stop_callback, checkpoint_callback],
-      #                     val_check_interval=epoch_ratio,
-      #                     log_every_n_steps=200,    # log train_loss and train_acc every 200 batches
-      #                     precision=16)             # use mixed precision to speed up training
+      trainer = pl.Trainer(accelerator=accelerator, 
+                          devices=devices, 
+                          strategy=strategy,
+                          max_epochs=num_epochs,
+                          logger=logger,
+                          callbacks=[early_stop_callback, checkpoint_callback],
+                          val_check_interval=epoch_ratio,
+                          log_every_n_steps=200,    # log train_loss and train_acc every 200 batches
+                          precision=16)             # use mixed precision to speed up training
 
-      # # Training loop
-      # train_start_time = time.time()
-      # trainer.fit(module)
-      # train_end_time = time.time() - train_start_time
-      # print(f"Training time: {train_end_time} seconds")
+      # Training loop
+      train_start_time = time.time()
+      trainer.fit(module)
+      train_end_time = time.time() - train_start_time
+      print(f"Training time: {train_end_time} seconds")
       
-      # # Evaluation
-      # test_start_time = time.time()
-      # trainer.test(module)
-      # test_end_time = time.time() - test_start_time
-      # print(f"Evaluation time: {test_end_time} seconds")
+      # Evaluation
+      test_start_time = time.time()
+      trainer.test(module)
+      test_end_time = time.time() - test_start_time
+      print(f"Evaluation time: {test_end_time} seconds")
       
-      # # Plot loss and accuracy
-      # test_loss, tess_acc = plot_results(model_name, model_option, latest_version)
+      # Plot loss and accuracy
+      test_loss, tess_acc = plot_results(model_name, model_option, latest_version)
       
-      # # Write down hyperparameters and results
-      # with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
-      #   file.write('### For models ###\n')
-      #   file.write(f'Model name: {model_name}\n')
-      #   file.write(f'Model Option: {model_option}\n')
-      #   file.write(f'Freeze: {model_option}\n\n')
+      # Write down hyperparameters and results
+      with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
+        file.write('### For models ###\n')
+        file.write(f'Model name: {model_name}\n')
+        file.write(f'Model Option: {model_option}\n')
+        file.write(f'Freeze: {model_option}\n\n')
         
-      #   file.write('### For optimizer & scheduler ###\n')
-      #   file.write(f'Optimizer: {optimizer_name}\n')
-      #   file.write(f'Learning rate: {learning_rate}\n')
-      #   file.write(f'Scheduler: {scheduler_name}\n\n')
+        file.write('### For optimizer & scheduler ###\n')
+        file.write(f'Optimizer: {optimizer_name}\n')
+        file.write(f'Learning rate: {learning_rate}\n')
+        file.write(f'Scheduler: {scheduler_name}\n\n')
         
-      #   file.write('### For callbacks ###\n')
-      #   file.write(f'Patience: {patience}\n')
-      #   file.write(f'Min delta: {min_delta}\n\n')
+        file.write('### For callbacks ###\n')
+        file.write(f'Patience: {patience}\n')
+        file.write(f'Min delta: {min_delta}\n\n')
         
-      #   file.write('### For training loop ###\n')
-      #   file.write(f'Batch size: {batch_size}\n')
-      #   file.write(f'Epochs: {num_epochs}\n')
-      #   file.write(f'Epoch ratio: {epoch_ratio}\n')
-      #   file.write(f'Num GPUs: {num_gpus}\n\n')
+        file.write('### For training loop ###\n')
+        file.write(f'Batch size: {batch_size}\n')
+        file.write(f'Epochs: {num_epochs}\n')
+        file.write(f'Epoch ratio: {epoch_ratio}\n')
+        file.write(f'Num GPUs: {num_gpus}\n\n')
         
-      #   file.write('### Results ###\n')
-      #   file.write(f"Test loss: {test_loss}\n")
-      #   file.write(f"Test accuracy: {tess_acc}\n")
-      #   file.write(f"Training time: {train_end_time} seconds\n")
-      #   file.write(f"Evaluation time: {test_end_time} seconds\n")
+        file.write('### Results ###\n')
+        file.write(f"Test loss: {test_loss}\n")
+        file.write(f"Test accuracy: {tess_acc}\n")
+        file.write(f"Training time: {train_end_time} seconds\n")
+        file.write(f"Evaluation time: {test_end_time} seconds\n")
     except Exception as e:
       print(e)
       shutil.rmtree(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
