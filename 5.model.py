@@ -184,10 +184,8 @@ def load_model(model_name, model_option, freeze=False):
 
 def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
   # Preprocessing data
-  # 1/ Resize images to fit the image size used when training
-  # 2/ Convert to Tensor
-  # 3/ Normalize based on ImageNet statistics
   # TODO Add more preprocessing methods
+  # TODO Different methods for train and val and test
   data_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
                                         # transforms.RandomVerticalFlip(p=0.1,
                                         # transforms.RandomHorizontalFlip(p=0.1),
@@ -196,7 +194,7 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
                                         transforms.GaussianBlur(kernel_size=3),
                                         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                                       ])
-  
+
   dataset = datasets.ImageFolder(root=f"{image_path}/sets/{set_name}", transform=data_transforms)
   
   dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
