@@ -14,6 +14,6 @@ RUN chmod +x docker-entrypoint.sh
 
 EXPOSE 5000
 
-# CMD ["python3", "testing4.py"]
+CMD ["python3", "testing3.py"]
 
-ENTRYPOINT ["sh", "docker-entrypoint.sh"]
+# ENTRYPOINT ["sh", "docker-entrypoint.sh"]
