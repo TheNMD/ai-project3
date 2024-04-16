@@ -399,5 +399,6 @@ if __name__ == '__main__':
         file.write(f"Evaluation time: {test_end_time} seconds\n")
     except Exception as e:
       print(e)
-      shutil.rmtree(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
+      if os.path.exists(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}'):
+        shutil.rmtree(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
   
