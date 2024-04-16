@@ -10,6 +10,9 @@ RUN mkdir data
 RUN mkdir image
 RUN mkdir result
 
+# Install packages
+RUN pip install torch-summary
+
 RUN chmod +x docker-entrypoint.sh
 
 EXPOSE 5000
