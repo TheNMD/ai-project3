@@ -10,7 +10,8 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 from torch.optim import SGD, Adam
-from torchvision import datasets, transforms
+from torchvision import datasets
+from torchvision.transforms import v2
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import CSVLogger
@@ -186,16 +187,16 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
   # Preprocessing data
   # TODO Add more preprocessing methods
   # TODO Different methods for train and val and test
-  data_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
-                                        # transforms.RandomVerticalFlip(p=0.1,
-                                        # transforms.RandomHorizontalFlip(p=0.1),
-                                        transforms.ToTensor(),
-                                        transforms.Lambda(lambda image: transforms.functional.equalize(image)),
-                                        transforms.GaussianBlur(kernel_size=3),
-                                        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-                                      ])
+  transforms = v2.Compose([v2.ToTensor(),
+                           v2.Resize((image_size, image_size)),
+                           # v2.RandomVerticalFlip(p=0.1,
+                           # v2.RandomHorizontalFlip(p=0.1),
+                           v2.RandomEqualize(p=1),
+                           v2.GaussianBlur(kernel_size=3),
+                           v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                          ])
 
-  dataset = datasets.ImageFolder(root=f"{image_path}/sets/{set_name}", transform=data_transforms)
+  dataset = datasets.ImageFolder(root=f"{image_path}/sets/{set_name}", transform=transforms )
   
   dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
   
