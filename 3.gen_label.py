@@ -1,6 +1,4 @@
-import os
-import shutil
-import time
+import os, sys, platform, shutil, time
 import multiprocessing as mp
 import warnings
 warnings.filterwarnings('ignore')
@@ -239,7 +237,10 @@ def move_to_label(metadata_chunk):
         else:
             shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
     
-if __name__ == '__main__':    
+if __name__ == '__main__':
+    print("Python version: ", sys.version)
+    print("Ubuntu version: ", platform.release())
+        
     num_processes = 20
     chunk_size = 100 * num_processes 
     

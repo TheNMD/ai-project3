@@ -1,6 +1,4 @@
-import os
-import shutil
-import time
+import os, sys, platform, shutil, time
 import multiprocessing as mp
 import warnings
 warnings.filterwarnings('ignore')
@@ -132,7 +130,10 @@ def move_alternate_files():
             shutil.move(source_path, destination_path)
             print(f"Copied '{file_name}' to '{destination_folder}'")
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
+    print("Python version: ", sys.version)
+    print("Ubuntu version: ", platform.release())
+        
     # view_sample_images()
     
     num_processes = 20
