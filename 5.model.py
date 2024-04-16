@@ -288,7 +288,7 @@ if __name__ == '__main__':
   ## For optimizer & scheduler
   optimizer_name = "adam" # adam | sgdr
   learning_rate = 1e-4
-  scheduler_name = "cawr" # none | cawr
+  scheduler_name = "none" # none | cawr
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
   print(f"Scheduler: {scheduler_name}")
