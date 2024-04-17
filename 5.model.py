@@ -274,9 +274,8 @@ if __name__ == '__main__':
   ### vit-b | vit-l 
   ### swinv2-t | swinv2-b
   ### convnext-s | convnext-b | convnext-l
-  model_name = "resnet-b"
-  # pretrained | custom 
-  model_option = "pretrained" 
+  model_name = "convnext-b"
+  model_option = "pretrained" # pretrained | custom 
   freeze = False
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -286,7 +285,7 @@ if __name__ == '__main__':
   ## For optimizer & scheduler
   optimizer_name = "sgd"  # adam | sgd
   learning_rate = 1e-2    # 1e-4 | 1e-2
-  scheduler_name = "cawr" # none | cawr
+  scheduler_name = "none" # none | cawr
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
   print(f"Scheduler: {scheduler_name}")
