@@ -7,17 +7,17 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 import torch
+import timm
+from torch import nn
+from torchsummary import summary
 from torchvision.transforms import v2
 from torchvision import datasets
 from torch.utils.data import DataLoader
-from torch import nn
 from torch.optim import SGD, Adam
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import CSVLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
-import timm
-from torchsummary import summary
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -176,6 +176,14 @@ def load_model(model_name, model_option, freeze=False):
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
     train_size, test_size = 224, 224
+  elif model_name == "resnet-b":
+    model = timm.create_model('resnet50.a1_in1k', pretrained=is_pretrained)
+    if freeze:
+      for param in model.parameters():
+        param.requires_grad = False
+    num_feature = model.fc.in_features
+    model.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 288
 
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write("### Summary ###\n")
@@ -271,8 +279,10 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  # vit-b | vit-l | swinv2-t | swinv2-b
-  # convnext-s | convnext-b | convnext-l
+  ### vit-b | vit-l 
+  ### swinv2-t | swinv2-b
+  ### convnext-s | convnext-b | convnext-l
+  ### resnet-b
   model_name = "convnext-b"
   # pretrained | custom 
   model_option = "pretrained" 
