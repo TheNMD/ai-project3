@@ -274,9 +274,8 @@ if __name__ == '__main__':
   ### vit-b | vit-l 
   ### swinv2-t | swinv2-b
   ### convnext-s | convnext-b | convnext-l
-  model_name = "resnet-b"
-  # pretrained | custom 
-  model_option = "pretrained" 
+  model_name = "convnext-b"
+  model_option = "pretrained" # pretrained | custom 
   freeze = False
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -284,8 +283,8 @@ if __name__ == '__main__':
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
-  optimizer_name = "adam"  # adam | sgd
-  learning_rate = 1e-4    # 1e-4 | 1e-2
+  optimizer_name = "sgd"  # adam | sgd
+  learning_rate = 1e-2    # 1e-4 | 1e-2
   scheduler_name = "none" # none | cawr
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
@@ -296,7 +295,7 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128
+  batch_size = 8 # 8 | 16 | 32 | 64 | 128
   num_epochs = 50
   epoch_ratio = 0.5 # check val every percent of an epoch
   print(f"Batch size: {batch_size}")
