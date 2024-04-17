@@ -284,9 +284,9 @@ if __name__ == '__main__':
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
-  optimizer_name = "adam" # adam | sgd
-  learning_rate = 1e-4
-  scheduler_name = "none" # none | cawr
+  optimizer_name = "sgd"  # adam | sgd
+  learning_rate = 1e-2    # 1e-4 | 1e-2
+  scheduler_name = "cawr" # none | cawr
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
   print(f"Scheduler: {scheduler_name}")
@@ -296,7 +296,7 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 64
+  batch_size = 8 # 8 | 16 | 32 | 64 | 128
   num_epochs = 50
   epoch_ratio = 0.5 # check val every percent of an epoch
   print(f"Batch size: {batch_size}")
@@ -337,13 +337,14 @@ if __name__ == '__main__':
                                           mode='max',
                                           patience=patience,
                                           min_delta=min_delta,
-                                          verbose=True)
+                                          verbose=True,)
 
       checkpoint_callback = ModelCheckpoint(monitor='val_acc',
                                             mode='max',
                                             save_top_k=1,
                                             filename='best_model',
-                                            dirpath=f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
+                                            dirpath=f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}',
+                                            verbose=True,)
       
       # Combine all elements
       if num_gpus > 1:
