@@ -116,64 +116,66 @@ class FinetuneModule(pl.LightningModule):
 
 def load_model(model_name, model_option, freeze=False):
   if model_option == "custom":
-    pass
+    is_pretrained = False
   elif model_option == "pretrained":
-    if model_name == "vit-b":
-      model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
-      if freeze:
-        for param in model.parameters():
-          param.requires_grad = False
-      num_feature = model.head.in_features
-      model.head = nn.Linear(in_features=num_feature, out_features=5)
-      train_size, test_size = 224, 224
-    elif model_name == "vit-l":
-      model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=True)
-      if freeze:
-        for param in model.parameters():
-          param.requires_grad = False
-      num_feature = model.head.in_features
-      model.head = nn.Linear(in_features=num_feature, out_features=5)
-      train_size, test_size = 224, 224
-    elif model_name == "swinv2-t":
-      model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=True)
-      if freeze:
-        for param in model.parameters():
-          param.requires_grad = False
-      num_feature = model.head.fc.in_features
-      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-      train_size, test_size = 256, 256
-    elif model_name == "swinv2-b":
-      model = timm.create_model('swinv2_base_window8_256.ms_in1k', pretrained=True)
-      if freeze:
-        for param in model.parameters():
-          param.requires_grad = False
-      num_feature = model.head.fc.in_features
-      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-      train_size, test_size = 256, 256
-    elif model_name == "convnext-s":
-      model = timm.create_model('convnext_small.fb_in22k', pretrained=True)
-      if freeze:
-        for param in model.parameters():
-          param.requires_grad = False
-      num_feature = model.head.fc.in_features
-      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-      train_size, test_size = 224, 224
-    elif model_name == "convnext-b":
-      model = timm.create_model('convnext_base.fb_in22k', pretrained=True)
-      if freeze:
-        for param in model.parameters():
-          param.requires_grad = False
-      num_feature = model.head.fc.in_features
-      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-      train_size, test_size = 224, 224
-    elif model_name == "convnext-l":
-      model = timm.create_model('convnext_large.fb_in22k', pretrained=True)
-      if freeze:
-        for param in model.parameters():
-          param.requires_grad = False
-      num_feature = model.head.fc.in_features
-      model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-      train_size, test_size = 224, 224
+    is_pretrained = True
+    
+  if model_name == "vit-b":
+    model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
+    if freeze:
+      for param in model.parameters():
+        param.requires_grad = False
+    num_feature = model.head.in_features
+    model.head = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 224
+  elif model_name == "vit-l":
+    model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
+    if freeze:
+      for param in model.parameters():
+        param.requires_grad = False
+    num_feature = model.head.in_features
+    model.head = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 224
+  elif model_name == "swinv2-t":
+    model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=is_pretrained)
+    if freeze:
+      for param in model.parameters():
+        param.requires_grad = False
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 256, 256
+  elif model_name == "swinv2-b":
+    model = timm.create_model('swinv2_base_window8_256.ms_in1k', pretrained=is_pretrained)
+    if freeze:
+      for param in model.parameters():
+        param.requires_grad = False
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 256, 256
+  elif model_name == "convnext-s":
+    model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
+    if freeze:
+      for param in model.parameters():
+        param.requires_grad = False
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 224
+  elif model_name == "convnext-b":
+    model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
+    if freeze:
+      for param in model.parameters():
+        param.requires_grad = False
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 224
+  elif model_name == "convnext-l":
+    model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
+    if freeze:
+      for param in model.parameters():
+        param.requires_grad = False
+    num_feature = model.head.fc.in_features
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    train_size, test_size = 224, 224
 
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write("### Summary ###\n")
@@ -186,16 +188,19 @@ def load_model(model_name, model_option, freeze=False):
 def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
   # Preprocessing data
   # TODO Add more preprocessing methods
-  # TODO Different methods for train and val and test
-  transforms = v2.Compose([v2.ToImage(), 
-                           v2.Resize((image_size, image_size)),
-                           # v2.RandomVerticalFlip(p=0.1),
-                           # v2.RandomHorizontalFlip(p=0.1),
-                           v2.Grayscale(num_output_channels=1),
-                           v2.ToDtype(torch.float32, scale=True),
-                           # v2.GaussianBlur(kernel_size=3, sigma=0.2),
-                           v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-                          ])
+  if set_name == "train":
+    transforms = v2.Compose([v2.ToImage(), 
+                            v2.Resize((image_size, image_size)),
+                            v2.ToDtype(torch.float32, scale=True),
+                            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                            v2.RandomAffine(degrees=(-15, 15), translate=(0.1, 0.1), scale=(0.5, 1)),
+                            ])
+  elif set_name == "val" or set_name == "test":
+    transforms = v2.Compose([v2.ToImage(), 
+                             v2.Resize((image_size, image_size)),
+                             v2.ToDtype(torch.float32, scale=True),
+                             v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                            ]) 
 
   dataset = datasets.ImageFolder(root=f"{image_path}/sets/{set_name}", transform=transforms )
   
@@ -262,7 +267,7 @@ if __name__ == '__main__':
   # vit-b | vit-l | swinv2-t | swinv2-b
   # convnext-s | convnext-b | convnext-l
   model_name = "convnext-b" 
-  model_option = "pretrained"
+  model_option = "custom" # pretrained | custom
   freeze = False
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
@@ -270,7 +275,7 @@ if __name__ == '__main__':
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
-  optimizer_name = "adam" # adam | sgdr
+  optimizer_name = "adam" # adam | sgd
   learning_rate = 1e-4
   scheduler_name = "none" # none | cawr
   print(f"Optimizer: {optimizer_name}")
@@ -399,5 +404,6 @@ if __name__ == '__main__':
         file.write(f"Evaluation time: {test_end_time} seconds\n")
     except Exception as e:
       print(e)
-      shutil.rmtree(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
+      if os.path.exists(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}'):
+        shutil.rmtree(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
   
