@@ -7,11 +7,11 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 import torch
-from torch import nn
-from torch.utils.data import DataLoader
-from torch.optim import SGD, Adam
-from torchvision import datasets
 from torchvision.transforms import v2
+from torchvision import datasets
+from torch.utils.data import DataLoader
+from torch import nn
+from torch.optim import SGD, Adam
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import CSVLogger
@@ -189,14 +189,18 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
   # Preprocessing data
   # TODO Add more preprocessing methods
   if set_name == "train":
-    transforms = v2.Compose([v2.ToImage(), 
-                            v2.Resize((image_size, image_size)),
-                            v2.ToDtype(torch.float32, scale=True),
-                            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-                            v2.RandomAffine(degrees=(-15, 15), translate=(0.1, 0.1), scale=(0.5, 1)),
+    transforms = v2.Compose([
+                             v2.ToImage(), 
+                             v2.Resize((image_size, image_size)),
+                             v2.RandomHorizontalFlip(p=0.1),
+                             v2.RandomVerticalFlip(p=0.1),
+                             v2.RandomAffine(degrees=(-180, 180), translate=(0.2, 0.2), fill=255),
+                             v2.ToDtype(torch.float32, scale=True),
+                             v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                             ])
   elif set_name == "val" or set_name == "test":
-    transforms = v2.Compose([v2.ToImage(), 
+    transforms = v2.Compose([
+                             v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
                              v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
@@ -269,7 +273,7 @@ if __name__ == '__main__':
   model_name = "convnext-b"
   # pretrained | custom 
   model_option = "pretrained" 
-  freeze = True
+  freeze = False
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
   if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
