@@ -24,5 +24,10 @@ for inputs, _ in dataset:
 mean /= len(dataset)
 std /= len(dataset)
 
-print("Mean:", mean)
-print("Std Deviation:", std)
+print(f"Mean: {mean}")
+print(f"Std: {std}")
+
+with open('image/mean_and_std.txt', 'w') as file:
+    # Write some text to the file
+    file.write(f"Mean: {mean}\n")
+    file.write(f"Std: {std}")
