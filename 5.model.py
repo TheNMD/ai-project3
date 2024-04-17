@@ -266,9 +266,10 @@ if __name__ == '__main__':
   ## For model
   # vit-b | vit-l | swinv2-t | swinv2-b
   # convnext-s | convnext-b | convnext-l
-  model_name = "convnext-b" 
-  model_option = "custom" # pretrained | custom
-  freeze = False
+  model_name = "convnext-b"
+  # pretrained | custom 
+  model_option = "pretrained" 
+  freeze = True
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
   if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
