@@ -205,7 +205,7 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
                              #  v2.RandomAffine(degrees=(-90, 90), translate=(0.2, 0.2), fill=255),
                              v2.RandomAffine(degrees=(-180, 180), fill=255),
                              v2.ToDtype(torch.float32, scale=True),
-                             v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                            #   v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                              #  v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ])
   elif set_name == "val" or set_name == "test":
