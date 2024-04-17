@@ -283,7 +283,7 @@ if __name__ == '__main__':
   ### swinv2-t | swinv2-b
   ### convnext-s | convnext-b | convnext-l
   ### resnet-b
-  model_name = "convnext-b"
+  model_name = "resnet-b"
   # pretrained | custom 
   model_option = "pretrained" 
   freeze = False
