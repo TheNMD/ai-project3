@@ -176,14 +176,6 @@ def load_model(model_name, model_option, freeze=False):
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
     train_size, test_size = 224, 224
-  elif model_name == "resnet-b":
-    model = timm.create_model('resnet50.a1_in1k', pretrained=is_pretrained)
-    if freeze:
-      for param in model.parameters():
-        param.requires_grad = False
-    num_feature = model.fc.in_features
-    model.fc = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 224, 288
 
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write("### Summary ###\n")
@@ -200,12 +192,12 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
-                             v2.RandomHorizontalFlip(p=0.1),
-                             v2.RandomVerticalFlip(p=0.1),
+                             v2.RandomHorizontalFlip(p=0.3),
+                             v2.RandomVerticalFlip(p=0.3),
                              #  v2.RandomAffine(degrees=(-90, 90), translate=(0.2, 0.2), fill=255),
                              v2.RandomAffine(degrees=(-180, 180), fill=255),
                              v2.ToDtype(torch.float32, scale=True),
-                            #   v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                             #   v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                              #  v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ])
   elif set_name == "val" or set_name == "test":
@@ -282,7 +274,6 @@ if __name__ == '__main__':
   ### vit-b | vit-l 
   ### swinv2-t | swinv2-b
   ### convnext-s | convnext-b | convnext-l
-  ### resnet-b
   model_name = "resnet-b"
   # pretrained | custom 
   model_option = "pretrained" 
@@ -305,8 +296,8 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 32
-  num_epochs = 30
+  batch_size = 64
+  num_epochs = 50
   epoch_ratio = 0.5 # check val every percent of an epoch
   print(f"Batch size: {batch_size}")
 
