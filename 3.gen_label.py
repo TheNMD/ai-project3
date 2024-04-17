@@ -218,14 +218,14 @@ def plot_distribution():
     plt.xlabel('Label')
     plt.ylabel('Frequency')
     plt.title('Label Distribution')
-    plt.savefig('image/3.label_dist.png')
+    plt.savefig('image/label_dist.png')
     plt.clf()
     
     _, _, _ = plt.hist(metadata['future_avg_reflectivity'], color='skyblue', edgecolor='black')
     plt.xlabel('Avg Reflectivity')
     plt.ylabel('Frequency')
     plt.title('Avg Reflectivity Distribution')
-    plt.savefig('image/3.avg_reflectivity_dist.png')
+    plt.savefig('image/avg_reflectivity_dist.png')
     plt.clf()
 
 def move_to_label(metadata_chunk):
