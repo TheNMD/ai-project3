@@ -191,7 +191,6 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
                            v2.Resize((image_size, image_size)),
                            # v2.RandomVerticalFlip(p=0.1),
                            # v2.RandomHorizontalFlip(p=0.1),
-                           v2.Grayscale(num_output_channels=1),
                            v2.ToDtype(torch.float32, scale=True),
                            # v2.GaussianBlur(kernel_size=3, sigma=0.2),
                            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
@@ -263,14 +262,14 @@ if __name__ == '__main__':
   # convnext-s | convnext-b | convnext-l
   model_name = "convnext-b" 
   model_option = "pretrained"
-  freeze = False
+  freeze = True
   checkpoint = False
   print(f"Model: {model_name}-{model_option}")
   if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
-  optimizer_name = "adam" # adam | sgdr
+  optimizer_name = "adam" # adam | sgd
   learning_rate = 1e-4
   scheduler_name = "none" # none | cawr
   print(f"Optimizer: {optimizer_name}")
