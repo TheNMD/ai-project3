@@ -15,6 +15,7 @@ from torchvision import datasets
 from torch.utils.data import DataLoader
 from torch.optim import Adam, AdamW, SGD 
 from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts
+from torchvision.ops import stochastic_depth
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import CSVLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
@@ -64,6 +65,7 @@ class FinetuneModule(pl.LightningModule):
     self.test_loader  = load_data(set_name="test", image_size=test_size, batch_size=self.batch_size, shuffle=False)
 
   def forward(self, x):
+    # x = stochastic_depth(x, p=0.2, mode='batch')
     return self.model(x)
 
   def common_step(self, batch, batch_idx):
@@ -133,6 +135,7 @@ def load_model(model_name, model_option, freeze=False):
         param.requires_grad = False
     num_feature = model.head.in_features
     model.head = nn.Linear(in_features=num_feature, out_features=5)
+    model.head.weight.data.mul_(0.001)
     train_size, test_size = 224, 224
   elif model_name == "vit-l":
     model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
@@ -141,6 +144,7 @@ def load_model(model_name, model_option, freeze=False):
         param.requires_grad = False
     num_feature = model.head.in_features
     model.head = nn.Linear(in_features=num_feature, out_features=5)
+    model.head.weight.data.mul_(0.001)
     train_size, test_size = 224, 224
   elif model_name == "swinv2-t":
     model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=is_pretrained)
@@ -149,6 +153,7 @@ def load_model(model_name, model_option, freeze=False):
         param.requires_grad = False
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    model.head.fc.weight.data.mul_(0.001)
     train_size, test_size = 256, 256
   elif model_name == "swinv2-b":
     model = timm.create_model('swinv2_base_window8_256.ms_in1k', pretrained=is_pretrained)
@@ -157,6 +162,7 @@ def load_model(model_name, model_option, freeze=False):
         param.requires_grad = False
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    model.head.fc.weight.data.mul_(0.001)
     train_size, test_size = 256, 256
   elif model_name == "convnext-s":
     model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
@@ -165,6 +171,7 @@ def load_model(model_name, model_option, freeze=False):
         param.requires_grad = False
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    model.head.fc.weight.data.mul_(0.001)
     train_size, test_size = 224, 224
   elif model_name == "convnext-b":
     model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
@@ -174,6 +181,7 @@ def load_model(model_name, model_option, freeze=False):
         param.requires_grad = False
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    model.head.fc.weight.data.mul_(0.001)
     train_size, test_size = 224, 224
   elif model_name == "convnext-l":
     model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
@@ -182,8 +190,8 @@ def load_model(model_name, model_option, freeze=False):
         param.requires_grad = False
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    # train_size, test_size = 224, 224
-    train_size, test_size = 584, 584
+    model.head.fc.weight.data.mul_(0.001)
+    train_size, test_size = 224, 224
 
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write("### Summary ###\n")
@@ -200,12 +208,13 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
+                            #  v2.RandAugment(num_ops=2, magnitude=9, mag_std=0.5)
                              v2.RandomHorizontalFlip(p=0.5),
                              v2.RandomVerticalFlip(p=0.5),
-                            #  v2.RandomAffine(degrees=(-180, 180), translate=(0.2, 0.2), fill=255),
                              v2.RandomAffine(degrees=(-180, 180), fill=255),
                              v2.ToDtype(torch.float32, scale=True),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                            #  transforms.RandomErasing(p=0.25),
                             ])
   elif set_name == "val" or set_name == "test":
     transforms = v2.Compose([
@@ -292,22 +301,25 @@ if __name__ == '__main__':
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
   learning_rate = 1e-4      # 1e-4 | 5e-5  | 1e-2
-  weight_decay = 1e-8
+  weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "none"   # none | ca    | cawr  
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
+  print(f"Weight decay: {weight_decay}")
   print(f"Scheduler: {scheduler_name}")
 
   ## For callbacks
-  patience = 10
+  patience = 5
   min_delta = 1e-3
 
   ## For training loop
   batch_size = 512 # 8 | 16 | 32 | 64 | 128 | 512
   epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
+  label_smoothing = 0.1
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
+  print(f"Label smoothing: {label_smoothing}")
 
   # Make Lightning module
   model_settings = {'model_name': model_name, 
@@ -318,7 +330,8 @@ if __name__ == '__main__':
                         'weight_decay': weight_decay, 
                         'scheduler_name': scheduler_name}
   loop_settings = {'batch_size': batch_size, 
-                   'epochs': epochs}
+                   'epochs': epochs,
+                   'label_smoothing': label_smoothing}
 
   if checkpoint:
     version = "version_0"
@@ -410,6 +423,7 @@ if __name__ == '__main__':
         file.write('### For optimizer & scheduler ###\n')
         file.write(f'Optimizer: {optimizer_name}\n')
         file.write(f'Learning rate: {learning_rate}\n')
+        file.write(f'Weight decay: {weight_decay}\n')
         file.write(f'Scheduler: {scheduler_name}\n\n')
         
         file.write('### For callbacks ###\n')
@@ -420,6 +434,7 @@ if __name__ == '__main__':
         file.write(f'Batch size: {batch_size}\n')
         file.write(f'Epochs: {epochs}\n')
         file.write(f'Epoch ratio: {epoch_ratio}\n')
+        file.write(f'Label smoothing: {label_smoothing}\n')
         file.write(f'Num GPUs: {num_gpus}\n\n')
         
         file.write('### Results ###\n')
