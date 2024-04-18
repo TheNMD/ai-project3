@@ -107,7 +107,7 @@ class FinetuneModule(pl.LightningModule):
     if self.scheduler_name == "none":
       return {"optimizer": optimizer}
     elif self.scheduler_name == "ca":
-      scheduler = CosineAnnealingLR(optimizer, T_max=self.epochs)
+      scheduler = CosineAnnealingLR(optimizer, T_max=5)
     elif self.scheduler_name == "cawr":
       scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=int(len(self.train_loader) * 0.4), T_mult=1) 
 
@@ -208,7 +208,6 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
-                            #  v2.RandAugment(num_ops=2, magnitude=9, mag_std=0.5)
                              v2.RandomHorizontalFlip(p=0.5),
                              v2.RandomVerticalFlip(p=0.5),
                              v2.RandomAffine(degrees=(-180, 180), fill=255),
