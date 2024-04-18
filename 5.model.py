@@ -300,7 +300,7 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 1e-4      # 1e-4 | 5e-5  | 1e-2
+  learning_rate = 5e-5      # 1e-4 | 5e-5  | 1e-2
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "none"   # none | ca    | cawr  
   print(f"Optimizer: {optimizer_name}")
