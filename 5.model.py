@@ -221,7 +221,8 @@ def plot_results(model_name, model_option, latest_version):
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
   val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
   val_results = val_results.groupby(['epoch'], as_index=False).mean()
-
+  best_epoch = val_results['val_acc'].idxmax()
+  
   # Plotting loss
   plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
   plt.plot(val_results['epoch'], val_results['val_loss'], label='val_loss')
@@ -248,7 +249,7 @@ def plot_results(model_name, model_option, latest_version):
   test_loss = test_results['test_loss'].tolist()[0]
   test_acc = test_results['test_acc'].tolist()[0]
   
-  return test_loss, test_acc
+  return test_loss, test_acc, best_epoch
 
 if __name__ == '__main__':
   print("Python version: ", sys.version)
@@ -382,7 +383,8 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
       
       # Plot loss and accuracy
-      test_loss, tess_acc = plot_results(model_name, model_option, latest_version)
+      test_loss, tess_acc, best_epoch = plot_results(model_name, model_option, latest_version)
+      print(f"Best epoch (val_acc): {best_epoch}")
       
       # Write down hyperparameters and results
       with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
@@ -409,6 +411,7 @@ if __name__ == '__main__':
         file.write('### Results ###\n')
         file.write(f"Test loss: {test_loss}\n")
         file.write(f"Test accuracy: {tess_acc}\n")
+        file.write(f"Best epoch (val_acc): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
         file.write(f"Evaluation time: {test_end_time} seconds\n")
     except Exception as e:
