@@ -162,6 +162,7 @@ def load_model(model_name, model_option, freeze=False):
     train_size, test_size = 224, 224
   elif model_name == "convnext-b":
     model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
+    # model = timm.create_model('convnext_base.fb_in22k_ft_in1k', pretrained=is_pretrained)
     if freeze:
       for param in model.parameters():
         param.requires_grad = False
@@ -175,7 +176,8 @@ def load_model(model_name, model_option, freeze=False):
         param.requires_grad = False
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    train_size, test_size = 224, 224
+    # train_size, test_size = 224, 224
+    train_size, test_size = 584, 584
 
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write("### Summary ###\n")
@@ -192,12 +194,11 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
-                            #  v2.RandomHorizontalFlip(p=0.3),
-                            #  v2.RandomVerticalFlip(p=0.3),
+                             v2.RandomHorizontalFlip(p=0.5),
+                             v2.RandomVerticalFlip(p=0.5),
                             #  v2.RandomAffine(degrees=(-180, 180), translate=(0.2, 0.2), fill=255),
-                            #  v2.RandomAffine(degrees=(-180, 180), fill=255),
+                             v2.RandomAffine(degrees=(-180, 180), fill=255),
                              v2.ToDtype(torch.float32, scale=True),
-                            #   v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ])
   elif set_name == "val" or set_name == "test":
@@ -205,7 +206,6 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
-                            #  v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ]) 
 
@@ -296,7 +296,7 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 64 # 8 | 16 | 32 | 64 | 128
+  batch_size = 32 # 8 | 16 | 32 | 64 | 128
   num_epochs = 50
   epoch_ratio = 0.5 # check val every percent of an epoch
   print(f"Batch size: {batch_size}")
