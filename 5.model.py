@@ -213,8 +213,8 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
                              v2.RandomVerticalFlip(p=0.5),
                              v2.RandomAffine(degrees=(-180, 180), fill=255),
                              v2.ToDtype(torch.float32, scale=True),
-                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
-                            #  transforms.RandomErasing(p=0.25),
+                            #  v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                             transforms.RandomErasing(p=0.25),
                             ])
   elif set_name == "val" or set_name == "test":
     transforms = v2.Compose([
@@ -287,8 +287,8 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  ### vit-b | vit-l 
-  ### swinv2-t | swinv2-b
+  ### vit-b      | vit-l 
+  ### swinv2-t   | swinv2-b
   ### convnext-s | convnext-b | convnext-l
   model_name = "convnext-b"
   model_option = "pretrained" # pretrained | custom 
@@ -302,7 +302,7 @@ if __name__ == '__main__':
   optimizer_name = "adamw"  # adam | adamw | sgd
   learning_rate = 5e-5      # 1e-4 | 5e-5  | 1e-2
   weight_decay = 1e-8       # 0    | 1e-8 
-  scheduler_name = "none"   # none | ca    | cawr  
+  scheduler_name = "ca"   # none | ca    | cawr  
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
   print(f"Weight decay: {weight_decay}")
