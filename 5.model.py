@@ -390,7 +390,7 @@ if __name__ == '__main__':
       trainer = pl.Trainer(accelerator=accelerator, 
                           devices=devices, 
                           strategy=strategy,
-                          max_epochs=num_epochs,
+                          max_epochs=epochs,
                           logger=logger,
                           callbacks=[early_stop_callback, checkpoint_callback],
                           val_check_interval=epoch_ratio,
