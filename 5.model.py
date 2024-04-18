@@ -192,21 +192,21 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
-                             v2.RandomHorizontalFlip(p=0.3),
-                             v2.RandomVerticalFlip(p=0.3),
-                             #  v2.RandomAffine(degrees=(-90, 90), translate=(0.2, 0.2), fill=255),
-                             v2.RandomAffine(degrees=(-180, 180), fill=255),
+                            #  v2.RandomHorizontalFlip(p=0.3),
+                            #  v2.RandomVerticalFlip(p=0.3),
+                            #  v2.RandomAffine(degrees=(-180, 180), translate=(0.2, 0.2), fill=255),
+                            #  v2.RandomAffine(degrees=(-180, 180), fill=255),
                              v2.ToDtype(torch.float32, scale=True),
-                             #   v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-                             #  v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                            #   v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ])
   elif set_name == "val" or set_name == "test":
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
-                             #  v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-                             #  v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                            #  v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ]) 
 
   dataset = datasets.ImageFolder(root=f"{image_path}/sets/{set_name}", transform=transforms )
@@ -221,7 +221,8 @@ def plot_results(model_name, model_option, latest_version):
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
   val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
   val_results = val_results.groupby(['epoch'], as_index=False).mean()
-
+  best_epoch = val_results['val_acc'].idxmax()
+  
   # Plotting loss
   plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
   plt.plot(val_results['epoch'], val_results['val_loss'], label='val_loss')
@@ -248,7 +249,7 @@ def plot_results(model_name, model_option, latest_version):
   test_loss = test_results['test_loss'].tolist()[0]
   test_acc = test_results['test_acc'].tolist()[0]
   
-  return test_loss, test_acc
+  return test_loss, test_acc, best_epoch
 
 if __name__ == '__main__':
   print("Python version: ", sys.version)
@@ -295,7 +296,7 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128
+  batch_size = 64 # 8 | 16 | 32 | 64 | 128
   num_epochs = 50
   epoch_ratio = 0.5 # check val every percent of an epoch
   print(f"Batch size: {batch_size}")
@@ -382,7 +383,8 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
       
       # Plot loss and accuracy
-      test_loss, tess_acc = plot_results(model_name, model_option, latest_version)
+      test_loss, tess_acc, best_epoch = plot_results(model_name, model_option, latest_version)
+      print(f"Best epoch (val_acc): {best_epoch}")
       
       # Write down hyperparameters and results
       with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
@@ -409,6 +411,7 @@ if __name__ == '__main__':
         file.write('### Results ###\n')
         file.write(f"Test loss: {test_loss}\n")
         file.write(f"Test accuracy: {tess_acc}\n")
+        file.write(f"Best epoch (val_acc): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
         file.write(f"Evaluation time: {test_end_time} seconds\n")
     except Exception as e:
