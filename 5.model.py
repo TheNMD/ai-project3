@@ -309,7 +309,7 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}")
 
   ## For callbacks
-  patience = 5
+  patience = 10
   min_delta = 1e-3
 
   ## For training loop
@@ -394,7 +394,7 @@ if __name__ == '__main__':
                           logger=logger,
                           callbacks=[early_stop_callback, checkpoint_callback],
                           val_check_interval=epoch_ratio,
-                          log_every_n_steps=200,    # log train_loss and train_acc every 200 batches
+                          log_every_n_steps=50,    # log train_loss and train_acc every n batches
                           precision=16)             # use mixed precision to speed up training
 
       # Training loop
