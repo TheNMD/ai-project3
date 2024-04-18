@@ -13,8 +13,8 @@ from torchsummary import summary
 from torchvision.transforms import v2
 from torchvision import datasets
 from torch.utils.data import DataLoader
-from torch.optim import SGD, Adam
-from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+from torch.optim import Adam, AdamW, SGD 
+from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import CSVLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
@@ -46,16 +46,18 @@ class FinetuneModule(pl.LightningModule):
     super().__init__()
     # self.save_hyperparameters()
 
-    self.model_name = model_settings[0]
-    self.model_option = model_settings[1]
-    self.freeze = model_settings[2]
+    self.model_name = model_settings['model_name']
+    self.model_option = model_settings['model_option']
+    self.freeze = model_settings['freeze']
     self.model, train_size, test_size = load_model(self.model_name, self.model_option, self.freeze)
 
-    self.optimizer_name = optimizer_settings[0]
-    self.learning_rate = optimizer_settings[1]
-    self.scheduler_name = optimizer_settings[2]
+    self.optimizer_name = optimizer_settings['optimizer_name']
+    self.learning_rate = optimizer_settings['learning_rate']
+    self.weight_decay = optimizer_settings['weight_decay']
+    self.scheduler_name = optimizer_settings['scheduler_name']
 
-    self.batch_size = loop_settings[0]
+    self.batch_size = loop_settings['batch_size']
+    self.epochs = loop_settings['epochs']
 
     self.train_loader = load_data(set_name="train", image_size=train_size, batch_size=self.batch_size, shuffle=True)
     self.val_loader   = load_data(set_name="val", image_size=test_size, batch_size=self.batch_size, shuffle=False)
@@ -67,7 +69,7 @@ class FinetuneModule(pl.LightningModule):
   def common_step(self, batch, batch_idx):
     x, y = batch
     logits = self(x)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
     loss = criterion(logits, y)
     predictions = logits.argmax(-1)
     correct = (predictions == y).sum().item()
@@ -94,12 +96,16 @@ class FinetuneModule(pl.LightningModule):
 
   def configure_optimizers(self):
     if self.optimizer_name == "adam":
-      optimizer = Adam(self.model.parameters(), lr=self.learning_rate, betas=(0.9, 0.999), weight_decay=0)
+      optimizer = Adam(self.model.parameters(), lr=self.learning_rate, betas=(0.9, 0.999), weight_decay=self.weight_decay)
+    elif self.optimizer_name == "adamw":
+      optimizer = AdamW(self.model.parameters(), lr=self.learning_rate, betas=(0.9, 0.999), weight_decay=self.weight_decay)
     elif self.optimizer_name == "sgd":
       optimizer = SGD(self.model.parameters(), lr=self.learning_rate, momentum=0.9, weight_decay=0)
       
     if self.scheduler_name == "none":
       return {"optimizer": optimizer}
+    elif self.scheduler_name == "ca":
+      scheduler = CosineAnnealingLR(optimizer, T_max=self.epochs)
     elif self.scheduler_name == "cawr":
       scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=int(len(self.train_loader) * 0.4), T_mult=1) 
 
@@ -284,9 +290,10 @@ if __name__ == '__main__':
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
-  optimizer_name = "adam"  # adam | sgd
-  learning_rate = 1e-4    # 1e-4 | 1e-2
-  scheduler_name = "none" # none | cawr
+  optimizer_name = "adamw"  # adam | adamw | sgd
+  learning_rate = 1e-4      # 1e-4 | 5e-5  | 1e-2
+  weight_decay = 1e-8
+  scheduler_name = "none"   # none | ca    | cawr  
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
   print(f"Scheduler: {scheduler_name}")
@@ -296,15 +303,22 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 32 # 8 | 16 | 32 | 64 | 128
-  num_epochs = 50
+  batch_size = 512 # 8 | 16 | 32 | 64 | 128 | 512
+  epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
   print(f"Batch size: {batch_size}")
+  print(f"Epoch: {epochs}")
 
   # Make Lightning module
-  model_settings = [model_name, model_option, freeze]
-  optimizer_settings = [optimizer_name, learning_rate, scheduler_name]
-  loop_settings = [batch_size]
+  model_settings = {'model_name': model_name, 
+                    'model_option': model_option, 
+                    'freeze': freeze}
+  optimizer_settings = {'optimizer_name': optimizer_name, 
+                        'learning_rate': learning_rate, 
+                        'weight_decay': weight_decay, 
+                        'scheduler_name': scheduler_name}
+  loop_settings = {'batch_size': batch_size, 
+                   'epochs': epochs}
 
   if checkpoint:
     version = "version_0"
@@ -404,7 +418,7 @@ if __name__ == '__main__':
         
         file.write('### For training loop ###\n')
         file.write(f'Batch size: {batch_size}\n')
-        file.write(f'Epochs: {num_epochs}\n')
+        file.write(f'Epochs: {epochs}\n')
         file.write(f'Epoch ratio: {epoch_ratio}\n')
         file.write(f'Num GPUs: {num_gpus}\n\n')
         
