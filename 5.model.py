@@ -123,76 +123,55 @@ class FinetuneModule(pl.LightningModule):
     return self.test_loader
 
 def load_model(model_name, model_option, freeze=False):
+  name_and_size = model_name.split('-')
+  name, size = name_and_size[0], name_and_size[1]
+  
   if model_option == "custom":
     is_pretrained = False
   elif model_option == "pretrained":
     is_pretrained = True
     
-  if model_name == "vit-b":
-    model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
+  if name == "vit":
+    if size == "b":
+      model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
+    elif size == "l":
+      model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
     if freeze:
-      for param in model.parameters():
-        param.requires_grad = False
+      for param in model.parameters(): param.requires_grad = False
     num_feature = model.head.in_features
     model.head = nn.Linear(in_features=num_feature, out_features=5)
     model.head.weight.data.mul_(0.001)
-    train_size, test_size = 224, 224
-  elif model_name == "vit-l":
-    model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
+  elif name == "swinv2":
+    if size == "t":
+      model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=is_pretrained)
+      train_size, test_size = 256, 256
+    elif size == "b":
+      model = timm.create_model('swinv2_base_window8_256.ms_in1k', pretrained=is_pretrained)
+      train_size, test_size = 256, 256
     if freeze:
-      for param in model.parameters():
-        param.requires_grad = False
-    num_feature = model.head.in_features
-    model.head = nn.Linear(in_features=num_feature, out_features=5)
-    model.head.weight.data.mul_(0.001)
-    train_size, test_size = 224, 224
-  elif model_name == "swinv2-t":
-    model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=is_pretrained)
-    if freeze:
-      for param in model.parameters():
-        param.requires_grad = False
+      for param in model.parameters(): param.requires_grad = False
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
     model.head.fc.weight.data.mul_(0.001)
-    train_size, test_size = 256, 256
-  elif model_name == "swinv2-b":
-    model = timm.create_model('swinv2_base_window8_256.ms_in1k', pretrained=is_pretrained)
+  
+  elif name == "convnext":
+    if size == "s":
+      model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
+    elif size == "b":
+      model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
+    elif size == "l":
+      model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
     if freeze:
-      for param in model.parameters():
-        param.requires_grad = False
+      for param in model.parameters(): param.requires_grad = False
     num_feature = model.head.fc.in_features
     model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
     model.head.fc.weight.data.mul_(0.001)
-    train_size, test_size = 256, 256
-  elif model_name == "convnext-s":
-    model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
-    if freeze:
-      for param in model.parameters():
-        param.requires_grad = False
-    num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    model.head.fc.weight.data.mul_(0.001)
-    train_size, test_size = 224, 224
-  elif model_name == "convnext-b":
-    model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
-    # model = timm.create_model('convnext_base.fb_in22k_ft_in1k', pretrained=is_pretrained)
-    if freeze:
-      for param in model.parameters():
-        param.requires_grad = False
-    num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    model.head.fc.weight.data.mul_(0.001)
-    train_size, test_size = 224, 224
-  elif model_name == "convnext-l":
-    model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
-    if freeze:
-      for param in model.parameters():
-        param.requires_grad = False
-    num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
-    model.head.fc.weight.data.mul_(0.001)
-    train_size, test_size = 224, 224
-
+    
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write("### Summary ###\n")
     f.write(f"{summary(model, (3, train_size, train_size))}\n\n")
@@ -208,11 +187,11 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
-                             v2.RandomHorizontalFlip(p=0.5),
-                             v2.RandomVerticalFlip(p=0.5),
-                             v2.RandomAffine(degrees=(-180, 180), fill=255),
+                            #  v2.RandomHorizontalFlip(p=0.5),
+                            #  v2.RandomVerticalFlip(p=0.5),
+                            #  v2.RandomAffine(degrees=(-180, 180), fill=255),
                              v2.ToDtype(torch.float32, scale=True),
-                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                            #  v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             #  v2.RandomErasing(p=0.25),
                             ])
   elif set_name == "val" or set_name == "test":
@@ -220,7 +199,7 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
-                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                            #  v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ]) 
 
   dataset = datasets.ImageFolder(root=f"{image_path}/sets/{set_name}", transform=transforms )
@@ -299,7 +278,7 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 5e-5      # 1e-4 | 5e-5  | 1e-2
+  learning_rate = 1e-2     # 1e-4 | 5e-5  | 1e-2
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "ca"   # none | ca    | cawr  
   print(f"Optimizer: {optimizer_name}")
@@ -359,13 +338,14 @@ if __name__ == '__main__':
       logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{model_option}')
 
       # Callbacks
-      early_stop_callback = EarlyStopping(monitor='val_acc',
+      monitor_value = "val_acc"
+      early_stop_callback = EarlyStopping(monitor=monitor_value,
                                           mode='max',
                                           patience=patience,
                                           min_delta=min_delta,
                                           verbose=True,)
 
-      checkpoint_callback = ModelCheckpoint(monitor='val_acc',
+      checkpoint_callback = ModelCheckpoint(monitor=monitor_value,
                                             mode='max',
                                             save_top_k=1,
                                             filename='best_model',
@@ -410,7 +390,7 @@ if __name__ == '__main__':
       
       # Plot loss and accuracy
       test_loss, tess_acc, best_epoch = plot_results(model_name, model_option, latest_version)
-      print(f"Best epoch (val_acc): {best_epoch}")
+      print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Write down hyperparameters and results
       with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
