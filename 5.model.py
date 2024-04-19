@@ -191,7 +191,7 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
                             #  v2.RandomVerticalFlip(p=0.5),
                             #  v2.RandomAffine(degrees=(-180, 180), fill=255),
                              v2.ToDtype(torch.float32, scale=True),
-                            #  v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                            v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             #  v2.RandomErasing(p=0.25),
                             ])
   elif set_name == "val" or set_name == "test":
@@ -199,7 +199,7 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
-                            #  v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ]) 
 
   dataset = datasets.ImageFolder(root=f"{image_path}/sets/{set_name}", transform=transforms )
@@ -278,7 +278,7 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 1e-2     # 1e-4 | 5e-5  | 1e-2
+  learning_rate = 1e-3     # 1e-4 | 5e-5  | 1e-2
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "ca"   # none | ca    | cawr  
   print(f"Optimizer: {optimizer_name}")
