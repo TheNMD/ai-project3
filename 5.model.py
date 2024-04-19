@@ -190,9 +190,10 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
                             #  v2.RandomHorizontalFlip(p=0.5),
                             #  v2.RandomVerticalFlip(p=0.5),
                             #  v2.RandomAffine(degrees=(-180, 180), fill=255),
+                             v2.RandAugment(num_ops=2, magnitude=9, fill=255),
+                             v2.RandomErasing(p=0.25, value=255),
                              v2.ToDtype(torch.float32, scale=True),
-                            v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
-                            #  v2.RandomErasing(p=0.25),
+                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ])
   elif set_name == "val" or set_name == "test":
     transforms = v2.Compose([
