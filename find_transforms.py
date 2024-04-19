@@ -4,18 +4,18 @@ from torchvision import datasets
 from PIL import Image
 import numpy as np
 
-def black_to_white(image):
-    print(image)
+image_size = 224
 
 transforms = v2.Compose([v2.ToImage(), 
-                        # v2.Resize((256, 256)),
-                        # v2.RandomHorizontalFlip(p=0.1),
-                        # v2.RandomVerticalFlip(p=0.1),
-                        # v2.RandomAffine(degrees=(-180, 180), translate=(0.2, 0.2), fill=255),
-                        v2.ToDtype(torch.float32, scale=True),
-                        v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-                        # v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
-                        v2.ToPILImage(),
+                         v2.Resize((image_size, image_size)),
+                        #  v2.RandomHorizontalFlip(p=0.5),
+                        #  v2.RandomVerticalFlip(p=0.5),
+                        #  v2.RandomAffine(degrees=(-180, 180), fill=255),
+                         v2.RandAugment(num_ops=2, magnitude=9, fill=255),
+                         v2.RandomErasing(p=0.95, value=255),
+                         v2.ToDtype(torch.float32, scale=True),
+                        #  v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                         v2.ToPILImage(),
                         ])
 
 # Step 1: Read the image and convert to grayscale
