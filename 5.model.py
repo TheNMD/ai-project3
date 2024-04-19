@@ -209,13 +209,17 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
   
   return dataloader
 
-def plot_results(model_name, model_option, latest_version):
+def plot_results(model_name, model_option, latest_version, monitor_value):
   log_results = pd.read_csv(f"{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/metrics.csv")
   train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
   val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
   val_results = val_results.groupby(['epoch'], as_index=False).mean()
-  best_epoch = val_results['val_acc'].idxmax()
+  
+  if monitor_value == 'val_loss':
+    best_epoch = val_results['val_loss'].idxmin()
+  elif monitor_value == 'val_acc':
+    best_epoch = val_results['val_acc'].idxmax()
   
   # Plotting loss
   plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
@@ -390,7 +394,7 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
       
       # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = plot_results(model_name, model_option, latest_version)
+      test_loss, tess_acc, best_epoch = plot_results(model_name, model_option, latest_version, monitor_value)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Write down hyperparameters and results

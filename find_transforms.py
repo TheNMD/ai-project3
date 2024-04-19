@@ -1,8 +1,6 @@
 import torch
 from torchvision.transforms import v2
-from torchvision import datasets
 from PIL import Image
-import numpy as np
 
 image_size = 224
 
@@ -18,11 +16,7 @@ transforms = v2.Compose([v2.ToImage(),
                          v2.ToPILImage(),
                         ])
 
-# Step 1: Read the image and convert to grayscale
 image = Image.open('image/labeled/heavy_rain/2023-06-29 06-20-32.jpg')
-
 image.save("test_transforms0.png")
-
 image = transforms(image)
-
 image.save("test_transforms1.png")
