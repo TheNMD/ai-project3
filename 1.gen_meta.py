@@ -43,7 +43,7 @@ def create_metadata(year):
         print(f"{timestamp}")
 
     metadata = pd.DataFrame(list(zip(paths, timestamps)), columns=['path_0', 'timestamp_0'])
-    metadata['generated'] = False
+    metadata['generated'] = "True"
     metadata['label_0'] = np.nan
     metadata['avg_reflectivity_0'] = np.nan
     
