@@ -291,50 +291,10 @@ def plot_distribution():
     plt.title('Avg Reflectivity Distribution - 43200')
     plt.savefig('image/labeled/avg_reflectivity_dist_43200.png')
     plt.clf()
-
-def move_to_label(metadata_chunk):
-    for _, row in metadata_chunk.iterrows():
-        timestamp = row['timestamp_0']
-        future_label = row['future_label']
-        if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
-            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
-        else:
-            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
     
 if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
-    
-    if not os.path.exists("image/labeled"):
-        os.makedirs("image/labeled")
-        
-        os.makedirs("image/labeled/current")
-        os.makedirs("image/labeled/current/clear")
-        os.makedirs("image/labeled/current/light_rain")
-        os.makedirs("image/labeled/current/moderate_rain")
-        os.makedirs("image/labeled/current/heavy_rain")
-        os.makedirs("image/labeled/current/very_heavy_rain")
-        
-        os.makedirs("image/labeled/future_7200")
-        os.makedirs("image/labeled/future_7200/clear")
-        os.makedirs("image/labeled/future_7200/light_rain")
-        os.makedirs("image/labeled/future_7200/moderate_rain")
-        os.makedirs("image/labeled/future_7200/heavy_rain")
-        os.makedirs("image/labeled/future_7200/very_heavy_rain")
-        
-        os.makedirs("image/labeled/future_21600")
-        os.makedirs("image/labeled/future_21600/clear")
-        os.makedirs("image/labeled/future_21600/light_rain")
-        os.makedirs("image/labeled/future_21600/moderate_rain")
-        os.makedirs("image/labeled/future_21600/heavy_rain")
-        os.makedirs("image/labeled/future_21600/very_heavy_rain")
-        
-        os.makedirs("image/labeled/future_43200")
-        os.makedirs("image/labeled/future_43200/clear")
-        os.makedirs("image/labeled/future_43200/light_rain")
-        os.makedirs("image/labeled/future_43200/moderate_rain")
-        os.makedirs("image/labeled/future_43200/heavy_rain")
-        os.makedirs("image/labeled/future_43200/very_heavy_rain")
     
     find_future_images(interval=7200)
     find_future_images(interval=21600)
@@ -374,26 +334,7 @@ if __name__ == '__main__':
     
     # # Plot label and avg reflectivity distribution
     # plot_distribution()
-    
-    # # Move images from unlabeled to labeled folders
-    # try:
-    #     counter = 0
-    #     # Use multiprocessing to iterate over the metadata 
-    #     with mp.Pool(processes=num_processes) as pool:
-    #         labeled_chunks = pd.read_csv("metadata_lite.csv", chunksize=chunk_size)
-    #         for chunk in labeled_chunks:
-    #             sub_metadata_chunks = np.array_split(chunk, num_processes)
-    
-    #             start_time = time.time()
-    #             pool.map(move_to_label, sub_metadata_chunks)
-    #             end_time = time.time() - start_time
 
-    #             counter += 1
-    #             print(f"### Chunk: {counter} | Time: {end_time} ###")
-    # except Exception as e:
-    #     # If crash due to lack of memory, restart the process (progress is saved)
-    #     print(e)
-    #     logging.error(e, exc_info=True)
 
         
         

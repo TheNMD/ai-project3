@@ -81,7 +81,6 @@ if __name__ == '__main__':
         
         print(f"Time: {end_time}")
   except Exception as e:
-      # If crash due to lack of memory, restart the process (progress is saved)
       update_metadata()
       print(e)
       logging.error(e, exc_info=True)
