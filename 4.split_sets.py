@@ -41,7 +41,6 @@ def split_df(interval, seed=42):
     val_set = big_df.iloc[split_idx1:(split_idx1 + split_idx2)]
     test_set = big_df.iloc[(split_idx1 + split_idx2):]
 
-    # Reset the indices if necessary
     train_set.reset_index(drop=True, inplace=True)
     val_set.reset_index(drop=True, inplace=True)
     test_set.reset_index(drop=True, inplace=True)
@@ -52,19 +51,28 @@ def move_to_train(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp']
         label = row['label']
-        shutil.copy(f"image/labeled/{interval}/{label}/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
+        if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
+            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
+        elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
+            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
 
 def move_to_val(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp']
         label = row['label']
-        shutil.copy(f"image/labeled/{interval}/{label}/{timestamp}.jpg", f"image/labeled/{interval}/val/{label}/{timestamp}.jpg")
+        if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
+            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/val/{label}/{timestamp}.jpg")
+        elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
+            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}/val/{label}/{timestamp}.jpg")
         
 def move_to_test(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp']
         label = row['label']
-        shutil.copy(f"image/labeled/{interval}/{label}/{timestamp}.jpg", f"image/labeled/{interval}/test/{label}/{timestamp}.jpg")
+        if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
+            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/test/{label}/{timestamp}.jpg")
+        elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
+            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}/test/{label}/{timestamp}.jpg")
 
 if __name__ == '__main__':
     print("Python version: ", sys.version)
