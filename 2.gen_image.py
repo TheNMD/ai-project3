@@ -30,16 +30,15 @@ def generate_image(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         if row['generated'] == "True" or row['generated'] == "Error":
             continue
+        
         timestamp = row['timestamp_0']
         try:
             data = pyart.io.read_sigmet(f"{data_path}/{row['path_0']}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
             
-            grid_data = pyart.map.grid_from_radars(
-                data,
-                grid_shape=(1, 500, 500),
-                grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
-            )
+            grid_data = pyart.map.grid_from_radars(data,
+                                                   grid_shape=(1, 500, 500),
+                                                   grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),)
 
             display = pyart.graph.GridMapDisplay(grid_data)
             display.plot_grid('reflectivity', cmap='pyart_HomeyerRainbow', colorbar_flag=False)
