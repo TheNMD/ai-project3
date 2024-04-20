@@ -73,17 +73,14 @@ if __name__ == '__main__':
     os.makedirs("metadata")
   
   try:
-      update_metadata()
       # Use multiprocessing to iterate over the metadata 
       with mp.Pool(processes=num_processes) as pool:
         start_time = time.time()
         pool.map(create_metadata, years)
         end_time = time.time() - start_time
         update_metadata()
-        
         print(f"Time: {end_time}")
   except Exception as e:
-      update_metadata()
       print(e)
       logging.error(e, exc_info=True)
   
