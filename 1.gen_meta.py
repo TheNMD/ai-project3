@@ -44,6 +44,8 @@ def create_metadata(year):
 
     metadata = pd.DataFrame(list(zip(paths, timestamps)), columns=['path_0', 'timestamp_0'])
     metadata['generated'] = False
+    metadata['label_0'] = np.nan
+    metadata['avg_reflectivity_0'] = np.nan
     
     metadata = metadata.sort_values(by='timestamp_0').reset_index(drop=True)
     metadata.to_csv(f"metadata/metadata_{year}_{month}.csv", index=False)
