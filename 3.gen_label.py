@@ -61,7 +61,7 @@ def view_sample_image():
     plt.title('Reflectivity value distribution')
     plt.savefig("image/3.reflectivity_value_distribution.jpg", dpi=150)
 
-def find_future_images(interval=7200):
+def find_future_images(interval):
     metadata = pd.read_csv("metadata.csv")
     metadata['timestamp'] = pd.to_datetime(metadata['timestamp'], format="%Y-%m-%d %H-%M-%S")
     
