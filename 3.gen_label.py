@@ -277,13 +277,6 @@ def move_to_label(metadata_chunk):
 if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
-
-    find_future_images(interval=3600 * 2)
-    find_future_images(interval=3600 * 6)
-    find_future_images(interval=3600 * 12)
-    
-    num_processes = 16
-    chunk_size = 100 * num_processes 
     
     if not os.path.exists("image/labeled"):
         os.makedirs("image/labeled")
@@ -295,27 +288,34 @@ if __name__ == '__main__':
         os.makedirs("image/labeled/current/heavy_rain")
         os.makedirs("image/labeled/current/very_heavy_rain")
         
-        os.makedirs("image/labeled/future_2h")
-        os.makedirs("image/labeled/future_2h/clear")
-        os.makedirs("image/labeled/future_2h/light_rain")
-        os.makedirs("image/labeled/future_2h/moderate_rain")
-        os.makedirs("image/labeled/future_2h/heavy_rain")
-        os.makedirs("image/labeled/future_2h/very_heavy_rain")
+        os.makedirs("image/labeled/future_7200")
+        os.makedirs("image/labeled/future_7200/clear")
+        os.makedirs("image/labeled/future_7200/light_rain")
+        os.makedirs("image/labeled/future_7200/moderate_rain")
+        os.makedirs("image/labeled/future_7200/heavy_rain")
+        os.makedirs("image/labeled/future_7200/very_heavy_rain")
         
-        os.makedirs("image/labeled/future_6h")
-        os.makedirs("image/labeled/future_6h/clear")
-        os.makedirs("image/labeled/future_6h/light_rain")
-        os.makedirs("image/labeled/future_6h/moderate_rain")
-        os.makedirs("image/labeled/future_6h/heavy_rain")
-        os.makedirs("image/labeled/future_6h/very_heavy_rain")
+        os.makedirs("image/labeled/future_21600")
+        os.makedirs("image/labeled/future_21600/clear")
+        os.makedirs("image/labeled/future_21600/light_rain")
+        os.makedirs("image/labeled/future_21600/moderate_rain")
+        os.makedirs("image/labeled/future_21600/heavy_rain")
+        os.makedirs("image/labeled/future_21600/very_heavy_rain")
         
-        os.makedirs("image/labeled/future_12h")
-        os.makedirs("image/labeled/future_12h/clear")
-        os.makedirs("image/labeled/future_12h/light_rain")
-        os.makedirs("image/labeled/future_12h/moderate_rain")
-        os.makedirs("image/labeled/future_12h/heavy_rain")
-        os.makedirs("image/labeled/future_12h/very_heavy_rain")
-        
+        os.makedirs("image/labeled/future_43200")
+        os.makedirs("image/labeled/future_43200/clear")
+        os.makedirs("image/labeled/future_43200/light_rain")
+        os.makedirs("image/labeled/future_43200/moderate_rain")
+        os.makedirs("image/labeled/future_43200/heavy_rain")
+        os.makedirs("image/labeled/future_43200/very_heavy_rain")
+    
+    find_future_images(interval=3600 * 2)
+    find_future_images(interval=3600 * 6)
+    find_future_images(interval=3600 * 12)
+    
+    num_processes = 16
+    chunk_size = 100 * num_processes 
+    
     # # Label images
     # try:
     #     counter = 0
