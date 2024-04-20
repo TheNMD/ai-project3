@@ -29,18 +29,16 @@ def find_future_images(interval):
     metadata = pd.read_csv("metadata.csv")
     metadata['timestamp_0'] = pd.to_datetime(metadata['timestamp_0'], format="%Y-%m-%d %H-%M-%S")
     
-    path_col = f"path_{interval}"
     timestamp_col = f"timestamp_{interval}"
     label_col = f"label_{interval}"
     avg_reflectivity_col = f"avg_reflectivity_{interval}"
 
-    if path_col not in metadata.columns: metadata[path_col] = np.nan
     if timestamp_col not in metadata.columns: metadata[timestamp_col] = np.nan
     if label_col not in metadata.columns: metadata[label_col] = np.nan
     if avg_reflectivity_col not in metadata.columns: metadata[avg_reflectivity_col] = np.nan
 
     for idx, row in metadata.iterrows():
-        if type(row[path_col]) is str:
+        if type(row[timestamp_col]) is str:
             continue
                 
         current_time = row['timestamp_0']
@@ -48,12 +46,10 @@ def find_future_images(interval):
                                    (metadata['timestamp_0'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
         
         if future_metadata.empty:
-            metadata.loc[idx, [path_col]] = "NotAvail"
             metadata.loc[idx, [timestamp_col]] = "NotAvail"
             metadata.loc[idx, [label_col]] = "NotAvail"
             metadata.loc[idx, [avg_reflectivity_col]] = "NotAvail"
         else:
-            metadata.loc[idx, [path_col]] = future_metadata['path_0'].tolist()[0]
             metadata.loc[idx, [timestamp_col]] = future_metadata['timestamp_0'].tolist()[0]
         
         print(current_time)
@@ -165,37 +161,36 @@ def calculate_avg_reflectivity(reflectivity):
 
 def label_image(metadata_chunk):    
     for idx, row in metadata_chunk.iterrows():
-        for interval in [0, 7200, 21600, 43200]:
-            path_col = f'path_{interval}'
-            label_col = f'label_{interval}'
-            avg_reflectivity_col = f'avg_reflectivity_{interval}'
+        path_col = 'path_0'
+        label_col = 'label_0'
+        avg_reflectivity_col = 'avg_reflectivity_0'
+            
+        if type(row[label_col]) is str:
+            continue
+        try:
+            data = pyart.io.read_sigmet(f"{data_path}/{row[path_col]}")
+            data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
+            
+            grid_data = pyart.map.grid_from_radars(data,
+                                                    grid_shape=(1, 500, 500),
+                                                    grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),)
+            
+            reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
+            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
                 
-            if row[path_col] == 'NotAvail' or type(row[label_col]) is str:
-                continue
-            try:
-                data = pyart.io.read_sigmet(f"{data_path}/{row[path_col]}")
-                data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
-                
-                grid_data = pyart.map.grid_from_radars(data,
-                                                       grid_shape=(1, 500, 500),
-                                                       grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),)
-                
-                reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
-                avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
-                    
-                print(f"{interval} - {row['timestamp_0']} | Average reflectivity: {avg_reflectivity} | Label: {label}")
-                
-                metadata_chunk.loc[idx, [avg_reflectivity_col]] = avg_reflectivity
-                metadata_chunk.loc[idx, [label_col]] = label
-                
-                # Close and delete to release memory
-                del grid_data
-                del data
-            except Exception as e:
-                metadata_chunk.loc[idx, [avg_reflectivity_col]] = "Error"
-                metadata_chunk.loc[idx, [label_col]] = "Error"
-                logging.error(e, exc_info=True)
-                continue
+            print(f"{row['timestamp_0']} | Average reflectivity: {avg_reflectivity} | Label: {label}")
+            
+            metadata_chunk.loc[idx, [avg_reflectivity_col]] = avg_reflectivity
+            metadata_chunk.loc[idx, [label_col]] = label
+            
+            # Close and delete to release memory
+            del grid_data
+            del data
+        except Exception as e:
+            metadata_chunk.loc[idx, [avg_reflectivity_col]] = "Error"
+            metadata_chunk.loc[idx, [label_col]] = "Error"
+            logging.error(e, exc_info=True)
+            continue
         
     return metadata_chunk
         
@@ -207,12 +202,6 @@ def update_metadata(new_metadata):
     
     updated_metadata.loc[new_metadata.index, 'avg_reflectivity_0'] = new_metadata['avg_reflectivity_0'].tolist()
     updated_metadata.loc[new_metadata.index, 'label_0'] = new_metadata['label_0'].tolist()
-    updated_metadata.loc[new_metadata.index, 'avg_reflectivity_7200'] = new_metadata['avg_reflectivity_7200'].tolist()
-    updated_metadata.loc[new_metadata.index, 'label_7200'] = new_metadata['label_7200'].tolist()
-    updated_metadata.loc[new_metadata.index, 'avg_reflectivity_21600'] = new_metadata['avg_reflectivity_21600'].tolist()
-    updated_metadata.loc[new_metadata.index, 'label_21600'] = new_metadata['label_21600'].tolist()
-    updated_metadata.loc[new_metadata.index, 'avg_reflectivity_43200'] = new_metadata['avg_reflectivity_43200'].tolist()
-    updated_metadata.loc[new_metadata.index, 'label_43200'] = new_metadata['label_43200'].tolist()
     
     updated_metadata.to_csv("metadata_temp.csv", index=False)        
 
@@ -271,7 +260,6 @@ if __name__ == '__main__':
                 counter += 1
                 print(f"### Chunk: {counter} | Time: {end_time} ###")
     except Exception as e:
-        # If crash due to lack of memory, restart the process (progress is saved)
         print(e)
         logging.error(e, exc_info=True)
     
