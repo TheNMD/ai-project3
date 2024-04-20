@@ -40,7 +40,7 @@ def find_future_images(interval):
     if avg_reflectivity_col not in metadata.columns: metadata[avg_reflectivity_col] = np.nan
 
     for idx, row in metadata.iterrows():
-        if type(row[path_col]) is str or row['generated'] == 'Error':
+        if row['generated'] == 'Error' or type(row[path_col]) is str:
             continue
                 
         current_time = row['timestamp_0']
@@ -329,6 +329,7 @@ if __name__ == '__main__':
     
     # # Make a metadata_lite.csv that contains only relevant info for model
     # metadata_lite = pd.read_csv("metadata.csv")
+    # metadata_lite = metadata_lite[metadata_lite['generated' != 'Error']]
     # metadata_lite = metadata_lite.drop(['path_0', 'path_7200', 'path_21600', 'path_43200', 'generated'], axis=1)
     # metadata_lite.to_csv("metadata_lite.csv", index=False)
     
