@@ -173,7 +173,7 @@ def label_image(metadata_chunk):
             if type(row[label_col]) is str or row[path_col] == 'NotAvail' or row['generated'] == 'Error':
                 continue
             try:
-                data = pyart.io.read_sigmet(f"{data_path}/{row[label_col]}")
+                data = pyart.io.read_sigmet(f"{data_path}/{row[path_col]}")
                 data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
                 
                 grid_data = pyart.map.grid_from_radars(
