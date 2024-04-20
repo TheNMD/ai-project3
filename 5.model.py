@@ -106,9 +106,11 @@ class FinetuneModule(pl.LightningModule):
       
     if self.scheduler_name == "none":
       return {"optimizer": optimizer}
-    elif self.scheduler_name == "ca":
-      scheduler = CosineAnnealingLR(optimizer, T_max=self.epochs)
-    elif self.scheduler_name == "cawr":
+    elif self.scheduler_name == "cd":
+      # Cosine decay
+      scheduler = CosineAnnealingLR(optimizer, T_max=self.epochs / 10)
+    elif self.scheduler_name == "cdwr":
+      # Cosine decay warm restart
       scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=int(len(self.train_loader) * 0.4), T_mult=1) 
 
     return {"optimizer": optimizer, "lr_scheduler": scheduler}
@@ -187,13 +189,13 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
+                             v2.ToDtype(torch.float32, scale=True),
                             #  v2.RandomHorizontalFlip(p=0.5),
                             #  v2.RandomVerticalFlip(p=0.5),
                             #  v2.RandomAffine(degrees=(-180, 180), fill=255),
                              v2.RandAugment(num_ops=2, magnitude=9, fill=255),
                              v2.RandomErasing(p=0.25, value=255),
-                             v2.ToDtype(torch.float32, scale=True),
-                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                             ])
   elif set_name == "val" or set_name == "test":
     transforms = v2.Compose([
@@ -285,7 +287,7 @@ if __name__ == '__main__':
   optimizer_name = "adamw"  # adam | adamw | sgd
   learning_rate = 1e-3     # 1e-4 | 5e-5  | 1e-2
   weight_decay = 1e-8       # 0    | 1e-8 
-  scheduler_name = "ca"   # none | ca    | cawr  
+  scheduler_name = "ca"   # none | cd    | cdwr  
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
   print(f"Weight decay: {weight_decay}")
