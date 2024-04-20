@@ -122,4 +122,8 @@ if __name__ == '__main__':
         logging.error(e, exc_info=True)
         
     move_alternate_files()
+    
+    metadata = pd.read_csv("metadata.csv")
+    metadata = metadata[metadata['generated'] != 'Error']
+    metadata.to_csv("metadata.csv", index=False)
         

@@ -29,7 +29,7 @@ def split_df(interval, seed=42):
     metadata = pd.read_csv("metadata_lite.csv")
     
     big_df = metadata[['timestamp_0', f'label_{interval}']]
-    big_df = big_df[big_df[(f'label_{interval}' != 'NotAvail') & (f'label_{interval}' != 'Error')]]
+    big_df = big_df[(big_df[f'label_{interval}'] != 'NotAvail') & (big_df[f'label_{interval}'] != 'Error')]
     big_df = big_df.rename(columns={'timestamp_0': 'timestamp', f'label_{interval}': 'label'})
     big_df = big_df.sample(frac=1, random_state=seed).reset_index(drop=True)
     
