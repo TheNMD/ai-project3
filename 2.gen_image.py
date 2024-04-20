@@ -25,57 +25,14 @@ elif ENV == "colab":
     # %cd drive/MyDrive/Coding/
     data_path = "data/NhaBe"
 
-# View a sample radar image in raw and coordinate forms
-def view_sample_images():
-    metadata = pd.read_csv("metadata.csv")
-    
-    # Raw data
-    print("### Raw data ###")
-    data = pyart.io.read_sigmet(f"{data_path}/{metadata['path'].tolist()[0]}")
-
-    print(metadata['timestamp'].tolist()[0])
-
-    print("Fields available:")
-    print(data.fields.keys(), "\n")
-
-    print("Reflectivity values:")
-    reflectivity = data.fields['reflectivity']['data']
-    print(reflectivity)
-    print(reflectivity.shape, "\n")
-
-    display = pyart.graph.RadarDisplay(data)
-    display.plot_ppi("reflectivity")
-    plt.savefig("image/2.sample_raw_image.jpg", dpi=150)
-    plt.clf()
-    
-    # Convert raw data to grid data
-    print("### Grid data ###")
-    grid_data = pyart.map.grid_from_radars(
-        data,
-        grid_shape=(1, 1388, 500),
-        grid_limits=((0, 1), (-300000, 300000), (-300000, 300000)),
-    )
-
-    print("Fields available:")
-    print(grid_data.fields.keys(), "\n")
-
-    print("Reflectivity values:")
-    reflectivity = grid_data.fields['reflectivity']['data']
-    print(reflectivity)
-    print(reflectivity.shape, "\n")
-
-    grid_display = pyart.graph.GridMapDisplay(grid_data)
-    grid_display.plot_grid('reflectivity', cmap='pyart_HomeyerRainbow')
-    plt.savefig("image/2.sample_grid_image.jpg", dpi=150)
-
 # @profile
 def generate_image(metadata_chunk):    
     for _, row in metadata_chunk.iterrows():
         if row['generated'] == "True" or row['generated'] == "Error":
             continue
-        timestamp = row['timestamp']
+        timestamp = row['timestamp_0']
         try:
-            data = pyart.io.read_sigmet(f"{data_path}/{row['path']}")
+            data = pyart.io.read_sigmet(f"{data_path}/{row['path_0']}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
             
             grid_data = pyart.map.grid_from_radars(
@@ -111,9 +68,9 @@ def update_metadata():
     files = [file for file in os.listdir("image/unlabeled1")]
     timestamps = [file[:-4] for file in files]
     generated = ["True" if file.endswith('.jpg') else "Error" for file in files]
-    new_metadata = pd.DataFrame({'timestamp': timestamps, 'generated': generated})
+    new_metadata = pd.DataFrame({'timestamp_0': timestamps, 'generated': generated})
     
-    updated_metadata = pd.merge(old_metadata, new_metadata, on='timestamp', how='outer')
+    updated_metadata = pd.merge(old_metadata, new_metadata, on='timestamp_0', how='outer')
     updated_metadata.to_csv("metadata.csv", index=False)
 
 def move_alternate_files():

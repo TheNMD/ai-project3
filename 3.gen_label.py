@@ -25,77 +25,41 @@ elif ENV == "colab":
     # %cd drive/MyDrive/Coding/
     data_path = "data/NhaBe"
 
-# View a sample radar image in raw and coordinate forms
-def view_sample_image():
-    metadata = pd.read_csv("metadata.csv")
-    
-    data = pyart.io.read_sigmet(f"{data_path}/{metadata['path'].tolist()[0]}")
-    grid_data = pyart.map.grid_from_radars(
-        data,
-        grid_shape=(1, 1388, 500),
-        grid_limits=((0, 1), (-300000, 300000), (-300000, 300000)),
-    )
-
-    print("Fields available:")
-    print(grid_data.fields.keys(), "\n")
-
-    print("Reflectivity values:")
-    reflectivity = grid_data.fields['reflectivity']['data']
-    print(reflectivity)
-    print(reflectivity.shape, "\n")
-
-    print("Non-masked reflectivity values:")
-    # Use compress() to remove all masked values (white pixels)
-    reflectivity = np.array(reflectivity.compressed())
-    print(reflectivity, "\n")
-    
-    grid_display = pyart.graph.GridMapDisplay(grid_data)
-    grid_display.plot_grid('reflectivity', cmap='pyart_HomeyerRainbow')
-    plt.savefig("image/3.sample_image.jpg", dpi=150)
-    plt.clf()
-    
-    plt.figure(figsize=(6, 6))
-    _, _, _ = plt.hist(reflectivity, color='skyblue', edgecolor='black')
-    plt.xlabel('DBz')
-    plt.ylabel('Frequency')
-    plt.title('Reflectivity value distribution')
-    plt.savefig("image/3.reflectivity_value_distribution.jpg", dpi=150)
-
 def find_future_images(interval):
     metadata = pd.read_csv("metadata.csv")
-    metadata['timestamp'] = pd.to_datetime(metadata['timestamp'], format="%Y-%m-%d %H-%M-%S")
+    metadata['timestamp_0'] = pd.to_datetime(metadata['timestamp_0'], format="%Y-%m-%d %H-%M-%S")
     
-    future_path = f"future_path_{interval}"
-    future_timestamp = f"future_timestamp_{interval}"
-    future_label = f"future_label_{interval}"
-    future_avg_reflectivity = f"future_avg_reflectivity_{interval}"
+    path_col = f"path_{interval}"
+    timestamp_col = f"timestamp_{interval}"
+    label_col = f"label_{interval}"
+    avg_reflectivity_col = f"avg_reflectivity_{interval}"
 
-    if future_path not in metadata.columns: metadata[future_path] = np.nan
-    if future_timestamp not in metadata.columns: metadata[future_timestamp] = np.nan
-    if future_label not in metadata.columns: metadata[future_label] = np.nan
-    if future_avg_reflectivity not in metadata.columns: metadata[future_avg_reflectivity] = np.nan
+    if path_col not in metadata.columns: metadata[path_col] = np.nan
+    if timestamp_col not in metadata.columns: metadata[timestamp_col] = np.nan
+    if label_col not in metadata.columns: metadata[label_col] = np.nan
+    if avg_reflectivity_col not in metadata.columns: metadata[avg_reflectivity_col] = np.nan
 
     for idx, row in metadata.iterrows():
-        if type(row[future_path]) is str or row['generated'] == 'Error':
+        if type(row[path_col]) is str or row['generated'] == 'Error':
             continue
                 
-        current_time = row['timestamp']
-        future_metadata = metadata[(metadata['timestamp'] - current_time > pd.Timedelta(interval, "s")) &
-                                   (metadata['timestamp'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
+        current_time = row['timestamp_0']
+        future_metadata = metadata[(metadata['timestamp_0'] - current_time > pd.Timedelta(interval, "s")) &
+                                   (metadata['timestamp_0'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
         
         if future_metadata.empty:
-            metadata.loc[idx, [future_path]] = "NotAvail"
-            metadata.loc[idx, [future_timestamp]] = "NotAvail"
-            metadata.loc[idx, [future_label]] = "NotAvail"
-            metadata.loc[idx, [future_avg_reflectivity]] = "NotAvail"
+            metadata.loc[idx, [path_col]] = "NotAvail"
+            metadata.loc[idx, [timestamp_col]] = "NotAvail"
+            metadata.loc[idx, [label_col]] = "NotAvail"
+            metadata.loc[idx, [avg_reflectivity_col]] = "NotAvail"
         else:
-            metadata.loc[idx, [future_path]] = future_metadata['path'].tolist()[0]
-            metadata.loc[idx, [future_timestamp]] = future_metadata['timestamp'].tolist()[0]
+            metadata.loc[idx, [path_col]] = future_metadata['path_0'].tolist()[0]
+            metadata.loc[idx, [timestamp_col]] = future_metadata['timestamp_0'].tolist()[0]
         
         print(current_time)
 
-    metadata['timestamp'] = metadata['timestamp'].astype(str).str.replace(':', '-')
-    metadata[future_timestamp] = metadata[future_timestamp].astype(str).str.replace(':', '-')
+    metadata['timestamp_0'] = metadata['timestamp_0'].astype(str).str.replace(':', '-')
+    metadata[timestamp_col] = metadata[timestamp_col].astype(str).str.replace(':', '-')
     metadata.to_csv("metadata.csv", index=False)
 
 def calculate_avg_reflectivity(reflectivity):
@@ -199,36 +163,41 @@ def calculate_avg_reflectivity(reflectivity):
         
     return avg_reflectivity, label
 
-def label_image(metadata_chunk):
+def label_image(metadata_chunk):    
     for idx, row in metadata_chunk.iterrows():
-        if type(row['future_label']) is str or row['future_path'] == 'NotAvail' or row['generated'] == 'Error':
-            continue
-        try:
-            data = pyart.io.read_sigmet(f"{data_path}/{row['future_path']}")
-            data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
-            
-            grid_data = pyart.map.grid_from_radars(
-                data,
-                grid_shape=(1, 500, 500),
-                grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
-            )
-            
-            reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
-            avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+        for interval in [0, 7200, 21600, 43200]:
+            path_col = f'path_{interval}'
+            label_col = f'label_{interval}'
+            avg_reflectivity_col = f'avg_reflectivity_{interval}'
                 
-            print(f"{row['timestamp']} - Average reflectivity: {avg_reflectivity} | Label: {label}")
-            
-            metadata_chunk.loc[idx, ['future_avg_reflectivity']] = avg_reflectivity
-            metadata_chunk.loc[idx, ['future_label']] = label
-            
-            # Close and delete to release memory
-            del grid_data
-            del data
-        except Exception as e:
-            metadata_chunk.loc[idx, ['future_avg_reflectivity']] = np.nan
-            metadata_chunk.loc[idx, ['future_label']] = "Error"
-            logging.error(e, exc_info=True)
-            continue
+            if type(row[label_col]) is str or row[path_col] == 'NotAvail' or row['generated'] == 'Error':
+                continue
+            try:
+                data = pyart.io.read_sigmet(f"{data_path}/{row[label_col]}")
+                data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
+                
+                grid_data = pyart.map.grid_from_radars(
+                    data,
+                    grid_shape=(1, 500, 500),
+                    grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),
+                )
+                
+                reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
+                avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
+                    
+                print(f"{interval} - {row['timestamp_0']} | Average reflectivity: {avg_reflectivity} | Label: {label}")
+                
+                metadata_chunk.loc[idx, [avg_reflectivity_col]] = avg_reflectivity
+                metadata_chunk.loc[idx, [label_col]] = label
+                
+                # Close and delete to release memory
+                del grid_data
+                del data
+            except Exception as e:
+                metadata_chunk.loc[idx, [avg_reflectivity_col]] = "Error"
+                metadata_chunk.loc[idx, [label_col]] = "Error"
+                logging.error(e, exc_info=True)
+                continue
         
     return metadata_chunk
         
@@ -238,36 +207,94 @@ def update_metadata(new_metadata):
     else:
         updated_metadata = pd.read_csv("metadata_temp.csv")
     
-    updated_metadata.loc[new_metadata.index, 'future_avg_reflectivity'] = new_metadata['future_avg_reflectivity'].tolist()
-    updated_metadata.loc[new_metadata.index, 'future_label'] = new_metadata['future_label'].tolist()
+    updated_metadata.loc[new_metadata.index, 'avg_reflectivity_0'] = new_metadata['avg_reflectivity_0'].tolist()
+    updated_metadata.loc[new_metadata.index, 'label_0'] = new_metadata['label_0'].tolist()
+    updated_metadata.loc[new_metadata.index, 'avg_reflectivity_7200'] = new_metadata['avg_reflectivity_7200'].tolist()
+    updated_metadata.loc[new_metadata.index, 'label_7200'] = new_metadata['label_7200'].tolist()
+    updated_metadata.loc[new_metadata.index, 'avg_reflectivity_21600'] = new_metadata['avg_reflectivity_21600'].tolist()
+    updated_metadata.loc[new_metadata.index, 'label_21600'] = new_metadata['label_21600'].tolist()
+    updated_metadata.loc[new_metadata.index, 'avg_reflectivity_43200'] = new_metadata['avg_reflectivity_43200'].tolist()
+    updated_metadata.loc[new_metadata.index, 'label_43200'] = new_metadata['label_43200'].tolist()
     
     updated_metadata.to_csv("metadata_temp.csv", index=False)        
 
 def plot_distribution():
     metadata = pd.read_csv("metadata_lite.csv")
     
-    frequency = metadata['future_label'].value_counts()
-    print(frequency)
-    with open('image/label_summary.txt', 'w') as file:
-        file.write(str(frequency))
+    frequency_0    = metadata['label_0'].value_counts()
+    frequency_7200  = metadata['label_7200'].value_counts()
+    frequency_21600 = metadata['label_21600'].value_counts()
+    frequency_43200 = metadata['label_43200 '].value_counts()
     
-    plt.bar(frequency.index, frequency.values, color='skyblue', edgecolor='black')
+    with open('image/label_summary.txt', 'w') as file:
+        file.write("### 0 ###\n")
+        file.write(f"{frequency_0}\n\n")
+        file.write("### 7200 ###\n")
+        file.write(f"{frequency_7200}\n\n")
+        file.write("### 21600 ###\n")
+        file.write(f"{frequency_21600}\n\n")
+        file.write("### 43200 ###\n")
+        file.write(f"{frequency_43200}\n\n")
+    
+    plt.bar(frequency_0.index, frequency_0.values, color='skyblue', edgecolor='black')
     plt.xlabel('Label')
     plt.ylabel('Frequency')
-    plt.title('Label Distribution')
-    plt.savefig('image/label_dist.png')
+    plt.title('Label Distribution - Current')
+    plt.savefig('image/labeled/label_dist_0.png')
     plt.clf()
     
-    _, _, _ = plt.hist(metadata['future_avg_reflectivity'], color='skyblue', edgecolor='black')
+    plt.bar(frequency_7200.index, frequency_7200.values, color='skyblue', edgecolor='black')
+    plt.xlabel('Label')
+    plt.ylabel('Frequency')
+    plt.title('Label Distribution - 7200')
+    plt.savefig('image/labeled/label_dist_7200.png')
+    plt.clf()
+    
+    plt.bar(frequency_21600.index, frequency_21600.values, color='skyblue', edgecolor='black')
+    plt.xlabel('Label')
+    plt.ylabel('Frequency')
+    plt.title('Label Distribution - 21600')
+    plt.savefig('image/labeled/label_dist_21600.png')
+    plt.clf()
+    
+    plt.bar(frequency_43200.index, frequency_43200.values, color='skyblue', edgecolor='black')
+    plt.xlabel('Label')
+    plt.ylabel('Frequency')
+    plt.title('Label Distribution - 43200')
+    plt.savefig('image/labeled/label_dist_43200.png')
+    plt.clf()
+    
+    _, _, _ = plt.hist(metadata['avg_reflectivity_0'], color='skyblue', edgecolor='black')
     plt.xlabel('Avg Reflectivity')
     plt.ylabel('Frequency')
-    plt.title('Avg Reflectivity Distribution')
-    plt.savefig('image/avg_reflectivity_dist.png')
+    plt.title('Avg Reflectivity Distribution - 0')
+    plt.savefig('image/labeled/avg_reflectivity_dist_0.png')
+    plt.clf()
+    
+    _, _, _ = plt.hist(metadata['avg_reflectivity_7200'], color='skyblue', edgecolor='black')
+    plt.xlabel('Avg Reflectivity')
+    plt.ylabel('Frequency')
+    plt.title('Avg Reflectivity Distribution - 7200')
+    plt.savefig('image/labeled/avg_reflectivity_dist_7200.png')
+    plt.clf()
+    
+    _, _, _ = plt.hist(metadata['avg_reflectivity_21600'], color='skyblue', edgecolor='black')
+    plt.xlabel('Avg Reflectivity')
+    plt.ylabel('Frequency')
+    plt.title('Avg Reflectivity Distribution - 21600')
+    plt.savefig('image/labeled/avg_reflectivity_dist_21600.png')
+    plt.clf()
+    
+    _, _, _ = plt.hist(metadata['avg_reflectivity_43200'], color='skyblue', edgecolor='black')
+    plt.xlabel('Avg Reflectivity')
+    plt.ylabel('Frequency')
+    plt.title('Avg Reflectivity Distribution - 43200')
+    plt.savefig('image/labeled/avg_reflectivity_dist_43200.png')
     plt.clf()
 
 def move_to_label(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
-        timestamp = row['timestamp']
+        timestamp = row['timestamp_0']
         future_label = row['future_label']
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{future_label}/{timestamp}.jpg")
@@ -309,9 +336,9 @@ if __name__ == '__main__':
         os.makedirs("image/labeled/future_43200/heavy_rain")
         os.makedirs("image/labeled/future_43200/very_heavy_rain")
     
-    find_future_images(interval=3600 * 2)
-    find_future_images(interval=3600 * 6)
-    find_future_images(interval=3600 * 12)
+    find_future_images(interval=7200)
+    find_future_images(interval=21600)
+    find_future_images(interval=43200)
     
     num_processes = 16
     chunk_size = 100 * num_processes 
@@ -342,10 +369,7 @@ if __name__ == '__main__':
     
     # # Make a metadata_lite.csv that contains only relevant info for model
     # metadata_lite = pd.read_csv("metadata.csv")
-    # metadata_lite = metadata_lite[metadata_lite['generated'] != "Error"]
-    # metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
-    # metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
-    # metadata_lite = metadata_lite.drop(['path', 'future_path', 'generated'], axis=1)
+    # metadata_lite = metadata_lite.drop(['path_0', 'path_7200', 'path_21600', 'path_43200', 'generated'], axis=1)
     # metadata_lite.to_csv("metadata_lite.csv", index=False)
     
     # # Plot label and avg reflectivity distribution
