@@ -266,10 +266,10 @@ if __name__ == '__main__':
     updated_metadata = pd.read_csv("metadata_temp.csv")
     updated_metadata.to_csv("metadata.csv", index=False)
     
-    # Make a metadata_lite.csv that contains only relevant info for model
-    metadata_lite = pd.read_csv("metadata.csv")
-    metadata_lite = metadata_lite.drop(['path_0', 'generated'], axis=1)
-    metadata_lite.to_csv("metadata_lite.csv", index=False)
+    # # Make a metadata_lite.csv that contains only relevant info for model
+    # metadata_lite = pd.read_csv("metadata.csv")
+    # metadata_lite = metadata_lite.drop(['path_0', 'generated'], axis=1)
+    # metadata_lite.to_csv("metadata_lite.csv", index=False)
     
     # # Plot label and avg reflectivity distribution
     # plot_distribution(interval=0)
