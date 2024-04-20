@@ -223,7 +223,7 @@ def plot_distribution(interval):
     metadata = metadata.rename(columns={f'avg_reflectivity_{interval}': 'avg_reflectivity', f'label_{interval}': 'label'})
     
     frequency = metadata['label'].value_counts()
-    with open(f'image/label_summary_{interval}.txt', 'w') as file:
+    with open(f'image/labeled/label_dist_{interval}.txt', 'w') as file:
         file.write(f"{frequency}")
     
     plt.bar(frequency.index, frequency.values, color='skyblue', edgecolor='black')
