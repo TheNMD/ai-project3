@@ -73,8 +73,7 @@ if __name__ == '__main__':
     num_processes = 16
     chunk_size = 100 * num_processes
     
-    if not os.path.exists("image/sets"):
-        os.makedirs("image/sets")
+    if not os.path.exists(f"image/labeled/{interval}"):
         os.makedirs(f"image/labeled/{interval}")
         
         os.makedirs(f"image/labeled/{interval}/train")
