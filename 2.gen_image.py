@@ -136,7 +136,7 @@ if __name__ == '__main__':
         
     # view_sample_images()
     
-    num_processes = 20
+    num_processes = 16
     chunk_size = 100 * num_processes
     
     if not os.path.exists("image/unlabeled1"):
