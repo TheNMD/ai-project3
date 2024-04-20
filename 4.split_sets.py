@@ -23,10 +23,15 @@ elif ENV == "colab":
     # %cd drive/MyDrive/Coding/
     data_path = "data/NhaBe"
 
-def split_df(seed=42):
+interval = 0
+
+def split_df(interval, seed=42):
     metadata = pd.read_csv("metadata_lite.csv")
     
-    big_df = metadata.sample(frac=1, random_state=seed).reset_index(drop=True)
+    big_df = metadata[['timestamp_0', f'label_{interval}']]
+    big_df = big_df[big_df[(f'label_{interval}' != 'NotAvail') & (f'label_{interval}' != 'Error')]]
+    big_df = big_df.rename(columns={'timestamp_0': 'timestamp', f'label_{interval}': 'label'})
+    big_df = big_df.sample(frac=1, random_state=seed).reset_index(drop=True)
     
     split_idx1 = int(len(big_df) * 0.8)
     split_idx2 = int(len(big_df) * 0.1)
@@ -46,55 +51,54 @@ def split_df(seed=42):
 def move_to_train(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp']
-        future_label = row['future_label']
-        shutil.copy(f"image/labeled/{future_label}/{timestamp}.jpg", f"image/sets/train/{future_label}/{timestamp}.jpg")
+        label = row['label']
+        shutil.copy(f"image/labeled/{interval}/{label}/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
 
 def move_to_val(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp']
-        future_label = row['future_label']
-        shutil.copy(f"image/labeled/{future_label}/{timestamp}.jpg", f"image/sets/val/{future_label}/{timestamp}.jpg")
+        label = row['label']
+        shutil.copy(f"image/labeled/{interval}/{label}/{timestamp}.jpg", f"image/labeled/{interval}/val/{label}/{timestamp}.jpg")
         
 def move_to_test(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp']
-        future_label = row['future_label']
-        shutil.copy(f"image/labeled/{future_label}/{timestamp}.jpg", f"image/sets/test/{future_label}/{timestamp}.jpg")
+        label = row['label']
+        shutil.copy(f"image/labeled/{interval}/{label}/{timestamp}.jpg", f"image/labeled/{interval}/test/{label}/{timestamp}.jpg")
 
 if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
-        
-    # view_sample_images()
     
-    num_processes = 4
+    num_processes = 16
     chunk_size = 100 * num_processes
     
     if not os.path.exists("image/sets"):
         os.makedirs("image/sets")
+        os.makedirs(f"image/labeled/{interval}")
         
-        os.makedirs("image/sets/train")
-        os.makedirs("image/sets/train/clear")
-        os.makedirs("image/sets/train/light_rain")
-        os.makedirs("image/sets/train/moderate_rain")
-        os.makedirs("image/sets/train/heavy_rain")
-        os.makedirs("image/sets/train/very_heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/train")
+        os.makedirs(f"image/labeled/{interval}/train/clear")
+        os.makedirs(f"image/labeled/{interval}/train/light_rain")
+        os.makedirs(f"image/labeled/{interval}/train/moderate_rain")
+        os.makedirs(f"image/labeled/{interval}/train/heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/train/very_heavy_rain")
         
-        os.makedirs("image/sets/val")
-        os.makedirs("image/sets/val/clear")
-        os.makedirs("image/sets/val/light_rain")
-        os.makedirs("image/sets/val/moderate_rain")
-        os.makedirs("image/sets/val/heavy_rain")
-        os.makedirs("image/sets/val/very_heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/val")
+        os.makedirs(f"image/labeled/{interval}/val/clear")
+        os.makedirs(f"image/labeled/{interval}/val/light_rain")
+        os.makedirs(f"image/labeled/{interval}val/moderate_rain")
+        os.makedirs(f"image/labeled/{interval}/val/heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/val/very_heavy_rain")
         
-        os.makedirs("image/sets/test")
-        os.makedirs("image/sets/test/clear")
-        os.makedirs("image/sets/test/light_rain")
-        os.makedirs("image/sets/test/moderate_rain")
-        os.makedirs("image/sets/test/heavy_rain")
-        os.makedirs("image/sets/test/very_heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/test")
+        os.makedirs(f"image/labeled/{interval}/clear")
+        os.makedirs(f"image/labeled/{interval}/light_rain")
+        os.makedirs(f"image/labeled/{interval}/moderate_rain")
+        os.makedirs(f"image/labeled/{interval}/heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/very_heavy_rain")
     
-    train_set, val_set, test_set = split_df()
+    train_set, val_set, test_set = split_df(interval)
     
     # Move to train set
     try:
@@ -104,7 +108,6 @@ if __name__ == '__main__':
             pool.map(move_to_train, np.array_split(train_set, num_processes))
             end_time = time.time() - start_time
     except Exception as e:
-        # If crash due to lack of memory, restart the process (progress is saved)
         print(e)
         logging.error(e, exc_info=True)
     
@@ -116,7 +119,6 @@ if __name__ == '__main__':
             pool.map(move_to_val, np.array_split(val_set, num_processes))
             end_time = time.time() - start_time
     except Exception as e:
-        # If crash due to lack of memory, restart the process (progress is saved)
         print(e)
         logging.error(e, exc_info=True)
     
@@ -128,7 +130,6 @@ if __name__ == '__main__':
             pool.map(move_to_test, np.array_split(test_set, num_processes))
             end_time = time.time() - start_time
     except Exception as e:
-        # If crash due to lack of memory, restart the process (progress is saved)
         print(e)
         logging.error(e, exc_info=True)
         

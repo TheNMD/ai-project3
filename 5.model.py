@@ -51,6 +51,7 @@ class FinetuneModule(pl.LightningModule):
     self.model_option = model_settings['model_option']
     self.freeze = model_settings['freeze']
     self.model, train_size, test_size = load_model(self.model_name, self.model_option, self.freeze)
+    self.interval = model_settings['interval']
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
@@ -60,9 +61,9 @@ class FinetuneModule(pl.LightningModule):
     self.batch_size = loop_settings['batch_size']
     self.epochs = loop_settings['epochs']
 
-    self.train_loader = load_data(set_name="train", image_size=train_size, batch_size=self.batch_size, shuffle=True)
-    self.val_loader   = load_data(set_name="val", image_size=test_size, batch_size=self.batch_size, shuffle=False)
-    self.test_loader  = load_data(set_name="test", image_size=test_size, batch_size=self.batch_size, shuffle=False)
+    self.train_loader = load_data(set_name="train", interval=self.interval, image_size=train_size, batch_size=self.batch_size, shuffle=True)
+    self.val_loader   = load_data(set_name="val", interval=self.interval, image_size=test_size, batch_size=self.batch_size, shuffle=False)
+    self.test_loader  = load_data(set_name="test", interval=self.interval, image_size=test_size, batch_size=self.batch_size, shuffle=False)
 
   def forward(self, x):
     # x = stochastic_depth(x, p=0.2, mode='batch')
@@ -182,7 +183,7 @@ def load_model(model_name, model_option, freeze=False):
 
   return model, train_size, test_size
 
-def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
+def load_data(set_name, interval, image_size, batch_size, shuffle, num_workers=4):
   # Preprocessing data
   # TODO Add more preprocessing methods
   if set_name == "train":
@@ -205,7 +206,7 @@ def load_data(set_name, image_size, batch_size, shuffle, num_workers=4):
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ]) 
 
-  dataset = datasets.ImageFolder(root=f"{image_path}/sets/{set_name}", transform=transforms )
+  dataset = datasets.ImageFolder(root=f"{image_path}/labeled/{interval}/{set_name}", transform=transforms )
   
   dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
   
@@ -275,10 +276,12 @@ if __name__ == '__main__':
   ### vit-b      | vit-l 
   ### swinv2-t   | swinv2-b
   ### convnext-s | convnext-b | convnext-l
+  interval = 7200
   model_name = "convnext-b"
   model_option = "pretrained" # pretrained | custom 
   freeze = False
   checkpoint = False
+  print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
   if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
     os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
@@ -309,7 +312,8 @@ if __name__ == '__main__':
   # Make Lightning module
   model_settings = {'model_name': model_name, 
                     'model_option': model_option, 
-                    'freeze': freeze}
+                    'freeze': freeze,
+                    'interval': interval}
   optimizer_settings = {'optimizer_name': optimizer_name, 
                         'learning_rate': learning_rate, 
                         'weight_decay': weight_decay, 

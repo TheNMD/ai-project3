@@ -42,23 +42,19 @@ def create_metadata(year):
         
         print(f"{timestamp}")
 
-    metadata = pd.DataFrame(list(zip(paths, timestamps)), columns=['path', 'timestamp'])
+    metadata = pd.DataFrame(list(zip(paths, timestamps)), columns=['path_0', 'timestamp_0'])
     metadata['generated'] = False
-    metadata['future_path'] = np.nan
-    metadata['future_timestamp'] = np.nan
-    metadata['future_label'] = np.nan
-    metadata['future_avg_reflectivity'] = np.nan
     
-    metadata = metadata.sort_values(by='timestamp').reset_index(drop=True)
+    metadata = metadata.sort_values(by='timestamp_0').reset_index(drop=True)
     metadata.to_csv(f"metadata/metadata_{year}_{month}.csv", index=False)
 
 def update_metadata():
   filenames = sorted(os.listdir("metadata"))
   metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames]
   metadata = pd.concat(metadata_list)
-  metadata = metadata.sort_values(by='timestamp').reset_index(drop=True)
+  metadata = metadata.sort_values(by='timestamp_0').reset_index(drop=True)
   
-  duplicate_mask = metadata.duplicated(subset=['timestamp'], keep=False)
+  duplicate_mask = metadata.duplicated(subset=['timestamp_0'], keep=False)
   duplicate_indices = metadata[duplicate_mask].index.tolist()
   metadata_cleaned = metadata.drop(duplicate_indices).reset_index(drop=True)
   
@@ -85,10 +81,9 @@ if __name__ == '__main__':
         
         print(f"Time: {end_time}")
   except Exception as e:
-      # If crash due to lack of memory, restart the process (progress is saved)
       update_metadata()
       print(e)
       logging.error(e, exc_info=True)
   
-  if not os.path.exists("metadata"):
+  if os.path.exists("metadata"):
     shutil.rmtree("metadata")
