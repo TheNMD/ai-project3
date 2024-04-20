@@ -61,6 +61,43 @@ def view_sample_image():
     plt.title('Reflectivity value distribution')
     plt.savefig("image/3.reflectivity_value_distribution.jpg", dpi=150)
 
+def find_future_images(interval=7200):
+    metadata = pd.read_csv("metadata.csv")
+    metadata['timestamp'] = pd.to_datetime(metadata['timestamp'], format="%Y-%m-%d %H-%M-%S")
+    
+    future_path = f"future_path_{interval}"
+    future_timestamp = f"future_timestamp_{interval}"
+    future_label = f"future_label_{interval}"
+    future_avg_reflectivity = f"future_avg_reflectivity_{interval}"
+
+    if future_path not in metadata.columns: metadata[future_path] = np.nan
+    if future_timestamp not in metadata.columns: metadata[future_timestamp] = np.nan
+    if future_label not in metadata.columns: metadata[future_label] = np.nan
+    if future_avg_reflectivity not in metadata.columns: metadata[future_avg_reflectivity] = np.nan
+
+    for idx, row in metadata.iterrows():
+        if type(row[future_path]) is str or row['generated'] == 'Error':
+            continue
+                
+        current_time = row['timestamp']
+        future_metadata = metadata[(metadata['timestamp'] - current_time > pd.Timedelta(interval, "s")) &
+                                   (metadata['timestamp'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
+        
+        if future_metadata.empty:
+            metadata.loc[idx, [future_path]] = "NotAvail"
+            metadata.loc[idx, [future_timestamp]] = "NotAvail"
+            metadata.loc[idx, [future_label]] = "NotAvail"
+            metadata.loc[idx, [future_avg_reflectivity]] = "NotAvail"
+        else:
+            metadata.loc[idx, [future_path]] = future_metadata['path'].tolist()[0]
+            metadata.loc[idx, [future_timestamp]] = future_metadata['timestamp'].tolist()[0]
+        
+        print(current_time)
+
+    metadata['timestamp'] = metadata['timestamp'].astype(str).str.replace(':', '-')
+    metadata[future_timestamp] = metadata[future_timestamp].astype(str).str.replace(':', '-')
+    metadata.to_csv("metadata.csv", index=False)
+
 def calculate_avg_reflectivity(reflectivity):
     # Calculate the percentage of each reflectivity value in each of 8 ranges
     # Count the reflectivity value smaller than 30
@@ -101,8 +138,8 @@ def calculate_avg_reflectivity(reflectivity):
                   pow(10, 100 * (1 - reflectivity_40_to_45)),
                   pow(10, 100 * (1 - reflectivity_45_to_50)), 
                   pow(10, 100 * (1 - reflectivity_50_to_55)),
-                  pow(10, 100 * (1 - reflectivity_55_to_60)) * 100,
-                  pow(10, 100 * (1 - reflectivity_bigger_than_60)) * 100]
+                  pow(10, 100 * (1 - reflectivity_55_to_60)),
+                  pow(10, 100 * (1 - reflectivity_bigger_than_60))]
 
     # print(weight_set)
 
@@ -240,72 +277,99 @@ def move_to_label(metadata_chunk):
 if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
-        
-    num_processes = 20
+
+    find_future_images(interval=3600 * 2)
+    find_future_images(interval=3600 * 6)
+    find_future_images(interval=3600 * 12)
+    
+    num_processes = 16
     chunk_size = 100 * num_processes 
     
     if not os.path.exists("image/labeled"):
-        os.makedirs("image/labeled") 
-        os.makedirs("image/labeled/clear")
-        os.makedirs("image/labeled/light_rain")
-        os.makedirs("image/labeled/moderate_rain")
-        os.makedirs("image/labeled/heavy_rain")
-        os.makedirs("image/labeled/very_heavy_rain")
+        os.makedirs("image/labeled")
         
-    # Label images
-    try:
-        counter = 0
-        # Use multiprocessing to iterate over the metadata 
-        with mp.Pool(processes=num_processes) as pool:
-            metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
-            for chunk in metadata_chunks:
-                sub_metadata_chunks = np.array_split(chunk, num_processes)
+        os.makedirs("image/labeled/current")
+        os.makedirs("image/labeled/current/clear")
+        os.makedirs("image/labeled/current/light_rain")
+        os.makedirs("image/labeled/current/moderate_rain")
+        os.makedirs("image/labeled/current/heavy_rain")
+        os.makedirs("image/labeled/current/very_heavy_rain")
+        
+        os.makedirs("image/labeled/future_2h")
+        os.makedirs("image/labeled/future_2h/clear")
+        os.makedirs("image/labeled/future_2h/light_rain")
+        os.makedirs("image/labeled/future_2h/moderate_rain")
+        os.makedirs("image/labeled/future_2h/heavy_rain")
+        os.makedirs("image/labeled/future_2h/very_heavy_rain")
+        
+        os.makedirs("image/labeled/future_6h")
+        os.makedirs("image/labeled/future_6h/clear")
+        os.makedirs("image/labeled/future_6h/light_rain")
+        os.makedirs("image/labeled/future_6h/moderate_rain")
+        os.makedirs("image/labeled/future_6h/heavy_rain")
+        os.makedirs("image/labeled/future_6h/very_heavy_rain")
+        
+        os.makedirs("image/labeled/future_12h")
+        os.makedirs("image/labeled/future_12h/clear")
+        os.makedirs("image/labeled/future_12h/light_rain")
+        os.makedirs("image/labeled/future_12h/moderate_rain")
+        os.makedirs("image/labeled/future_12h/heavy_rain")
+        os.makedirs("image/labeled/future_12h/very_heavy_rain")
+        
+    # # Label images
+    # try:
+    #     counter = 0
+    #     # Use multiprocessing to iterate over the metadata 
+    #     with mp.Pool(processes=num_processes) as pool:
+    #         metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
+    #         for chunk in metadata_chunks:
+    #             sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
-                start_time = time.time()
-                results = pool.map(label_image, sub_metadata_chunks)
-                update_metadata(pd.concat(results))
-                end_time = time.time() - start_time
+    #             start_time = time.time()
+    #             results = pool.map(label_image, sub_metadata_chunks)
+    #             update_metadata(pd.concat(results))
+    #             end_time = time.time() - start_time
 
-                counter += 1
-                print(f"### Chunk: {counter} | Time: {end_time} ###")
-    except Exception as e:
-        # If crash due to lack of memory, restart the process (progress is saved)
-        print(e)
-        logging.error(e, exc_info=True)
+    #             counter += 1
+    #             print(f"### Chunk: {counter} | Time: {end_time} ###")
+    # except Exception as e:
+    #     # If crash due to lack of memory, restart the process (progress is saved)
+    #     print(e)
+    #     logging.error(e, exc_info=True)
     
-    updated_metadata = pd.read_csv("metadata_temp.csv")
-    updated_metadata.to_csv("metadata.csv", index=False)
+    # updated_metadata = pd.read_csv("metadata_temp.csv")
+    # updated_metadata.to_csv("metadata.csv", index=False)
     
-    # Make a metadata_lite.csv that contains only relevant info for model
-    metadata_lite = pd.read_csv("metadata.csv")
-    metadata_lite = metadata_lite[metadata_lite['generated'] != "Error"]
-    metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
-    metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
-    metadata_lite = metadata_lite.drop(['path', 'future_path'], axis=1)
-    metadata_lite.to_csv("metadata_lite.csv", index=False)
+    # # Make a metadata_lite.csv that contains only relevant info for model
+    # metadata_lite = pd.read_csv("metadata.csv")
+    # metadata_lite = metadata_lite[metadata_lite['generated'] != "Error"]
+    # metadata_lite = metadata_lite[metadata_lite['future_path'] != "NotAvail"]
+    # metadata_lite = metadata_lite[metadata_lite['future_label'] != "Error"]
+    # metadata_lite = metadata_lite.drop(['path', 'future_path', 'generated'], axis=1)
+    # metadata_lite.to_csv("metadata_lite.csv", index=False)
     
-    # Plot label and avg reflectivity distribution
-    plot_distribution()
+    # # Plot label and avg reflectivity distribution
+    # plot_distribution()
     
-    # Move images from unlabeled to labeled folders
-    try:
-        counter = 0
-        # Use multiprocessing to iterate over the metadata 
-        with mp.Pool(processes=num_processes) as pool:
-            labeled_chunks = pd.read_csv("metadata_lite.csv", chunksize=chunk_size)
-            for chunk in labeled_chunks:
-                sub_metadata_chunks = np.array_split(chunk, num_processes)
+    # # Move images from unlabeled to labeled folders
+    # try:
+    #     counter = 0
+    #     # Use multiprocessing to iterate over the metadata 
+    #     with mp.Pool(processes=num_processes) as pool:
+    #         labeled_chunks = pd.read_csv("metadata_lite.csv", chunksize=chunk_size)
+    #         for chunk in labeled_chunks:
+    #             sub_metadata_chunks = np.array_split(chunk, num_processes)
     
-                start_time = time.time()
-                pool.map(move_to_label, sub_metadata_chunks)
-                end_time = time.time() - start_time
+    #             start_time = time.time()
+    #             pool.map(move_to_label, sub_metadata_chunks)
+    #             end_time = time.time() - start_time
 
-                counter += 1
-                print(f"### Chunk: {counter} | Time: {end_time} ###")
-    except Exception as e:
-        # If crash due to lack of memory, restart the process (progress is saved)
-        print(e)
-        logging.error(e, exc_info=True)
+    #             counter += 1
+    #             print(f"### Chunk: {counter} | Time: {end_time} ###")
+    # except Exception as e:
+    #     # If crash due to lack of memory, restart the process (progress is saved)
+    #     print(e)
+    #     logging.error(e, exc_info=True)
 
         
         
