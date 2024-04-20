@@ -287,7 +287,7 @@ if __name__ == '__main__':
   optimizer_name = "adamw"  # adam | adamw | sgd
   learning_rate = 1e-3     # 1e-4 | 5e-5  | 1e-2
   weight_decay = 1e-8       # 0    | 1e-8 
-  scheduler_name = "ca"   # none | cd    | cdwr  
+  scheduler_name = "cd"   # none | cd    | cdwr  
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
   print(f"Weight decay: {weight_decay}")
