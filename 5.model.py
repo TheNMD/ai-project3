@@ -126,7 +126,7 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
     return self.test_loader
 
-def load_model(model_name, model_option, num_classes, freeze=False):
+def load_model(model_name, model_option, interval, num_classes, freeze=False):
   name_and_size = model_name.split('-')
   name, size = name_and_size[0], name_and_size[1]
   
@@ -176,7 +176,7 @@ def load_model(model_name, model_option, num_classes, freeze=False):
     model.head.fc = nn.Linear(in_features=num_feature, out_features=num_classes)
     model.head.fc.weight.data.mul_(0.001)
     
-  with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
+  with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write("### Summary ###\n")
     f.write(f"{summary(model, (3, train_size, train_size))}\n\n")
     f.write("### Full ###\n")
@@ -210,8 +210,8 @@ def load_data(set_name, interval, image_size, batch_size, shuffle, num_workers=4
   
   return dataloader
 
-def plot_results(model_name, model_option, latest_version, monitor_value):
-  log_results = pd.read_csv(f"{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/metrics.csv")
+def plot_results(model_name, model_option, interval, latest_version, monitor_value):
+  log_results = pd.read_csv(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/metrics.csv")
   train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
   val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
@@ -230,7 +230,7 @@ def plot_results(model_name, model_option, latest_version, monitor_value):
   plt.ylabel('value')
   plt.title(f'Loss of {model_name}-{model_option}')
   plt.legend()
-  plt.savefig(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/graph_loss.png')
+  plt.savefig(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/graph_loss.png')
 
   plt.clf()
 
@@ -242,7 +242,7 @@ def plot_results(model_name, model_option, latest_version, monitor_value):
   plt.ylabel('value')
   plt.title(f'Accuracy of {model_name}-{model_option}')
   plt.legend()
-  plt.savefig(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/graph_acc.png')
+  plt.savefig(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/graph_acc.png')
 
   test_results = log_results[['test_loss', 'test_acc']].dropna()
   test_loss = test_results['test_loss'].tolist()[0]
@@ -282,8 +282,9 @@ if __name__ == '__main__':
   checkpoint = False
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
-  if not os.path.exists(f"{result_path}/checkpoint/{model_name}-{model_option}"):
-    os.makedirs(f"{result_path}/checkpoint/{model_name}-{model_option}")
+  if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
+    os.makedirs(f"{result_path}/checkpoint/{interval}")
+    os.makedirs(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
@@ -325,7 +326,7 @@ if __name__ == '__main__':
   if checkpoint:
     version = "version_0"
     
-    module = FinetuneModule.load_from_checkpoint(f"{result_path}/checkpoint/{model_name}-{model_option}/{version}/best_model.ckpt", 
+    module = FinetuneModule.load_from_checkpoint(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{version}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
                                                  loop_settings=loop_settings)
@@ -338,8 +339,8 @@ if __name__ == '__main__':
     end_time = time.time()
     print(f"Evaluation time: {end_time - start_time} seconds")
   else:
-    versions = sorted([folder for folder in os.listdir(f'{result_path}/checkpoint/{model_name}-{model_option}') 
-                       if os.path.isdir(f'{result_path}/checkpoint/{model_name}-{model_option}/{folder}')])
+    versions = sorted([folder for folder in os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
+                       if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
     latest_version = f"version_{len(versions)}"
     
     try:
@@ -360,7 +361,7 @@ if __name__ == '__main__':
                                             mode='max',
                                             save_top_k=1,
                                             filename='best_model',
-                                            dirpath=f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}',
+                                            dirpath=f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}',
                                             verbose=True,)
       
       # Combine all elements
@@ -404,7 +405,7 @@ if __name__ == '__main__':
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Write down hyperparameters and results
-      with open(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
+      with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
         file.write('### For models ###\n')
         file.write(f'Model name: {model_name}\n')
         file.write(f'Model Option: {model_option}\n')
@@ -435,6 +436,6 @@ if __name__ == '__main__':
         file.write(f"Evaluation time: {test_end_time} seconds\n")
     except Exception as e:
       print(e)
-      if os.path.exists(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}'):
-        shutil.rmtree(f'{result_path}/checkpoint/{model_name}-{model_option}/{latest_version}')
+      if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}'):
+        shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}')
   
