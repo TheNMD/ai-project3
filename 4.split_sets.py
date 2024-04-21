@@ -61,7 +61,7 @@ def split_df(interval, seed=42):
 
 def move_to_train(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
-        timestamp = row['timestamp']
+        timestamp = row['timestamp_0']
         label = row['label']
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
@@ -70,7 +70,7 @@ def move_to_train(metadata_chunk):
 
 def move_to_val(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
-        timestamp = row['timestamp']
+        timestamp = row['timestamp_0']
         label = row['label']
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/val/{label}/{timestamp}.jpg")
@@ -79,7 +79,7 @@ def move_to_val(metadata_chunk):
         
 def move_to_test(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
-        timestamp = row['timestamp']
+        timestamp = row['timestamp_0']
         label = row['label']
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/test/{label}/{timestamp}.jpg")
