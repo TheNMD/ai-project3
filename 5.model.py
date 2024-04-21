@@ -342,7 +342,8 @@ if __name__ == '__main__':
     end_time = time.time()
     print(f"Evaluation time: {end_time - start_time} seconds")
   else:
-    versions = sorted([folder for folder in os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
+    versions = sorted([folder for folder in 
+                       os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
                        if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
     latest_version = f"version_{len(versions)}"
     
@@ -350,7 +351,7 @@ if __name__ == '__main__':
       module = FinetuneModule(model_settings, optimizer_settings, loop_settings)
     
       # Logger
-      logger = CSVLogger(save_dir=f'{result_path}/checkpoint', name=f'{model_name}-{model_option}')
+      logger = CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', name=f'{model_name}-{model_option}')
 
       # Callbacks
       monitor_value = "val_acc"
