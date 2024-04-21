@@ -103,7 +103,7 @@ if __name__ == '__main__':
         os.makedirs(f"image/labeled/{interval}/val")
         os.makedirs(f"image/labeled/{interval}/val/clear")
         os.makedirs(f"image/labeled/{interval}/val/light_rain")
-        os.makedirs(f"image/labeled/{interval}val/moderate_rain")
+        os.makedirs(f"image/labeled/{interval}/val/moderate_rain")
         os.makedirs(f"image/labeled/{interval}/val/heavy_rain")
         os.makedirs(f"image/labeled/{interval}/val/very_heavy_rain")
         
