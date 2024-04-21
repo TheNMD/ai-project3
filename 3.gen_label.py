@@ -190,7 +190,9 @@ def find_future_images(interval):
 def plot_distribution(interval):
     metadata = pd.read_csv("metadata.csv")
     metadata = metadata[[f'avg_reflectivity_{interval}', f'label_{interval}']]
-    metadata = metadata[metadata[f'label_{interval}'] != 'NotAvail']
+    metadata = metadata[(metadata[f'avg_reflectivity_{interval}'] != 'NotAvail') & (metadata[f'label_{interval}'] != 'NotAvail')]
+    metadata[f'avg_reflectivity_{interval}'] = metadata[f'avg_reflectivity_{interval}'].astype('float64')
+    metadata.reset_index(drop=True, inplace=True)
     
     frequency = metadata[f'label_{interval}'].value_counts()
     with open(f'image/labeled/label_dist_{interval}.txt', 'w') as file:
@@ -202,7 +204,7 @@ def plot_distribution(interval):
     plt.title(f'Label Distribution - {interval}')
     plt.savefig(f'image/labeled/label_dist_{interval}.png')
     plt.clf()
-    
+        
     _, _, _ = plt.hist(metadata[f'avg_reflectivity_{interval}'], color='skyblue', edgecolor='black')
     plt.xlabel('Avg Reflectivity')
     plt.ylabel('Frequency')
@@ -276,16 +278,16 @@ if __name__ == '__main__':
     #                                         'timestamp_21600', 'avg_reflectivity_21600', 'label_21600',
     #                                         'timestamp_43200', 'avg_reflectivity_43200', 'label_43200',])
 
-    #     metadata.to_csv("metadata_temp.csv", index=False)
+    #     metadata.to_csv("metadata.csv", index=False)
     # except Exception as e:
     #     print(e)
     #     logging.error(e, exc_info=True)
     
     # Plot label and avg reflectivity distribution
     plot_distribution(interval=0)
-    plot_distribution(interval=7200)
-    plot_distribution(interval=21600)
-    plot_distribution(interval=43200)
+    # plot_distribution(interval=7200)
+    # plot_distribution(interval=21600)
+    # plot_distribution(interval=43200)
 
 
         
