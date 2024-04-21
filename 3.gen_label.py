@@ -96,23 +96,12 @@ def calculate_avg_reflectivity(reflectivity):
         label = "clear"
     elif 30 <= avg_reflectivity < 40:
         label = "light_rain"
-    elif 40 <= avg_reflectivity < 50:
+    elif 40 <= avg_reflectivity < 47.5:
         label = "moderate_rain"
-    elif 50 <= avg_reflectivity < 60:
+    elif 47.5 <= avg_reflectivity < 55:
         label = "heavy_rain"
-    elif avg_reflectivity >= 60:
+    elif avg_reflectivity >= 55:
         label = "very_heavy_rain"
-        
-    # if avg_reflectivity < 25:
-    #     label = "clear"
-    # elif 25 <= avg_reflectivity < 35:
-    #     label = "light_rain"
-    # elif 35 <= avg_reflectivity < 45:
-    #     label = "moderate_rain"
-    # elif 45 <= avg_reflectivity < 55:
-    #     label = "heavy_rain"
-    # elif avg_reflectivity > 55:
-    #     label = "very_heavy_rain"
         
     return avg_reflectivity, label
 
@@ -250,31 +239,31 @@ if __name__ == '__main__':
 
     #             counter += 1
     #             print(f"### Chunk: {counter} | Time: {end_time} ###")
+                
+    #     updated_metadata = pd.read_csv("metadata_temp.csv")
+    #     updated_metadata = updated_metadata[updated_metadata['label_0'] != 'Error']
+    #     updated_metadata.to_csv("metadata.csv", index=False)
     # except Exception as e:
     #     print(e)
     #     logging.error(e, exc_info=True)
     
-    # updated_metadata = pd.read_csv("metadata_temp.csv")
-    # updated_metadata = updated_metadata[updated_metadata['label_0'] != 'Error']
-    # updated_metadata.to_csv("metadata.csv", index=False)
-    
-    # try:
-    #     # Use multiprocessing to iterate over the metadata 
-    #     with mp.Pool(processes=3) as pool:
-    #         start_time = time.time()
-    #         pool.map(find_future_images, [7200, 21600, 43200])
-    #         end_time = time.time() - start_time
+    try:
+        # Use multiprocessing to iterate over the metadata 
+        with mp.Pool(processes=3) as pool:
+            start_time = time.time()
+            pool.map(find_future_images, [7200, 21600, 43200])
+            end_time = time.time() - start_time
 
-    #         print(f"Time: {end_time} ###")
-    # except Exception as e:
-    #     print(e)
-    #     logging.error(e, exc_info=True)
+            print(f"Time: {end_time} ###")
+    except Exception as e:
+        print(e)
+        logging.error(e, exc_info=True)
     
     # # Plot label and avg reflectivity distribution
     plot_distribution(interval=0)
-    # plot_distribution(interval=7200)
-    # plot_distribution(interval=21600)
-    # plot_distribution(interval=43200)
+    plot_distribution(interval=7200)
+    plot_distribution(interval=21600)
+    plot_distribution(interval=43200)
 
 
         
