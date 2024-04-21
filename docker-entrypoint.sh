@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 4.split_sets.py
+python3 5.model.py
