@@ -244,42 +244,42 @@ if __name__ == '__main__':
     #     print(e)
     #     logging.error(e, exc_info=True)
     
-    try:
-        # Use multiprocessing to iterate over the metadata 
-        with mp.Pool(processes=3) as pool:
-            start_time = time.time()
-            pool.map(find_future_images, [7200, 21600, 43200])
-            end_time = time.time() - start_time
+    # try:
+    #     # Use multiprocessing to iterate over the metadata 
+    #     with mp.Pool(processes=3) as pool:
+    #         start_time = time.time()
+    #         pool.map(find_future_images, [7200, 21600, 43200])
+    #         end_time = time.time() - start_time
 
-            print(f"Time: {end_time} ###")
+    #         print(f"Time: {end_time} ###")
         
-        metadata = pd.read_csv("metadata.csv")
+    #     metadata = pd.read_csv("metadata.csv")
 
-        metadata_7200 = pd.read_csv("metadata_7200.csv")
-        metadata['timestamp_7200'] = metadata_7200['timestamp_7200']
-        metadata['avg_reflectivity_7200'] = metadata_7200['avg_reflectivity_7200']
-        metadata['label_7200'] = metadata_7200['label_7200']
+    #     metadata_7200 = pd.read_csv("metadata_7200.csv")
+    #     metadata['timestamp_7200'] = metadata_7200['timestamp_7200']
+    #     metadata['avg_reflectivity_7200'] = metadata_7200['avg_reflectivity_7200']
+    #     metadata['label_7200'] = metadata_7200['label_7200']
 
-        metadata_21600 = pd.read_csv("metadata_21600.csv")
-        metadata['timestamp_21600'] = metadata_21600['timestamp_21600']
-        metadata['avg_reflectivity_21600'] = metadata_21600['avg_reflectivity_21600']
-        metadata['label_21600'] = metadata_21600['label_21600']
+    #     metadata_21600 = pd.read_csv("metadata_21600.csv")
+    #     metadata['timestamp_21600'] = metadata_21600['timestamp_21600']
+    #     metadata['avg_reflectivity_21600'] = metadata_21600['avg_reflectivity_21600']
+    #     metadata['label_21600'] = metadata_21600['label_21600']
 
-        metadata_43200 = pd.read_csv("metadata_43200.csv")
-        metadata['timestamp_43200'] = metadata_43200['timestamp_43200']
-        metadata['avg_reflectivity_43200'] = metadata_43200['avg_reflectivity_43200']
-        metadata['label_43200'] = metadata_43200['label_43200']
+    #     metadata_43200 = pd.read_csv("metadata_43200.csv")
+    #     metadata['timestamp_43200'] = metadata_43200['timestamp_43200']
+    #     metadata['avg_reflectivity_43200'] = metadata_43200['avg_reflectivity_43200']
+    #     metadata['label_43200'] = metadata_43200['label_43200']
 
-        metadata = metadata.reindex(columns=['path_0', 'generated', 
-                                            'timestamp_0', 'avg_reflectivity_0', 'label_0',
-                                            'timestamp_7200', 'avg_reflectivity_7200', 'label_7200',
-                                            'timestamp_21600', 'avg_reflectivity_21600', 'label_21600',
-                                            'timestamp_43200', 'avg_reflectivity_43200', 'label_43200',])
+    #     metadata = metadata.reindex(columns=['path_0', 'generated', 
+    #                                         'timestamp_0', 'avg_reflectivity_0', 'label_0',
+    #                                         'timestamp_7200', 'avg_reflectivity_7200', 'label_7200',
+    #                                         'timestamp_21600', 'avg_reflectivity_21600', 'label_21600',
+    #                                         'timestamp_43200', 'avg_reflectivity_43200', 'label_43200',])
 
-        metadata.to_csv("metadata_temp.csv", index=False)
-    except Exception as e:
-        print(e)
-        logging.error(e, exc_info=True)
+    #     metadata.to_csv("metadata_temp.csv", index=False)
+    # except Exception as e:
+    #     print(e)
+    #     logging.error(e, exc_info=True)
     
     # Plot label and avg reflectivity distribution
     plot_distribution(interval=0)
