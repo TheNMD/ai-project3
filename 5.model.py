@@ -258,11 +258,11 @@ if __name__ == '__main__':
     num_gpus = torch.cuda.device_count()
     print(f"Torch GPU is available: {num_gpus}")
     for i in range(num_gpus):
-      print(torch.cuda.get_device_name(i))
+      print(torch.cuda.get_device_name(i), "\n")
   else:
     device = torch.device("cpu")
     num_gpus = 0
-    print("Only Torch CPU is available")
+    print("Only Torch CPU is available\n")
      
   if not os.path.exists("result"):
     os.makedirs("result")
@@ -302,7 +302,7 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
+  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
   epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
   label_smoothing = 0.1
@@ -441,6 +441,7 @@ if __name__ == '__main__':
         
     except Exception as e:
       print(e)
+      logging.error(e, exc_info=True)
       if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}'):
         shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}')
   
