@@ -108,11 +108,11 @@ if __name__ == '__main__':
         os.makedirs(f"image/labeled/{interval}/val/very_heavy_rain")
         
         os.makedirs(f"image/labeled/{interval}/test")
-        os.makedirs(f"image/labeled/{interval}/clear")
-        os.makedirs(f"image/labeled/{interval}/light_rain")
-        os.makedirs(f"image/labeled/{interval}/moderate_rain")
-        os.makedirs(f"image/labeled/{interval}/heavy_rain")
-        os.makedirs(f"image/labeled/{interval}/very_heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/test/clear")
+        os.makedirs(f"image/labeled/{interval}/test/light_rain")
+        os.makedirs(f"image/labeled/{interval}/test/moderate_rain")
+        os.makedirs(f"image/labeled/{interval}/test/heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/test/very_heavy_rain")
     
     train_set, val_set, test_set = split_df(interval)
     
