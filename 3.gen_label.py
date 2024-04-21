@@ -178,8 +178,8 @@ def find_future_images(interval):
         else:
             future_timestamp = future_metadata['timestamp_0'].tolist()[0]
             metadata.loc[idx, [timestamp_col]] = future_timestamp
-            metadata.loc[idx, [avg_reflectivity_col]] = metadata[metadata['timestamp_0'] == future_timestamp, 'avg_reflectivity_0'].tolist()[0]
-            metadata.loc[idx, [label_col]] = metadata[metadata['timestamp_0'] == future_timestamp, 'label_0'].tolist()[0]
+            metadata.loc[idx, [avg_reflectivity_col]] = metadata.loc[metadata['timestamp_0'] == future_timestamp, 'avg_reflectivity_0'].tolist()[0]
+            metadata.loc[idx, [label_col]] = metadata.loc[metadata['timestamp_0'] == future_timestamp, 'label_0'].tolist()[0]
         
         print(current_time)
 
