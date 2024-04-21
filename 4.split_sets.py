@@ -64,12 +64,14 @@ def move_to_train(metadata_chunk):
         timestamp = row['timestamp_0']
         label = row[f'label_{interval}']
         print(timestamp, label)
-        break
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
+            print(1)
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
         elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
+            print(2)
             shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
         print(idx)
+        break
 
 def move_to_val(metadata_chunk):
     for idx, row in metadata_chunk.iterrows():
