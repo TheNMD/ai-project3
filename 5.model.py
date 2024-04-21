@@ -47,12 +47,12 @@ class FinetuneModule(pl.LightningModule):
     super().__init__()
     # self.save_hyperparameters()
 
+    self.interval = model_settings['interval']
     self.model_name = model_settings['model_name']
     self.model_option = model_settings['model_option']
     self.num_classes = model_settings['num_classes']
     self.freeze = model_settings['freeze']
-    self.interval = model_settings['interval']
-    self.model, train_size, test_size = load_model(self.model_name, self.model_option, self.num_classes, self.freeze)
+    self.model, train_size, test_size = load_model(self.interval, self.model_name, self.model_option, self.num_classes, self.freeze)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
@@ -62,9 +62,9 @@ class FinetuneModule(pl.LightningModule):
     self.batch_size = loop_settings['batch_size']
     self.epochs = loop_settings['epochs']
 
-    self.train_loader = load_data(set_name="train", interval=self.interval, image_size=train_size, batch_size=self.batch_size, shuffle=True)
-    self.val_loader   = load_data(set_name="val", interval=self.interval, image_size=test_size, batch_size=self.batch_size, shuffle=False)
-    self.test_loader  = load_data(set_name="test", interval=self.interval, image_size=test_size, batch_size=self.batch_size, shuffle=False)
+    self.train_loader = load_data(self.interval, "train", train_size, self.batch_size, True)
+    self.val_loader   = load_data(self.interval, "val", test_size, self.batch_size, False)
+    self.test_loader  = load_data(self.interval, "test", test_size, self.batch_size, False)
 
   def forward(self, x):
     # x = stochastic_depth(x, p=0.2, mode='batch')
@@ -126,7 +126,7 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
     return self.test_loader
 
-def load_model(model_name, model_option, interval, num_classes, freeze=False):
+def load_model(interval, model_name, model_option, num_classes, freeze=False):
   name_and_size = model_name.split('-')
   name, size = name_and_size[0], name_and_size[1]
   
@@ -184,7 +184,7 @@ def load_model(model_name, model_option, interval, num_classes, freeze=False):
 
   return model, train_size, test_size
 
-def load_data(set_name, interval, image_size, batch_size, shuffle, num_workers=4):
+def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4):
   # Preprocessing data
   # TODO Add more preprocessing methods
   if set_name == "train":
@@ -210,7 +210,7 @@ def load_data(set_name, interval, image_size, batch_size, shuffle, num_workers=4
   
   return dataloader
 
-def plot_results(model_name, model_option, interval, latest_version, monitor_value):
+def plot_results(interval, model_name, model_option, latest_version, monitor_value):
   log_results = pd.read_csv(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/metrics.csv")
   train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
@@ -311,11 +311,11 @@ if __name__ == '__main__':
   print(f"Label smoothing: {label_smoothing}")
 
   # Make Lightning module
-  model_settings = {'model_name': model_name, 
+  model_settings = {'interval': interval,
+                    'model_name': model_name, 
                     'model_option': model_option,
                     'num_classes': num_classes, 
-                    'freeze': freeze,
-                    'interval': interval}
+                    'freeze': freeze}
   optimizer_settings = {'optimizer_name': optimizer_name, 
                         'learning_rate': learning_rate, 
                         'weight_decay': weight_decay, 
@@ -402,7 +402,7 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
       
       # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = plot_results(model_name, model_option, latest_version, monitor_value)
+      test_loss, tess_acc, best_epoch = plot_results(interval, model_name, model_option, latest_version, monitor_value)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Write down hyperparameters and results
@@ -435,6 +435,7 @@ if __name__ == '__main__':
         file.write(f"Best epoch (val_acc): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
         file.write(f"Evaluation time: {test_end_time} seconds\n")
+        
     except Exception as e:
       print(e)
       if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}'):
