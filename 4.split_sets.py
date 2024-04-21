@@ -94,7 +94,10 @@ if __name__ == '__main__':
     
     if not os.path.exists(f"image/labeled/{interval}"):
         os.makedirs(f"image/labeled/{interval}")
-        
+        shutil.move(f"image/labeled/{interval}_avg_reflectivity_dist.png", f"image/labeled/{interval}/{interval}_avg_reflectivity_dist.png")
+        shutil.move(f"image/labeled/{interval}_label_dist.png", f"image/labeled/{interval}/{interval}_label_dist.png")
+        shutil.move(f"image/labeled/{interval}_label_dist.txt", f"image/labeled/{interval}/{interval}_label_dist.txt")
+                
         os.makedirs(f"image/labeled/{interval}/train")
         os.makedirs(f"image/labeled/{interval}/train/clear")
         os.makedirs(f"image/labeled/{interval}/train/light_rain")
