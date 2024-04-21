@@ -195,21 +195,21 @@ def plot_distribution(interval):
     metadata.reset_index(drop=True, inplace=True)
     
     frequency = metadata[f'label_{interval}'].value_counts()
-    with open(f'image/labeled/label_dist_{interval}.txt', 'w') as file:
+    with open(f'image/labeled/{interval}_label_dist.txt', 'w') as file:
         file.write(f"{frequency}")
     
     plt.bar(frequency.index, frequency.values, color='skyblue', edgecolor='black')
     plt.xlabel('Label')
     plt.ylabel('Frequency')
     plt.title(f'Label Distribution - {interval}')
-    plt.savefig(f'image/labeled/label_dist_{interval}.png')
+    plt.savefig(f'image/labeled/{interval}_label_dist.png')
     plt.clf()
         
     _, _, _ = plt.hist(metadata[f'avg_reflectivity_{interval}'], color='skyblue', edgecolor='black')
     plt.xlabel('Avg Reflectivity')
     plt.ylabel('Frequency')
     plt.title(f'Avg Reflectivity Distribution - {interval}')
-    plt.savefig(f'image/labeled/avg_reflectivity_dist_{interval}.png')
+    plt.savefig(f'image/labeled/{interval}_avg_reflectivity_dist.png')
     plt.clf()
     
 if __name__ == '__main__':
