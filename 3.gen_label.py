@@ -6,10 +6,10 @@ import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+import pyart
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import pyart
 from memory_profiler import profile
 
 # Set ENV to be 'local', 'server' or 'colab'
@@ -239,9 +239,10 @@ if __name__ == '__main__':
                 counter += 1
                 print(f"### Chunk: {counter} | Time: {end_time} ###")
                 
-        updated_metadata = pd.read_csv("metadata_temp.csv")
-        updated_metadata = updated_metadata[updated_metadata['label_0'] != 'Error']
-        updated_metadata.to_csv("metadata.csv", index=False)
+        metadata = pd.read_csv("metadata_temp.csv")
+        metadata = metadata[metadata['label_0'] != 'Error']
+        metadata.reset_index(drop=True, inplace=True)
+        metadata.to_csv("metadata.csv", index=False)
     except Exception as e:
         print(e)
         logging.error(e, exc_info=True)

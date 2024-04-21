@@ -316,10 +316,12 @@ if __name__ == '__main__':
                     'model_option': model_option,
                     'num_classes': num_classes, 
                     'freeze': freeze}
+  
   optimizer_settings = {'optimizer_name': optimizer_name, 
                         'learning_rate': learning_rate, 
                         'weight_decay': weight_decay, 
                         'scheduler_name': scheduler_name}
+  
   loop_settings = {'batch_size': batch_size, 
                    'epochs': epochs,
                    'label_smoothing': label_smoothing}
@@ -408,6 +410,7 @@ if __name__ == '__main__':
       # Write down hyperparameters and results
       with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
         file.write('### For models ###\n')
+        file.write(f'Interval: {interval}\n')
         file.write(f'Model name: {model_name}\n')
         file.write(f'Model Option: {model_option}\n')
         file.write(f'Freeze: {model_option}\n\n')
