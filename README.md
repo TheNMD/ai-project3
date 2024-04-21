@@ -1,37 +1,32 @@
 # On server
-Data: cd /data/data_WF/NhaBe
-Code: cd /data/DanHoangThu
+- **Data**: cd /data/data_WF/NhaBe
+- **Code**: cd /data/DanHoangThu
 
 # Docker
 ## Create image
-docker build -t dht-image-base -f Dockerfile_base .
-
-docker build -t dht-image -f Dockerfile .
-## Run image (Mount NhaBe and Image folders from host to container)
-docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/result:/app/result -v /data/DanHoangThu/image:/app/image -d --shm-size=16g --name dht-cont dht-image
-
-docker run -v /data/DanHoangThu/result:/app/result -v /data/DanHoangThu/image:/app/image -d --shm-size=16g --gpus '"device=0"' --name dht-cont dht-image
+- **Create base image**: docker build -t dht-image-base -f Dockerfile_base .
+- **Create image**: docker build -t dht-image -f Dockerfile .
+## Run image
+- **For 1. 2. 3. 4.**: docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/result:/app/result -d --shm-size=16g --name dht-cont dht-image
+- **For 5.model.py**:  docker run -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/result:/app/result -d --shm-size=16g --gpus '"device=0"' --name dht-cont dht-image
 ## Remove image
-docker rmi -f dht-image
-
+- docker rmi -f dht-image
 ## Start container
-docker start dht-cont
+- docker start dht-cont
 ## Access container
-docker exec -it dht-cont /bin/bash
-## Access container's terminal output
-docker logs -f dht-cont
+- docker exec -it dht-cont /bin/bash
+- docker logs -f dht-cont
 ## Copy from container to host
-docker cp dht-cont:/app/metadata .
-docker cp dht-cont:/app/metadata.csv .
-docker cp dht-cont:/app/metadata_lite.csv .
+- docker cp dht-cont:/app/metadata.csv .
+- docker cp dht-cont:/app/errors.log .
 ## Stop container
-docker stop dht-cont
+- docker stop dht-cont
 ## Remove container
-docker rm -f dht-cont
+- docker rm -f dht-cont
 
 # Out server
-exit
+- exit
 
 # Other
-Total RAW files: 259999
-Total images files: 251479
+- **Total RAW files**: 259999
+- **Total images files**: 251479

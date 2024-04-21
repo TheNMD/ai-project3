@@ -6,10 +6,10 @@ import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+import pyart
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import pyart
 from memory_profiler import profile
 
 # Set ENV to be 'local', 'server' or 'colab'
@@ -60,9 +60,7 @@ def generate_image(metadata_chunk):
 
 def update_metadata():
     old_metadata = pd.read_csv("metadata.csv")
-    
-    if 'generated' in old_metadata.columns:
-        old_metadata.drop(columns="generated", inplace=True)
+    old_metadata = old_metadata[['path_0', 'timestamp_0']]
     
     files = [file for file in os.listdir("image/unlabeled1")]
     timestamps = [file[:-4] for file in files]
@@ -124,5 +122,6 @@ if __name__ == '__main__':
     
     metadata = pd.read_csv("metadata.csv")
     metadata = metadata[metadata['generated'] != 'Error']
+    metadata.reset_index(drop=True, inplace=True)
     metadata.to_csv("metadata.csv", index=False)
         

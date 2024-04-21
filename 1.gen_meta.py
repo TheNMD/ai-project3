@@ -6,9 +6,9 @@ import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+import pyart
 import numpy as np
 import pandas as pd
-import pyart
 
 # Set ENV to be 'local', 'server' or 'colab'
 ENV = "server".lower()
