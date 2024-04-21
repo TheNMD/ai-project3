@@ -22,7 +22,7 @@ elif ENV == "colab":
     # %cd drive/MyDrive/Coding/
     data_path = "data/NhaBe"
 
-interval = 21600
+interval = 43200
 
 def split_df(interval, seed=42):
     metadata = pd.read_csv("metadata.csv")
