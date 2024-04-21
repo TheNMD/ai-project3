@@ -259,7 +259,7 @@ if __name__ == '__main__':
         print(e)
         logging.error(e, exc_info=True)
     
-    # # Plot label and avg reflectivity distribution
+    # Plot label and avg reflectivity distribution
     plot_distribution(interval=0)
     plot_distribution(interval=7200)
     plot_distribution(interval=21600)
