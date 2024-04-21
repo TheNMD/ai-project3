@@ -36,16 +36,6 @@ def calculate_avg_reflectivity(reflectivity):
     reflectivity_50_to_55       = len([ele for ele in reflectivity if 50 <= ele < 55]) / len(reflectivity)
     reflectivity_55_to_60       = len([ele for ele in reflectivity if 55 <= ele < 60]) / len(reflectivity)
     reflectivity_bigger_than_60 = len([ele for ele in reflectivity if ele >= 60]) / len(reflectivity)
-    
-    # Assign weight to each reflectivity range value
-    # weight_set = [pow(10, 1) * pow(10, 1 - reflectivity_smaller_than_30), 
-    #               pow(10, 2) * pow(10, 1 - reflectivity_30_to_35),
-    #               pow(10, 2) * 5 * pow(10, 2 - reflectivity_35_to_40),
-    #               pow(10, 3) * pow(10, 1 - reflectivity_40_to_45),
-    #               pow(10, 3) * 5 * pow(10, 1 - reflectivity_45_to_50), 
-    #               pow(10, 4) * pow(10, 1 - reflectivity_50_to_55),
-    #               pow(10, 4) * 5 * pow(10, 1 - reflectivity_55_to_60),
-    #               pow(10, 6) * pow(10, 1 - reflectivity_bigger_than_60)]
 
     weight_set = [pow(10, 100 * (1 - reflectivity_smaller_than_0)),
                   pow(10, 100 * (1 - reflectivity_0_to_5)),
@@ -100,23 +90,12 @@ def calculate_avg_reflectivity(reflectivity):
         label = "clear"
     elif 30 <= avg_reflectivity < 40:
         label = "light_rain"
-    elif 40 <= avg_reflectivity < 50:
+    elif 40 <= avg_reflectivity < 47.5:
         label = "moderate_rain"
-    elif 50 <= avg_reflectivity < 60:
+    elif 47.5 <= avg_reflectivity < 55:
         label = "heavy_rain"
-    elif avg_reflectivity >= 60:
+    elif avg_reflectivity >= 55:
         label = "very_heavy_rain"
-        
-    # if avg_reflectivity < 25:
-    #     label = "clear"
-    # elif 25 <= avg_reflectivity < 35:
-    #     label = "light_rain"
-    # elif 35 <= avg_reflectivity < 45:
-    #     label = "moderate_rain"
-    # elif 45 <= avg_reflectivity < 55:
-    #     label = "heavy_rain"
-    # elif avg_reflectivity > 55:
-    #     label = "very_heavy_rain"
 
     return avg_reflectivity, label
 
