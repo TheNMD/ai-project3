@@ -65,13 +65,10 @@ def move_to_train(metadata_chunk):
         label = row[f'label_{interval}']
         print(timestamp, label)
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
-            print(1)
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
         elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
-            print(2)
             shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
         print(idx)
-        break
 
 def move_to_val(metadata_chunk):
     for idx, row in metadata_chunk.iterrows():
@@ -137,25 +134,25 @@ if __name__ == '__main__':
         print(e)
         logging.error(e, exc_info=True)
     
-    # # Move to val set
-    # try:
-    #     # Use multiprocessing to iterate over the metadata 
-    #     with mp.Pool(processes=num_processes) as pool:
-    #         start_time = time.time()
-    #         pool.map(move_to_val, np.array_split(val_set, num_processes))
-    #         end_time = time.time() - start_time
-    # except Exception as e:
-    #     print(e)
-    #     logging.error(e, exc_info=True)
+    # Move to val set
+    try:
+        # Use multiprocessing to iterate over the metadata 
+        with mp.Pool(processes=num_processes) as pool:
+            start_time = time.time()
+            pool.map(move_to_val, np.array_split(val_set, num_processes))
+            end_time = time.time() - start_time
+    except Exception as e:
+        print(e)
+        logging.error(e, exc_info=True)
     
-    # # Move to test set
-    # try:
-    #     # Use multiprocessing to iterate over the metadata 
-    #     with mp.Pool(processes=num_processes) as pool:
-    #         start_time = time.time()
-    #         pool.map(move_to_test, np.array_split(test_set, num_processes))
-    #         end_time = time.time() - start_time
-    # except Exception as e:
-    #     print(e)
-    #     logging.error(e, exc_info=True)
+    # Move to test set
+    try:
+        # Use multiprocessing to iterate over the metadata 
+        with mp.Pool(processes=num_processes) as pool:
+            start_time = time.time()
+            pool.map(move_to_test, np.array_split(test_set, num_processes))
+            end_time = time.time() - start_time
+    except Exception as e:
+        print(e)
+        logging.error(e, exc_info=True)
         
