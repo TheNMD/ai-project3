@@ -8,7 +8,6 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 
 import numpy as np
 import pandas as pd
-from memory_profiler import profile
 
 # Set ENV to be 'local', 'server' or 'colab'
 ENV = "server".lower()
