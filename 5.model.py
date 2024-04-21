@@ -284,6 +284,7 @@ if __name__ == '__main__':
   print(f"Model: {model_name}-{model_option}")
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}")
+  if not os.path.exists(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
