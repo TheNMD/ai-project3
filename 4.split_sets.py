@@ -26,7 +26,7 @@ elif ENV == "colab":
 interval = 0
 
 def split_df(interval, seed=42):
-    metadata = pd.read_csv(f"metadata_{interval}.csv")
+    metadata = pd.read_csv("metadata.csv")
     
     big_df = metadata[[f'label_{interval}']]
     big_df = big_df[big_df[f'label_{interval}'] != 'NotAvail']
@@ -77,9 +77,6 @@ if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
     
-    num_processes = 16
-    chunk_size = 100 * num_processes
-    
     if not os.path.exists(f"image/labeled/{interval}"):
         os.makedirs(f"image/labeled/{interval}")
         
@@ -105,6 +102,9 @@ if __name__ == '__main__':
         os.makedirs(f"image/labeled/{interval}/very_heavy_rain")
     
     train_set, val_set, test_set = split_df(interval)
+    
+    num_processes = 16
+    chunk_size = 100 * num_processes
     
     # Move to train set
     try:
