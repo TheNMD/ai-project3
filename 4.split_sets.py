@@ -44,6 +44,19 @@ def split_df(interval, seed=42):
     val_set.reset_index(drop=True, inplace=True)
     test_set.reset_index(drop=True, inplace=True)
     
+    with open(f'image/labeled/{interval}/train_val_test_summary.txt', 'w') as file:
+        file.write("### Train set ###\n")
+        frequency_train = train_set[f'label_{interval}'].value_counts()
+        file.write(f"{frequency_train}\n\n")
+        
+        file.write("### Val set ###\n")
+        frequency_val = val_set[f'label_{interval}'].value_counts()
+        file.write(f"{frequency_val}\n\n")
+        
+        file.write("### Test set ###\n")
+        frequency_test = test_set[f'label_{interval}'].value_counts()
+        file.write(f"{frequency_test}\n\n")
+    
     return train_set, val_set, test_set
 
 def move_to_train(metadata_chunk):
