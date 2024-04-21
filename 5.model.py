@@ -274,9 +274,9 @@ if __name__ == '__main__':
   ### vit-b      | vit-l 
   ### swinv2-t   | swinv2-b
   ### convnext-s | convnext-b | convnext-l
-  interval = 7200
   model_name = "convnext-b"
   model_option = "pretrained" # pretrained | custom
+  interval = 7200 # 0 | 7200 | 21600 | 43200
   num_classes = 5 
   freeze = False
   checkpoint = False
