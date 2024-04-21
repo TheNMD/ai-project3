@@ -49,9 +49,10 @@ class FinetuneModule(pl.LightningModule):
 
     self.model_name = model_settings['model_name']
     self.model_option = model_settings['model_option']
+    self.num_classes = model_settings['num_classes']
     self.freeze = model_settings['freeze']
-    self.model, train_size, test_size = load_model(self.model_name, self.model_option, self.freeze)
     self.interval = model_settings['interval']
+    self.model, train_size, test_size = load_model(self.model_name, self.model_option, self.num_classes, self.freeze)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
@@ -125,7 +126,7 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
     return self.test_loader
 
-def load_model(model_name, model_option, freeze=False):
+def load_model(model_name, model_option, num_classes, freeze=False):
   name_and_size = model_name.split('-')
   name, size = name_and_size[0], name_and_size[1]
   
@@ -144,7 +145,7 @@ def load_model(model_name, model_option, freeze=False):
     if freeze:
       for param in model.parameters(): param.requires_grad = False
     num_feature = model.head.in_features
-    model.head = nn.Linear(in_features=num_feature, out_features=5)
+    model.head = nn.Linear(in_features=num_feature, out_features=num_classes)
     model.head.weight.data.mul_(0.001)
   elif name == "swinv2":
     if size == "t":
@@ -156,7 +157,7 @@ def load_model(model_name, model_option, freeze=False):
     if freeze:
       for param in model.parameters(): param.requires_grad = False
     num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=num_classes)
     model.head.fc.weight.data.mul_(0.001)
   
   elif name == "convnext":
@@ -172,7 +173,7 @@ def load_model(model_name, model_option, freeze=False):
     if freeze:
       for param in model.parameters(): param.requires_grad = False
     num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=5)
+    model.head.fc = nn.Linear(in_features=num_feature, out_features=num_classes)
     model.head.fc.weight.data.mul_(0.001)
     
   with open(f'{result_path}/checkpoint/{model_name}-{model_option}/architecture.txt', 'w') as f:
@@ -191,9 +192,6 @@ def load_data(set_name, interval, image_size, batch_size, shuffle, num_workers=4
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
-                            #  v2.RandomHorizontalFlip(p=0.5),
-                            #  v2.RandomVerticalFlip(p=0.5),
-                            #  v2.RandomAffine(degrees=(-180, 180), fill=255),
                              v2.RandAugment(num_ops=2, magnitude=9, fill=255),
                              v2.RandomErasing(p=0.25, value=255),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
@@ -278,7 +276,8 @@ if __name__ == '__main__':
   ### convnext-s | convnext-b | convnext-l
   interval = 7200
   model_name = "convnext-b"
-  model_option = "pretrained" # pretrained | custom 
+  model_option = "pretrained" # pretrained | custom
+  num_classes = 5 
   freeze = False
   checkpoint = False
   print(f"Interval: {interval}")
@@ -311,7 +310,8 @@ if __name__ == '__main__':
 
   # Make Lightning module
   model_settings = {'model_name': model_name, 
-                    'model_option': model_option, 
+                    'model_option': model_option,
+                    'num_classes': num_classes, 
                     'freeze': freeze,
                     'interval': interval}
   optimizer_settings = {'optimizer_name': optimizer_name, 

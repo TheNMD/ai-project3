@@ -1,27 +1,18 @@
 import pandas as pd
 
-def find_future_label():
-    metadata = pd.read_csv("metadata.csv")
-    
-    metadata_temp = metadata[['timestamp_0', 'avg_reflectivity_0', 'label_0']]
-    
-    for idx, row in metadata.iterrows():
-        avg_reflectivity_7200 = metadata_temp[metadata_temp['timestamp_0'] == row['timestamp_7200'], 'avg_reflectivity_0'].tolist()[0]
-        label_7200 = metadata_temp[metadata_temp['timestamp_0'] == row['timestamp_7200'], 'label_0'].tolist()[0]
+metadata = pd.read_csv("metadata.csv")
 
-        avg_reflectivity_21600 = metadata_temp[metadata_temp['timestamp_0'] == row['timestamp_21600'], 'avg_reflectivity_0'].tolist()[0]
-        label_21600 = metadata_temp[metadata_temp['timestamp_0'] == row['timestamp_21600'], 'label_0'].tolist()[0]
+for idx, row in metadata.iterrows():
+    if row['avg_reflectivity_0'] < 30:
+        metadata.loc[idx, ['label_0']] = "clear"
+    elif 30 <= row['avg_reflectivity_0']  < 40:
+        metadata.loc[idx, ['label_0']] = "light_rain"
+    elif 40 <= row['avg_reflectivity_0']  < 42.5:
+        metadata.loc[idx, ['label_0']] = "moderate_rain"
+    elif 42.5 <= row['avg_reflectivity_0']  < 55:
+        metadata.loc[idx, ['label_0']] = "heavy_rain"
+    elif row['avg_reflectivity_0']  > 55:
+        metadata.loc[idx, ['label_0']] = "very_heavy_rain"
+    print(idx)
         
-        avg_reflectivity_43200 = metadata_temp[metadata_temp['timestamp_0'] == row['timestamp_43200'], 'avg_reflectivity_0'].tolist()[0]
-        label_43200 = metadata_temp[metadata_temp['timestamp_0'] == row['timestamp_43200'], 'label_0'].tolist()[0]
-        
-        metadata.loc[idx, ['avg_reflectivity_7200']] = avg_reflectivity_7200
-        metadata.loc[idx, ['label_7200']] = label_7200
-        
-        metadata.loc[idx, ['avg_reflectivity_21600']] = avg_reflectivity_21600
-        metadata.loc[idx, ['label_21600']] = label_21600
-        
-        metadata.loc[idx, ['avg_reflectivity_43200']] = avg_reflectivity_43200
-        metadata.loc[idx, ['label_43200']] = label_43200
-        
-        break
+metadata.to_csv("metadata_temp.csv", index=False)
