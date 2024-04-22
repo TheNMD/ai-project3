@@ -35,14 +35,19 @@ def plot_results(monitor_value="val_acc"):
   plt.legend()
   plt.savefig('test_graph_acc.png')
 
-  test_results = log_results[['test_loss', 'test_acc']].dropna()
-  test_loss = test_results['test_loss'].tolist()[0]
-  test_acc = test_results['test_acc'].tolist()[0]
-  
+  if "test_loss" in log_results.columns:
+    test_results = log_results[['test_loss', 'test_acc']].dropna()
+    test_loss = test_results['test_loss'].tolist()[0]
+    test_acc = test_results['test_acc'].tolist()[0]
+  else:
+    test_loss = None
+    test_acc = None
+    
   return test_loss, test_acc, best_epoch
 
-test_loss, test_acc, best_epoch = plot_results(monitor_value="val_acc")
+monitor_value = "val_acc"
+test_loss, test_acc, best_epoch = plot_results(monitor_value=monitor_value)
 
 print(f"Testing loss: {test_loss}")
-print(f"Testing accuray: {test_acc}")
-print(f"Best epoch: {best_epoch}")
+print(f"Testing accuracy: {test_acc}")
+print(f"Best epoch ({monitor_value}): {best_epoch}")
