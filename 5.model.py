@@ -240,9 +240,11 @@ def plot_results(interval, model_name, model_option, latest_version, monitor_val
   val_results = val_results.groupby(['epoch'], as_index=False).mean()
   
   if monitor_value == 'val_loss':
-    best_epoch = val_results['val_loss'].idxmin()
+    min_idx = val_results['val_loss'].idxmin()
+    best_epoch = val_results.loc[min_idx, 'epoch']
   elif monitor_value == 'val_acc':
-    best_epoch = val_results['val_acc'].idxmax()
+    max_idx = val_results['val_loss'].idxmax()
+    best_epoch = val_results.loc[max_idx, 'epoch']
   
   # Plotting loss
   plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
