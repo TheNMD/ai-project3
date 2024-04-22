@@ -11,6 +11,7 @@ RUN mkdir image
 RUN mkdir result
 
 RUN chmod +x docker-entrypoint.sh
+RUN pip install opencv-python
 
 EXPOSE 5000
 
