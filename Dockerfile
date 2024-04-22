@@ -10,7 +10,6 @@ RUN mkdir data
 RUN mkdir image
 RUN mkdir result
 
-RUN apt update && apt install python3-opencv -y
 RUN chmod +x docker-entrypoint.sh
 
 EXPOSE 5000
