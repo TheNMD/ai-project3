@@ -283,11 +283,12 @@ if __name__ == '__main__':
   interval = 7200 # 0 | 7200 | 21600 | 43200
   num_classes = 5 
   freeze = False
-  checkpoint = True
-  continue_training = True
+  checkpoint = False
+  continue_training = False
+  
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
-  print(f"Checkpoint: {checkpoint}")
+  print(f"Load from checkpoint: {checkpoint}")
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}")
   if not os.path.exists(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}"):
@@ -298,6 +299,7 @@ if __name__ == '__main__':
   learning_rate = 1e-3     # 1e-4 | 5e-5  | 1e-2
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"   # none | cd    | cdwr  
+  
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
   print(f"Weight decay: {weight_decay}")
@@ -312,6 +314,7 @@ if __name__ == '__main__':
   epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
   label_smoothing = 0.1
+  
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
   print(f"Label smoothing: {label_smoothing}")
