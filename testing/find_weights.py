@@ -151,13 +151,13 @@ def plot_distribution(list, value_name, save_name):
     plt.xlabel(f'{value_name}')
     plt.ylabel('Frequency')
     plt.title(f'{value_name} Distribution')
-    plt.savefig(f'sample_data/{save_name}')
+    plt.savefig(f'../sample_data/{save_name}')
     plt.clf()
 
 
 if __name__ == "__main__":
-    filenames = [file for file in os.listdir('sample_data/NhaBe') if not file.endswith('jpg') 
-                                                                 and not file.endswith('png')]
+    filenames = [file for file in os.listdir('../sample_data/NhaBe') if not file.endswith('jpg') 
+                                                                     and not file.endswith('png')]
     random.shuffle(filenames)
     # Only take n files
     # filenames = filenames[:1000]
