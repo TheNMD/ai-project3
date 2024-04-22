@@ -304,7 +304,7 @@ if __name__ == '__main__':
   num_classes = 5 
   freeze = False
   checkpoint = True
-  continue_training = False
+  continue_training = True
   
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
