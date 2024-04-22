@@ -244,10 +244,14 @@ def plot_results(interval, model_name, model_option, latest_version, monitor_val
   plt.legend()
   plt.savefig(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/graph_acc.png')
 
-  test_results = log_results[['test_loss', 'test_acc']].dropna()
-  test_loss = test_results['test_loss'].tolist()[0]
-  test_acc = test_results['test_acc'].tolist()[0]
-  
+  if "test_loss" in log_results.columns:
+    test_results = log_results[['test_loss', 'test_acc']].dropna()
+    test_loss = test_results['test_loss'].tolist()[0]
+    test_acc = test_results['test_acc'].tolist()[0]
+  else:
+    test_loss = None
+    test_acc = None
+    
   return test_loss, test_acc, best_epoch
 
 if __name__ == '__main__':
@@ -280,8 +284,11 @@ if __name__ == '__main__':
   num_classes = 5 
   freeze = False
   checkpoint = False
+  continue_training = False
+  
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
+  print(f"Load from checkpoint: {checkpoint}")
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}")
   if not os.path.exists(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}"):
@@ -292,6 +299,7 @@ if __name__ == '__main__':
   learning_rate = 1e-3     # 1e-4 | 5e-5  | 1e-2
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"   # none | cd    | cdwr  
+  
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
   print(f"Weight decay: {weight_decay}")
@@ -302,15 +310,16 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
+  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
   epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
   label_smoothing = 0.1
+  
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
   print(f"Label smoothing: {label_smoothing}")
 
-  # Make Lightning module
+  # Combine all settings
   model_settings = {'interval': interval,
                     'model_name': model_name, 
                     'model_option': model_option,
@@ -325,64 +334,151 @@ if __name__ == '__main__':
   loop_settings = {'batch_size': batch_size, 
                    'epochs': epochs,
                    'label_smoothing': label_smoothing}
+  
+  if num_gpus > 1:
+    accelerator = 'gpu'
+    devices = 2
+    strategy = 'ddp'
+  elif num_gpus == 1:
+    accelerator = 'gpu'
+    devices = 1
+    strategy = 'auto'
+  else:
+    accelerator = 'cpu'
+    devices = 'auto'
+    strategy = 'auto'
+  
+  versions = sorted([folder for folder in 
+                    os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
+                    if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
+  latest_version = f"version_{len(versions)}"
+  
+  # Logger
+  logger = CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
+                     name=f'{model_name}-{model_option}')
 
+  # Callbacks
+  monitor_value = "val_acc"
+  early_stop_callback = EarlyStopping(monitor=monitor_value,
+                                      mode='max',
+                                      patience=patience,
+                                      min_delta=min_delta,
+                                      verbose=True,)
+
+  checkpoint_callback = ModelCheckpoint(monitor=monitor_value,
+                                        mode='max',
+                                        save_top_k=1,
+                                        filename='best_model',
+                                        dirpath=f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}',
+                                        verbose=True,)
+  
   if checkpoint:
-    version = "version_0"
+    current_version = "version_0"
     
-    module = FinetuneModule.load_from_checkpoint(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{version}/best_model.ckpt", 
+    # Make Lightning module
+    checkpoint_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{current_version}/best_model.ckpt"
+    module = FinetuneModule.load_from_checkpoint(checkpoint_path, 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
                                                  loop_settings=loop_settings)
     
-    trainer = pl.Trainer()
-    
-    # Evaluation
-    start_time = time.time()
-    trainer.test(module)
-    end_time = time.time()
-    print(f"Evaluation time: {end_time - start_time} seconds")
-  else:
-    versions = sorted([folder for folder in 
-                       os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
-                       if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
-    latest_version = f"version_{len(versions)}"
-    
-    try:
-      module = FinetuneModule(model_settings, optimizer_settings, loop_settings)
-    
-      # Logger
-      logger = CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', name=f'{model_name}-{model_option}')
-
-      # Callbacks
-      monitor_value = "val_acc"
-      early_stop_callback = EarlyStopping(monitor=monitor_value,
-                                          mode='max',
-                                          patience=patience,
-                                          min_delta=min_delta,
-                                          verbose=True,)
-
-      checkpoint_callback = ModelCheckpoint(monitor=monitor_value,
-                                            mode='max',
-                                            save_top_k=1,
-                                            filename='best_model',
-                                            dirpath=f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}',
-                                            verbose=True,)
-      
-      # Combine all elements
-      if num_gpus > 1:
-        accelerator = 'gpu'
-        devices = 2
-        strategy = 'ddp'
-      elif num_gpus == 1:
-        accelerator = 'gpu'
-        devices = 1
-        strategy = 'auto'
-      else:
-        accelerator = 'cpu'
-        devices = 'auto'
-        strategy = 'auto'
-
+    if continue_training:
       trainer = pl.Trainer(accelerator=accelerator, 
+                           devices=devices, 
+                           strategy=strategy,
+                           max_epochs=epochs,
+                           logger=logger,
+                           callbacks=[early_stop_callback, checkpoint_callback],
+                           val_check_interval=epoch_ratio,
+                           log_every_n_steps=50,    # log train_loss and train_acc every n batches
+                           precision=16)            # use mixed precision to speed up training
+      
+      try:
+        # Training loop
+        train_start_time = time.time()
+        trainer.fit(module, 
+                    ckpt_path=f"result/checkpoint/{interval}/{model_name}-{model_option}/{current_version}/best_model.ckpt")
+        train_end_time = time.time() - train_start_time
+        print(f"Evaluation time: {train_end_time} seconds")
+        
+        # Evaluation
+        test_start_time = time.time()
+        trainer.test(module)
+        test_end_time = time.time() - test_start_time
+        print(f"Evaluation time: {test_end_time} seconds")
+        
+        # Plot loss and accuracy
+        test_loss, tess_acc, best_epoch = plot_results(interval,
+                                                       model_name, 
+                                                       model_option, 
+                                                       latest_version, 
+                                                       monitor_value)
+        print(f"Best epoch [{monitor_value}]: {best_epoch}")
+        
+        # Write down hyperparameters and results
+        with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
+          file.write('### For models ###\n')
+          file.write(f'Interval: {interval}\n')
+          file.write(f'Model name: {model_name}\n')
+          file.write(f'Model Option: {model_option}\n')
+          file.write(f'Freeze: {model_option}\n\n')
+          
+          file.write('### For optimizer & scheduler ###\n')
+          file.write(f'Optimizer: {optimizer_name}\n')
+          file.write(f'Learning rate: {learning_rate}\n')
+          file.write(f'Weight decay: {weight_decay}\n')
+          file.write(f'Scheduler: {scheduler_name}\n\n')
+          
+          file.write('### For callbacks ###\n')
+          file.write(f'Patience: {patience}\n')
+          file.write(f'Min delta: {min_delta}\n\n')
+          
+          file.write('### For training loop ###\n')
+          file.write(f'Batch size: {batch_size}\n')
+          file.write(f'Epochs: {epochs}\n')
+          file.write(f'Epoch ratio: {epoch_ratio}\n')
+          file.write(f'Label smoothing: {label_smoothing}\n')
+          file.write(f'Num GPUs: {num_gpus}\n\n')
+          
+          file.write('### Results ###\n')
+          file.write(f"Test loss: {test_loss}\n")
+          file.write(f"Test accuracy: {tess_acc}\n")
+          file.write(f"Best epoch (val_acc): {best_epoch}\n")
+          file.write(f"Training time: {train_end_time} seconds\n")
+          file.write(f"Evaluation time: {test_end_time} seconds\n")
+        
+        os.rename(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}',
+                  f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}-continue-{current_version}')
+        
+      except Exception as e:
+        print(e)
+        logging.error(e, exc_info=True)
+        if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}'):
+          shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}')
+          
+    else:
+      trainer = pl.Trainer(accelerator=accelerator, 
+                           devices=devices, 
+                           strategy=strategy,
+                           logger=False,
+                           enable_checkpointing=False)
+      
+      try:
+        # Evaluation
+        start_time = time.time()
+        trainer.test(module)
+        end_time = time.time()
+        print(f"Evaluation time: {end_time - start_time} seconds")
+      except Exception as e:
+        print(e)
+        logging.error(e, exc_info=True)
+    
+  else:
+    module = FinetuneModule(model_settings=model_settings, 
+                            optimizer_settings=optimizer_settings, 
+                            loop_settings=loop_settings)
+
+    trainer = pl.Trainer(accelerator=accelerator, 
                           devices=devices, 
                           strategy=strategy,
                           max_epochs=epochs,
@@ -391,7 +487,8 @@ if __name__ == '__main__':
                           val_check_interval=epoch_ratio,
                           log_every_n_steps=50,    # log train_loss and train_acc every n batches
                           precision=16)             # use mixed precision to speed up training
-
+    
+    try:
       # Training loop
       train_start_time = time.time()
       trainer.fit(module)
@@ -405,7 +502,11 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
       
       # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = plot_results(interval, model_name, model_option, latest_version, monitor_value)
+      test_loss, tess_acc, best_epoch = plot_results(interval, 
+                                                     model_name, 
+                                                     model_option, 
+                                                     latest_version, 
+                                                     monitor_value)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Write down hyperparameters and results
