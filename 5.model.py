@@ -7,11 +7,10 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 import torch
-from torch.optim import Adam, AdamW, SGD, lr_scheduler 
-from torchvision import datasets, ops
+import torchvision
 from torchvision.transforms import v2
+from torchvision.ops import stochastic_depth
 import pytorch_lightning as pl
-
 import timm
 import torchsummary
 import pandas as pd
@@ -61,7 +60,7 @@ class FinetuneModule(pl.LightningModule):
     self.test_loader  = load_data(self.interval, "test", test_size, self.batch_size, False)
 
   def forward(self, x):
-    # x = ops.stochastic_depth(x, p=0.2, mode='batch')
+    # x = stochastic_depth(x, p=0.2, mode='batch')
     return self.model(x)
 
   def common_step(self, batch, batch_idx):
@@ -94,36 +93,36 @@ class FinetuneModule(pl.LightningModule):
 
   def configure_optimizers(self):
     if self.optimizer_name == "adam":
-      optimizer = Adam(self.model.parameters(), 
-                       lr=self.learning_rate, 
-                       betas=(0.9, 0.999), 
-                       weight_decay=self.weight_decay)
+      optimizer = torch.optim.Adam(self.model.parameters(), 
+                                   lr=self.learning_rate, 
+                                   betas=(0.9, 0.999), 
+                                   weight_decay=self.weight_decay)
       
     elif self.optimizer_name == "adamw":
-      optimizer = AdamW(self.model.parameters(), 
-                        lr=self.learning_rate, 
-                        betas=(0.9, 0.999), 
-                        weight_decay=self.weight_decay)
+      optimizer = torch.optim.AdamW(self.model.parameters(), 
+                                    lr=self.learning_rate, 
+                                    betas=(0.9, 0.999), 
+                                    weight_decay=self.weight_decay)
       
     elif self.optimizer_name == "sgd":
-      optimizer = SGD(self.model.parameters(), 
-                      lr=self.learning_rate, 
-                      momentum=0.9, 
-                      weight_decay=0)
+      optimizer = torch.optim.SGD(self.model.parameters(), 
+                                  lr=self.learning_rate, 
+                                  momentum=0.9, 
+                                  weight_decay=0)
       
     if self.scheduler_name == "none":
       return {"optimizer": optimizer}
     
     elif self.scheduler_name == "cd":
       # Cosine decay
-      scheduler = lr_scheduler.CosineAnnealingLR(optimizer, 
-                                                 T_max=self.epochs / 10)
+      scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 
+                                                             T_max=self.epochs / 10)
       
     elif self.scheduler_name == "cdwr":
       # Cosine decay warm restart
-      scheduler = lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 
-                                                           T_0=int(len(self.train_loader) * 0.4), 
-                                                           T_mult=1) 
+      scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 
+                                                                       T_0=int(len(self.train_loader) * 0.4), 
+                                                                       T_mult=1) 
 
     return {"optimizer": optimizer, "lr_scheduler": scheduler}
 
@@ -198,30 +197,29 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
   # Preprocessing data
   # TODO Add more preprocessing methods
   if set_name == "train":
-    data_transforms = transforms.v2.Compose([
-                                            transforms.v2.ToImage(), 
-                                            transforms.v2.Resize((image_size, image_size)),
-                                            transforms.v2.ToDtype(torch.float32, scale=True),
-                                            transforms.v2.RandAugment(num_ops=2, magnitude=9, fill=255),
-                                            transforms.v2.RandomErasing(p=0.25, value=255),
-                                            transforms.v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
-                                                                    std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
-                                            ])
+    transforms = v2.Compose([
+                             v2.ToImage(), 
+                             v2.Resize((image_size, image_size)),
+                             v2.ToDtype(torch.float32, scale=True),
+                             v2.RandAugment(num_ops=2, magnitude=9, fill=255),
+                             v2.RandomErasing(p=0.25, value=255),
+                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
+                            ])
   elif set_name == "val" or set_name == "test":
-    data_transforms = transforms.v2.Compose([
-                                            transforms.v2.ToImage(), 
-                                            transforms.v2.Resize((image_size, image_size)),
-                                            transforms.v2.ToDtype(torch.float32, scale=True),
-                                            transforms.v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
-                                                                    std=[0.0641, 0.0342, 0.1163]),
-                                            ]) 
+    transforms = v2.Compose([
+                             v2.ToImage(), 
+                             v2.Resize((image_size, image_size)),
+                             v2.ToDtype(torch.float32, scale=True),
+                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                            ]) 
 
-  dataset = datasets.ImageFolder(root=f"{image_path}/labeled/{interval}/{set_name}", transform=data_transforms )
+  dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{interval}/{set_name}",
+                                             transform=transforms)
   
-  dataloader = torch.util.data.DataLoader(dataset, 
-                                          batch_size=batch_size, 
-                                          shuffle=shuffle, 
-                                          num_workers=num_workers)
+  dataloader = torch.utils.data.DataLoader(dataset, 
+                                           batch_size=batch_size, 
+                                           shuffle=shuffle, 
+                                           num_workers=num_workers)
   
   return dataloader
 
@@ -299,7 +297,7 @@ if __name__ == '__main__':
   num_classes = 5 
   freeze = False
   checkpoint = False
-  continue_training = False
+  continue_training = True
   
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
@@ -329,7 +327,6 @@ if __name__ == '__main__':
   epochs = 30
   epoch_ratio = 0.5 # check val every percent of an epoch
   label_smoothing = 0.1
-  
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
   print(f"Label smoothing: {label_smoothing}")
@@ -374,6 +371,7 @@ if __name__ == '__main__':
 
   # Callbacks
   monitor_value = "val_acc"
+  
   early_stop_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
                                       mode='max',
                                       patience=patience,
