@@ -30,3 +30,8 @@
 # Other
 - **Total RAW files**: 259999
 - **Total images files**: 251479
+
+- Batch 128 = ~6000 MiB
+- Batch 64  = ~ MiB
+- Batch 32  = ~ MiB
+- Batch 16  = ~ MiB
