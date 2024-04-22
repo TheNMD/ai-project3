@@ -6,8 +6,7 @@ import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-import torch, torchvisio, timm, torchsummary
-import torchvision
+import torch, torchvision, timm, torchsummary
 from torchvision.transforms import v2
 from torchvision.ops import stochastic_depth
 import pytorch_lightning as pl
@@ -329,7 +328,7 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}")
 
   ## For callbacks
-  patience = 20
+  patience = 12
   min_delta = 1e-3
 
   ## For training loop
@@ -471,7 +470,7 @@ if __name__ == '__main__':
           file.write(f"Evaluation time: {test_end_time} seconds\n")
         
         os.rename(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}',
-                  f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}-continue-{current_version}')
+                  f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}-cont-{current_version}')
         
       except Exception as e:
         print(e)
