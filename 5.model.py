@@ -7,19 +7,12 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 import torch
-import timm
-from torch import nn
-from torchsummary import summary
+import torchvision
 from torchvision.transforms import v2
-from torchvision import datasets
-from torch.utils.data import DataLoader
-from torch.optim import Adam, AdamW, SGD 
-from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts
 from torchvision.ops import stochastic_depth
 import pytorch_lightning as pl
-from pytorch_lightning.loggers import CSVLogger
-from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
-
+import timm
+import torchsummary
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -73,7 +66,7 @@ class FinetuneModule(pl.LightningModule):
   def common_step(self, batch, batch_idx):
     x, y = batch
     logits = self(x)
-    criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
+    criterion = torch.nn.CrossEntropyLoss(label_smoothing=0.1)
     loss = criterion(logits, y)
     predictions = logits.argmax(-1)
     correct = (predictions == y).sum().item()
@@ -100,20 +93,36 @@ class FinetuneModule(pl.LightningModule):
 
   def configure_optimizers(self):
     if self.optimizer_name == "adam":
-      optimizer = Adam(self.model.parameters(), lr=self.learning_rate, betas=(0.9, 0.999), weight_decay=self.weight_decay)
+      optimizer = torch.optim.Adam(self.model.parameters(), 
+                                   lr=self.learning_rate, 
+                                   betas=(0.9, 0.999), 
+                                   weight_decay=self.weight_decay)
+      
     elif self.optimizer_name == "adamw":
-      optimizer = AdamW(self.model.parameters(), lr=self.learning_rate, betas=(0.9, 0.999), weight_decay=self.weight_decay)
+      optimizer = torch.optim.AdamW(self.model.parameters(), 
+                                    lr=self.learning_rate, 
+                                    betas=(0.9, 0.999), 
+                                    weight_decay=self.weight_decay)
+      
     elif self.optimizer_name == "sgd":
-      optimizer = SGD(self.model.parameters(), lr=self.learning_rate, momentum=0.9, weight_decay=0)
+      optimizer = torch.optim.SGD(self.model.parameters(), 
+                                  lr=self.learning_rate, 
+                                  momentum=0.9, 
+                                  weight_decay=0)
       
     if self.scheduler_name == "none":
       return {"optimizer": optimizer}
+    
     elif self.scheduler_name == "cd":
       # Cosine decay
-      scheduler = CosineAnnealingLR(optimizer, T_max=self.epochs / 10)
+      scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 
+                                                             T_max=self.epochs / 10)
+      
     elif self.scheduler_name == "cdwr":
       # Cosine decay warm restart
-      scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=int(len(self.train_loader) * 0.4), T_mult=1) 
+      scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 
+                                                                       T_0=int(len(self.train_loader) * 0.4), 
+                                                                       T_mult=1) 
 
     return {"optimizer": optimizer, "lr_scheduler": scheduler}
 
@@ -145,7 +154,7 @@ def load_model(interval, model_name, model_option, num_classes, freeze=False):
     if freeze:
       for param in model.parameters(): param.requires_grad = False
     num_feature = model.head.in_features
-    model.head = nn.Linear(in_features=num_feature, out_features=num_classes)
+    model.head = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
     model.head.weight.data.mul_(0.001)
   elif name == "swinv2":
     if size == "t":
@@ -157,7 +166,7 @@ def load_model(interval, model_name, model_option, num_classes, freeze=False):
     if freeze:
       for param in model.parameters(): param.requires_grad = False
     num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=num_classes)
+    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
     model.head.fc.weight.data.mul_(0.001)
   
   elif name == "convnext":
@@ -173,18 +182,22 @@ def load_model(interval, model_name, model_option, num_classes, freeze=False):
     if freeze:
       for param in model.parameters(): param.requires_grad = False
     num_feature = model.head.fc.in_features
-    model.head.fc = nn.Linear(in_features=num_feature, out_features=num_classes)
+    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
     model.head.fc.weight.data.mul_(0.001)
     
   with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/architecture.txt', 'w') as f:
     f.write("### Summary ###\n")
-    f.write(f"{summary(model, (3, train_size, train_size))}\n\n")
+    f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
     f.write("### Full ###\n")
     f.write(str(model))
 
   return model, train_size, test_size
 
 def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4):
+  # def median_blur(image, kernel_size=3):
+  #   img_pil = v2.functional.to_pil_image(image)
+    
+  
   # Preprocessing data
   # TODO Add more preprocessing methods
   if set_name == "train":
@@ -192,6 +205,8 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
+                             #  v2.Lambda(lambda image: median_blur(image, kernel_size=3)),
+                             v2.GaussianBlur(kernel_size=7, sigma=2),
                              v2.RandAugment(num_ops=2, magnitude=9, fill=255),
                              v2.RandomErasing(p=0.25, value=255),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
@@ -201,12 +216,17 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
+                             v2.GaussianBlur(kernel_size=7, sigma=2),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ]) 
 
-  dataset = datasets.ImageFolder(root=f"{image_path}/labeled/{interval}/{set_name}", transform=transforms )
+  dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{interval}/{set_name}",
+                                             transform=transforms)
   
-  dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
+  dataloader = torch.utils.data.DataLoader(dataset, 
+                                           batch_size=batch_size, 
+                                           shuffle=shuffle, 
+                                           num_workers=num_workers)
   
   return dataloader
 
@@ -283,7 +303,7 @@ if __name__ == '__main__':
   interval = 7200 # 0 | 7200 | 21600 | 43200
   num_classes = 5 
   freeze = False
-  checkpoint = False
+  checkpoint = True
   continue_training = False
   
   print(f"Interval: {interval}")
@@ -306,15 +326,14 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}")
 
   ## For callbacks
-  patience = 10
+  patience = 20
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
-  epochs = 30
+  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
+  epochs = 60
   epoch_ratio = 0.5 # check val every percent of an epoch
   label_smoothing = 0.1
-  
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
   print(f"Label smoothing: {label_smoothing}")
@@ -354,18 +373,19 @@ if __name__ == '__main__':
   latest_version = f"version_{len(versions)}"
   
   # Logger
-  logger = CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
+  logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
                      name=f'{model_name}-{model_option}')
 
   # Callbacks
   monitor_value = "val_acc"
-  early_stop_callback = EarlyStopping(monitor=monitor_value,
+  
+  early_stop_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
                                       mode='max',
                                       patience=patience,
                                       min_delta=min_delta,
                                       verbose=True,)
 
-  checkpoint_callback = ModelCheckpoint(monitor=monitor_value,
+  checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
                                         mode='max',
                                         save_top_k=1,
                                         filename='best_model',
@@ -373,7 +393,7 @@ if __name__ == '__main__':
                                         verbose=True,)
   
   if checkpoint:
-    current_version = "version_0"
+    current_version = "version_5"
     
     # Make Lightning module
     checkpoint_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{current_version}/best_model.ckpt"
