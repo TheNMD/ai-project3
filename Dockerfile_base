@@ -6,9 +6,9 @@ WORKDIR /app
 # Copy the current directory contents into the container at /usr/src/app
 COPY requirements.txt .
 
-# Update pip and install packages
+# Intstall packages
+RUN apt update && apt install python3-opencv -y
 RUN pip install --upgrade pip
-
 RUN pip install -r requirements.txt
 
 EXPOSE 5000
