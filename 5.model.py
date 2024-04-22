@@ -306,7 +306,7 @@ if __name__ == '__main__':
   interval = 7200 # 0 | 7200 | 21600 | 43200
   num_classes = 5 
   freeze = False
-  checkpoint = True
+  checkpoint = False
   continue_training = False
   
   print(f"Interval: {interval}")
