@@ -12,7 +12,7 @@ def plot_results(monitor_value="val_acc"):
     min_idx = val_results['val_loss'].idxmin()
     best_epoch = val_results.loc[min_idx, 'epoch']
   elif monitor_value == 'val_acc':
-    max_idx = val_results['val_loss'].idxmax()
+    max_idx = val_results['val_acc'].idxmax()
     best_epoch = val_results.loc[max_idx, 'epoch']
   
   # Plotting loss
