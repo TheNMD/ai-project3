@@ -194,6 +194,10 @@ def load_model(interval, model_name, model_option, num_classes, freeze=False):
   return model, train_size, test_size
 
 def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4):
+  # def median_blur(image, kernel_size=3):
+  #   img_pil = v2.functional.to_pil_image(image)
+    
+  
   # Preprocessing data
   # TODO Add more preprocessing methods
   if set_name == "train":
@@ -201,6 +205,8 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
+                             #  v2.Lambda(lambda image: median_blur(image, kernel_size=3)),
+                             v2.GaussianBlur(kernel_size=7, sigma=2),
                              v2.RandAugment(num_ops=2, magnitude=9, fill=255),
                              v2.RandomErasing(p=0.25, value=255),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
@@ -210,6 +216,7 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
+                             v2.GaussianBlur(kernel_size=7, sigma=2),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ]) 
 
@@ -296,7 +303,7 @@ if __name__ == '__main__':
   interval = 7200 # 0 | 7200 | 21600 | 43200
   num_classes = 5 
   freeze = False
-  checkpoint = False
+  checkpoint = True
   continue_training = True
   
   print(f"Interval: {interval}")
@@ -319,7 +326,7 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}")
 
   ## For callbacks
-  patience = 12
+  patience = 20
   min_delta = 1e-3
 
   ## For training loop
@@ -386,7 +393,7 @@ if __name__ == '__main__':
                                         verbose=True,)
   
   if checkpoint:
-    current_version = "version_0"
+    current_version = "version_5"
     
     # Make Lightning module
     checkpoint_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{current_version}/best_model.ckpt"
