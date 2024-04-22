@@ -6,13 +6,13 @@ import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-import torch
+import torch, torchvisio, timm, torchsummary
 import torchvision
 from torchvision.transforms import v2
 from torchvision.ops import stochastic_depth
 import pytorch_lightning as pl
-import timm
-import torchsummary
+import numpy as np
+import cv2 as cv
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -194,8 +194,10 @@ def load_model(interval, model_name, model_option, num_classes, freeze=False):
   return model, train_size, test_size
 
 def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4):
-  # def median_blur(image, kernel_size=3):
-  #   img_pil = v2.functional.to_pil_image(image)
+  def median_blur(image, kernel_size=5):
+      pil_image = v2.functional.to_pil_image(image)
+      blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
+      return v2.functional.to_image(blurred_img)
     
   
   # Preprocessing data
@@ -204,9 +206,9 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
+                             #  v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
+                             #  v2.GaussianBlur(kernel_size=5, sigma=2), 
                              v2.ToDtype(torch.float32, scale=True),
-                             #  v2.Lambda(lambda image: median_blur(image, kernel_size=3)),
-                            #  v2.GaussianBlur(kernel_size=7, sigma=2),
                              v2.RandAugment(num_ops=2, magnitude=9, fill=255),
                              v2.RandomErasing(p=0.25, value=255),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
@@ -215,8 +217,9 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
+                            #  v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
+                            #  v2.GaussianBlur(kernel_size=5, sigma=2), 
                              v2.ToDtype(torch.float32, scale=True),
-                            #  v2.GaussianBlur(kernel_size=7, sigma=2),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ]) 
 
@@ -304,7 +307,7 @@ if __name__ == '__main__':
   num_classes = 5 
   freeze = False
   checkpoint = True
-  continue_training = True
+  continue_training = False
   
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
