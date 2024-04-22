@@ -469,9 +469,7 @@ if __name__ == '__main__':
           file.write(f"Best epoch (val_acc): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
           file.write(f"Evaluation time: {test_end_time} seconds\n")
-        
-        os.rename(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}',
-                  f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}-cont-{current_version}')
+          file.write(f"Continue: {current_version}")
         
       except Exception as e:
         print(e)
