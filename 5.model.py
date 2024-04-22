@@ -197,7 +197,6 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
       pil_image = v2.functional.to_pil_image(image)
       blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
       return v2.functional.to_image(blurred_img)
-    
   
   # Preprocessing data
   # TODO Add more preprocessing methods
@@ -205,7 +204,7 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
-                             #  v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
+                             v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                              #  v2.GaussianBlur(kernel_size=5, sigma=2), 
                              v2.ToDtype(torch.float32, scale=True),
                              v2.RandAugment(num_ops=2, magnitude=9, fill=255),
@@ -216,7 +215,7 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
     transforms = v2.Compose([
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
-                            #  v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
+                             v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                             #  v2.GaussianBlur(kernel_size=5, sigma=2), 
                              v2.ToDtype(torch.float32, scale=True),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
