@@ -206,7 +206,7 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
                              #  v2.Lambda(lambda image: median_blur(image, kernel_size=3)),
-                             v2.GaussianBlur(kernel_size=7, sigma=2),
+                            #  v2.GaussianBlur(kernel_size=7, sigma=2),
                              v2.RandAugment(num_ops=2, magnitude=9, fill=255),
                              v2.RandomErasing(p=0.25, value=255),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
@@ -216,7 +216,7 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
                              v2.ToImage(), 
                              v2.Resize((image_size, image_size)),
                              v2.ToDtype(torch.float32, scale=True),
-                             v2.GaussianBlur(kernel_size=7, sigma=2),
+                            #  v2.GaussianBlur(kernel_size=7, sigma=2),
                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
                             ]) 
 
