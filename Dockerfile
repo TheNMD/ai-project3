@@ -10,8 +10,8 @@ RUN mkdir data
 RUN mkdir image
 RUN mkdir result
 
+RUN RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 RUN chmod +x docker-entrypoint.sh
-RUN pip install opencv-python
 
 EXPOSE 5000
 
