@@ -1,19 +1,20 @@
 import torch
 from torchvision.transforms import v2
 
+import numpy as np
 import cv2
 from PIL import Image
 
 image_size = 224
 
-def median_blur(image, kernel_size=3):
-    img_pil = v2.functional.to_pil_image(image)
-    blurred_img = cv2.medianBlur(img_pil, kernel_size)
+def median_blur(image, kernel_size=5):
+    pil_image = v2.functional.to_pil_image(image)
+    blurred_img = cv2.medianBlur(np.array(pil_image), kernel_size)
     return v2.functional.to_image(blurred_img)
 
 transforms = v2.Compose([v2.ToImage(),
-                         v2.Lambda(lambda image: median_blur(image, kernel_size=3)), 
-                        #  v2.GaussianBlur(kernel_size=5, sigma=1.5),
+                         v2.Lambda(lambda image: median_blur(image, kernel_size=5)), 
+                        #  v2.GaussianBlur(kernel_size=7, sigma=1.5),
                         #  v2.RandAugment(num_ops=2, magnitude=9, fill=255),
                         #  v2.RandomErasing(p=0.95, value=255),
                          v2.ToDtype(torch.float32, scale=True),
