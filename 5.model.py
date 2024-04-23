@@ -44,7 +44,7 @@ class FinetuneModule(pl.LightningModule):
     self.model_option = model_settings['model_option']
     self.num_classes = model_settings['num_classes']
     self.freeze = model_settings['freeze']
-    self.model, train_size, test_size = load_model(self.interval, self.model_name, self.model_option, self.num_classes, self.freeze)
+    self.model, train_size, test_size = self.load_model()
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
@@ -54,9 +54,156 @@ class FinetuneModule(pl.LightningModule):
     self.batch_size = loop_settings['batch_size']
     self.epochs = loop_settings['epochs']
 
-    self.train_loader = load_data(self.interval, "train", train_size, self.batch_size, True)
-    self.val_loader   = load_data(self.interval, "val", test_size, self.batch_size, False)
-    self.test_loader  = load_data(self.interval, "test", test_size, self.batch_size, False)
+    self.train_loader = self.load_data("train", train_size, True)
+    self.val_loader   = self.load_data("val", test_size, False)
+    self.test_loader  = self.load_data("test", test_size, False)
+
+  def load_model(self):
+    name_and_size = self.model_name.split('-')
+    name, size = name_and_size[0], name_and_size[1]
+    
+    if self.model_option == "custom":
+      is_pretrained = False
+    elif self.model_option == "pretrained":
+      is_pretrained = True
+      
+    if name == "vit":
+      if size == "b":
+        model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
+        train_size, test_size = 224, 224
+      elif size == "l":
+        model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
+        train_size, test_size = 224, 224
+      if self.freeze:
+        for param in model.parameters(): param.requires_grad = False
+      num_feature = model.head.in_features
+      model.head = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
+      model.head.weight.data.mul_(0.001)
+    elif name == "swinv2":
+      if size == "t":
+        model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=is_pretrained)
+        train_size, test_size = 256, 256
+      elif size == "b":
+        model = timm.create_model('swinv2_base_window8_256.ms_in1k', pretrained=is_pretrained)
+        train_size, test_size = 256, 256
+      if self.freeze:
+        for param in model.parameters(): param.requires_grad = False
+      num_feature = model.head.fc.in_features
+      model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
+      model.head.fc.weight.data.mul_(0.001)
+    
+    elif name == "convnext":
+      if size == "s":
+        model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
+        train_size, test_size = 224, 224
+      elif size == "b":
+        model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
+        train_size, test_size = 224, 224
+      elif size == "l":
+        model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
+        train_size, test_size = 224, 224
+      if self.freeze:
+        for param in model.parameters(): param.requires_grad = False
+      num_feature = model.head.fc.in_features
+      model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
+      model.head.fc.weight.data.mul_(0.001)
+      
+    with open(f'{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/architecture.txt', 'w') as f:
+      f.write("### Summary ###\n")
+      f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
+      f.write("### Full ###\n")
+      f.write(str(model))
+
+    return model, train_size, test_size
+
+  def load_data(self, set_name, image_size, shuffle, num_workers=4):
+    def median_blur(image, kernel_size=5):
+        pil_image = v2.functional.to_pil_image(image)
+        blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
+        return v2.functional.to_image(blurred_img)
+    
+    # Preprocessing data
+    # TODO Add more preprocessing methods
+    if set_name == "train":
+      transforms = v2.Compose([
+                               v2.ToImage(), 
+                               v2.Resize((image_size, image_size)),
+                              #  v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
+                              #  v2.GaussianBlur(kernel_size=5, sigma=2), 
+                               v2.ToDtype(torch.float32, scale=True),
+                               v2.RandAugment(num_ops=2, magnitude=9, fill=255),
+                               v2.RandomErasing(p=0.25, value=255),
+                               v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
+                              ])
+      
+    elif set_name == "val" or set_name == "test":
+      transforms = v2.Compose([
+                               v2.ToImage(), 
+                               v2.Resize((image_size, image_size)),
+                              #  v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
+                              #  v2.GaussianBlur(kernel_size=5, sigma=2), 
+                               v2.ToDtype(torch.float32, scale=True),
+                               v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                              ]) 
+
+    dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}/{set_name}",
+                                               transform=transforms)
+    
+    dataloader = torch.utils.data.DataLoader(dataset, 
+                                             batch_size=self.batch_size, 
+                                             shuffle=shuffle, 
+                                             num_workers=num_workers)
+    
+    return dataloader
+
+  def plot_results(self, monitor_value, version):
+    if not os.path.exists(f"{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/{version}/metrics.csv"):
+      return None, None, None
+    
+    log_results = pd.read_csv(f"{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/{version}/metrics.csv")
+    train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
+    train_results = train_results.groupby(['epoch'], as_index=False).mean()
+    val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
+    val_results = val_results.groupby(['epoch'], as_index=False).mean()
+    
+    if monitor_value == 'val_loss':
+      min_idx = val_results['val_loss'].idxmin()
+      best_epoch = val_results.loc[min_idx, 'epoch']
+    elif monitor_value == 'val_acc':
+      max_idx = val_results['val_acc'].idxmax()
+      best_epoch = val_results.loc[max_idx, 'epoch']
+    
+    # Plotting loss
+    plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
+    plt.plot(val_results['epoch'], val_results['val_loss'], label='val_loss')
+    plt.legend()
+    plt.xlabel('epoch')
+    plt.ylabel('value')
+    plt.title(f'Loss of {self.model_name}-{self.model_option}')
+    plt.legend()
+    plt.savefig(f'{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/{version}/graph_loss.png')
+
+    plt.clf()
+
+    # Plotting acc
+    plt.plot(train_results['epoch'], train_results['train_acc'], label='train_acc')
+    plt.plot(val_results['epoch'], val_results['val_acc'], label='val_acc')
+    plt.legend()
+    plt.xlabel('epoch')
+    plt.ylabel('value')
+    plt.title(f'Accuracy of {self.model_name}-{self.model_option}')
+    plt.legend()
+    plt.savefig(f'{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/{version}/graph_acc.png')
+
+    if "test_loss" in log_results.columns:
+      test_results = log_results[['test_loss', 'test_acc']].dropna()
+      test_loss = test_results['test_loss'].tolist()[0]
+      test_acc = test_results['test_acc'].tolist()[0]
+    else:
+      test_loss = None
+      test_acc = None
+      
+    return test_loss, test_acc, best_epoch
 
   def forward(self, x):
     # x = stochastic_depth(x, p=0.2, mode='batch')
@@ -115,7 +262,7 @@ class FinetuneModule(pl.LightningModule):
     elif self.scheduler_name == "cd":
       # Cosine decay
       scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 
-                                                             T_max=self.epochs / 10)
+                                                             T_max=5)
       
     elif self.scheduler_name == "cdwr":
       # Cosine decay warm restart
@@ -133,149 +280,6 @@ class FinetuneModule(pl.LightningModule):
 
   def test_dataloader(self):
     return self.test_loader
-
-def load_model(interval, model_name, model_option, num_classes, freeze=False):
-  name_and_size = model_name.split('-')
-  name, size = name_and_size[0], name_and_size[1]
-  
-  if model_option == "custom":
-    is_pretrained = False
-  elif model_option == "pretrained":
-    is_pretrained = True
-    
-  if name == "vit":
-    if size == "b":
-      model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
-      train_size, test_size = 224, 224
-    elif size == "l":
-      model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
-      train_size, test_size = 224, 224
-    if freeze:
-      for param in model.parameters(): param.requires_grad = False
-    num_feature = model.head.in_features
-    model.head = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
-    model.head.weight.data.mul_(0.001)
-  elif name == "swinv2":
-    if size == "t":
-      model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=is_pretrained)
-      train_size, test_size = 256, 256
-    elif size == "b":
-      model = timm.create_model('swinv2_base_window8_256.ms_in1k', pretrained=is_pretrained)
-      train_size, test_size = 256, 256
-    if freeze:
-      for param in model.parameters(): param.requires_grad = False
-    num_feature = model.head.fc.in_features
-    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
-    model.head.fc.weight.data.mul_(0.001)
-  
-  elif name == "convnext":
-    if size == "s":
-      model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
-      train_size, test_size = 224, 224
-    elif size == "b":
-      model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
-      train_size, test_size = 224, 224
-    elif size == "l":
-      model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
-      train_size, test_size = 224, 224
-    if freeze:
-      for param in model.parameters(): param.requires_grad = False
-    num_feature = model.head.fc.in_features
-    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
-    model.head.fc.weight.data.mul_(0.001)
-    
-  with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/architecture.txt', 'w') as f:
-    f.write("### Summary ###\n")
-    f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
-    f.write("### Full ###\n")
-    f.write(str(model))
-
-  return model, train_size, test_size
-
-def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4):
-  def median_blur(image, kernel_size=5):
-      pil_image = v2.functional.to_pil_image(image)
-      blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
-      return v2.functional.to_image(blurred_img)
-  
-  # Preprocessing data
-  # TODO Add more preprocessing methods
-  if set_name == "train":
-    transforms = v2.Compose([
-                             v2.ToImage(), 
-                             v2.Resize((image_size, image_size)),
-                             v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
-                             #  v2.GaussianBlur(kernel_size=5, sigma=2), 
-                             v2.ToDtype(torch.float32, scale=True),
-                             v2.RandAugment(num_ops=2, magnitude=9, fill=255),
-                             v2.RandomErasing(p=0.25, value=255),
-                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
-                            ])
-  elif set_name == "val" or set_name == "test":
-    transforms = v2.Compose([
-                             v2.ToImage(), 
-                             v2.Resize((image_size, image_size)),
-                             v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
-                            #  v2.GaussianBlur(kernel_size=5, sigma=2), 
-                             v2.ToDtype(torch.float32, scale=True),
-                             v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
-                            ]) 
-
-  dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{interval}/{set_name}",
-                                             transform=transforms)
-  
-  dataloader = torch.utils.data.DataLoader(dataset, 
-                                           batch_size=batch_size, 
-                                           shuffle=shuffle, 
-                                           num_workers=num_workers)
-  
-  return dataloader
-
-def plot_results(interval, model_name, model_option, latest_version, monitor_value):
-  log_results = pd.read_csv(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/metrics.csv")
-  train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
-  train_results = train_results.groupby(['epoch'], as_index=False).mean()
-  val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
-  val_results = val_results.groupby(['epoch'], as_index=False).mean()
-  
-  if monitor_value == 'val_loss':
-    min_idx = val_results['val_loss'].idxmin()
-    best_epoch = val_results.loc[min_idx, 'epoch']
-  elif monitor_value == 'val_acc':
-    max_idx = val_results['val_acc'].idxmax()
-    best_epoch = val_results.loc[max_idx, 'epoch']
-  
-  # Plotting loss
-  plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
-  plt.plot(val_results['epoch'], val_results['val_loss'], label='val_loss')
-  plt.legend()
-  plt.xlabel('epoch')
-  plt.ylabel('value')
-  plt.title(f'Loss of {model_name}-{model_option}')
-  plt.legend()
-  plt.savefig(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/graph_loss.png')
-
-  plt.clf()
-
-  # Plotting acc
-  plt.plot(train_results['epoch'], train_results['train_acc'], label='train_acc')
-  plt.plot(val_results['epoch'], val_results['val_acc'], label='val_acc')
-  plt.legend()
-  plt.xlabel('epoch')
-  plt.ylabel('value')
-  plt.title(f'Accuracy of {model_name}-{model_option}')
-  plt.legend()
-  plt.savefig(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/graph_acc.png')
-
-  if "test_loss" in log_results.columns:
-    test_results = log_results[['test_loss', 'test_acc']].dropna()
-    test_loss = test_results['test_loss'].tolist()[0]
-    test_acc = test_results['test_acc'].tolist()[0]
-  else:
-    test_loss = None
-    test_acc = None
-    
-  return test_loss, test_acc, best_epoch
 
 if __name__ == '__main__':
   print("Python version: ", sys.version)
@@ -301,7 +305,7 @@ if __name__ == '__main__':
   ### vit-b      | vit-l 
   ### swinv2-t   | swinv2-b
   ### convnext-s | convnext-b | convnext-l
-  model_name = "convnext-l"
+  model_name = "convnext-b"
   model_option = "pretrained" # pretrained | custom
   interval = 7200 # 0 | 7200 | 21600 | 43200
   num_classes = 5 
@@ -319,7 +323,7 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 1e-3     # 1e-4 | 5e-5  | 1e-2
+  learning_rate = 5e-3     # 1e-4 | 5e-5  | 5e-3 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"   # none | cd    | cdwr  
   
@@ -373,7 +377,9 @@ if __name__ == '__main__':
   versions = sorted([folder for folder in 
                     os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
                     if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
-  latest_version = f"version_{len(versions)}"
+  latest_version = versions[-1]
+  latest_version_num = int(latest_version.split('_')[1])
+  new_version = f"version_{latest_version_num + 1}"
   
   # Logger
   logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
@@ -396,10 +402,10 @@ if __name__ == '__main__':
                                         verbose=True,)
   
   if checkpoint:
-    current_version = "version_5"
+    selected_version = "version_5"
     
     # Make Lightning module
-    checkpoint_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{current_version}/best_model.ckpt"
+    checkpoint_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{selected_version}/best_model.ckpt"
     module = FinetuneModule.load_from_checkpoint(checkpoint_path, 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
@@ -420,7 +426,7 @@ if __name__ == '__main__':
         # Training loop
         train_start_time = time.time()
         trainer.fit(module, 
-                    ckpt_path=f"result/checkpoint/{interval}/{model_name}-{model_option}/{current_version}/best_model.ckpt")
+                    ckpt_path=checkpoint_path)
         train_end_time = time.time() - train_start_time
         print(f"Evaluation time: {train_end_time} seconds")
         
@@ -431,15 +437,11 @@ if __name__ == '__main__':
         print(f"Evaluation time: {test_end_time} seconds")
         
         # Plot loss and accuracy
-        test_loss, tess_acc, best_epoch = plot_results(interval,
-                                                       model_name, 
-                                                       model_option, 
-                                                       latest_version, 
-                                                       monitor_value)
+        test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, new_version)
         print(f"Best epoch [{monitor_value}]: {best_epoch}")
         
         # Write down hyperparameters and results
-        with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
+        with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}/notes.txt', 'w') as file:
           file.write('### For models ###\n')
           file.write(f'Interval: {interval}\n')
           file.write(f'Model name: {model_name}\n')
@@ -469,7 +471,7 @@ if __name__ == '__main__':
           file.write(f"Best epoch (val_acc): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
           file.write(f"Evaluation time: {test_end_time} seconds\n")
-          file.write(f"Continue: {current_version}")
+          file.write(f"Continue: {selected_version}")
         
       except Exception as e:
         print(e)
@@ -490,6 +492,11 @@ if __name__ == '__main__':
         trainer.test(module)
         end_time = time.time()
         print(f"Evaluation time: {end_time - start_time} seconds")
+        
+        # Plot loss and accuracy
+        test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, selected_version)
+        print(f"Best epoch [{monitor_value}]: {best_epoch}")
+        
       except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
@@ -523,15 +530,11 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
       
       # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = plot_results(interval, 
-                                                     model_name, 
-                                                     model_option, 
-                                                     latest_version, 
-                                                     monitor_value)
+      test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, new_version)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Write down hyperparameters and results
-      with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}/notes.txt', 'w') as file:
+      with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}/notes.txt', 'w') as file:
         file.write('### For models ###\n')
         file.write(f'Interval: {interval}\n')
         file.write(f'Model name: {model_name}\n')
