@@ -1,0 +1,34 @@
+2024-04-23 10:08:07,033 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-04-23 10:08:07,092 - INFO - GPU available: True (cuda), used: True
+2024-04-23 10:08:07,314 - INFO - TPU available: False, using: 0 TPU cores
+2024-04-23 10:08:07,315 - INFO - IPU available: False, using: 0 IPUs
+2024-04-23 10:08:07,315 - INFO - HPU available: False, using: 0 HPUs
+2024-04-23 10:08:07,348 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-04-23 10:08:08,378 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-04-23 10:08:08,389 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-04-23 10:08:17,485 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-04-23 10:08:18,301 - ERROR - [Errno 2] No such file or directory: 'result/checkpoint/7200/convnext-b-pretrained/version_1/metrics.csv'
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/5.model.py", line 528, in <module>
+    test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, latest_version)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/5.model.py", line 160, in plot_results
+    log_results = pd.read_csv(f"{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/{version}/metrics.csv")
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pandas/io/common.py", line 873, in get_handle
+    handle = open(
+FileNotFoundError: [Errno 2] No such file or directory: 'result/checkpoint/7200/convnext-b-pretrained/version_1/metrics.csv'
