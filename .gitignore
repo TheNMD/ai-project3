@@ -5,11 +5,10 @@ data/
 metadata/
 sample_data/
 image/
-server/
 result/
+server/
 
 data.zip
 image.zip
 result.zip
-
 *.ckpt
