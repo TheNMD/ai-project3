@@ -337,7 +337,7 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
+  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
   epochs = 60
   epoch_ratio = 0.5 # check val every percent of an epoch
   label_smoothing = 0.1
@@ -378,7 +378,8 @@ if __name__ == '__main__':
                     os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
                     if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
   latest_version = versions[-1]
-  new_version = f"version_{latest_version.split('_')[1]}"
+  latest_version_num = int(latest_version.split('_')[1])
+  new_version = f"version_{latest_version_num + 1}"
   
   # Logger
   logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 

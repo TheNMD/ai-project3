@@ -48,3 +48,6 @@ FileNotFoundError: [Errno 2] No such file or directory: 'result/checkpoint/7200/
 0         Non-trainable params
 87.6 M    Total params
 350.286   Total estimated model params size (MB)
+2024-04-23 10:32:31,303 - INFO - Metric val_acc improved. New best score: 0.450
+2024-04-23 10:32:31,316 - INFO - Epoch 0, global step 3127: 'val_acc' reached 0.45007 (best 0.45007), saving model to '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/7200/convnext-b-pretrained/version_5/best_model-v1.ckpt' as top 1
+2024-04-23 10:32:44,410 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
