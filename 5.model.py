@@ -378,7 +378,7 @@ if __name__ == '__main__':
                     os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
                     if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
   latest_version = versions[-1]
-  new_version = f"version_{latest_version.split("_")[1]}"
+  new_version = f"version_{latest_version.split('_')[1]}"
   
   # Logger
   logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
@@ -401,10 +401,10 @@ if __name__ == '__main__':
                                         verbose=True,)
   
   if checkpoint:
-    current_version = "version_5"
+    selected_version = "version_5"
     
     # Make Lightning module
-    checkpoint_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{current_version}/best_model.ckpt"
+    checkpoint_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{selected_version}/best_model.ckpt"
     module = FinetuneModule.load_from_checkpoint(checkpoint_path, 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
@@ -470,7 +470,7 @@ if __name__ == '__main__':
           file.write(f"Best epoch (val_acc): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
           file.write(f"Evaluation time: {test_end_time} seconds\n")
-          file.write(f"Continue: {current_version}")
+          file.write(f"Continue: {selected_version}")
         
       except Exception as e:
         print(e)
@@ -493,7 +493,7 @@ if __name__ == '__main__':
         print(f"Evaluation time: {end_time - start_time} seconds")
         
         # Plot loss and accuracy
-        test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, current_version)
+        test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, selected_version)
         print(f"Best epoch [{monitor_value}]: {best_epoch}")
         
       except Exception as e:
