@@ -165,55 +165,6 @@ class FinetuneModule(pl.LightningModule):
     
     return dataloader
 
-  def plot_results(self, monitor_value, version):
-    if not os.path.exists(f"{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/{version}/metrics.csv"):
-      return None, None, None
-    
-    log_results = pd.read_csv(f"{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/{version}/metrics.csv")
-    train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
-    train_results = train_results.groupby(['epoch'], as_index=False).mean()
-    val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
-    val_results = val_results.groupby(['epoch'], as_index=False).mean()
-    
-    if monitor_value == 'val_loss':
-      min_idx = val_results['val_loss'].idxmin()
-      best_epoch = val_results.loc[min_idx, 'epoch']
-    elif monitor_value == 'val_acc':
-      max_idx = val_results['val_acc'].idxmax()
-      best_epoch = val_results.loc[max_idx, 'epoch']
-    
-    # Plotting loss
-    plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
-    plt.plot(val_results['epoch'], val_results['val_loss'], label='val_loss')
-    plt.legend()
-    plt.xlabel('epoch')
-    plt.ylabel('value')
-    plt.title(f'Loss of {self.model_name}-{self.model_option}')
-    plt.legend()
-    plt.savefig(f'{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/{version}/graph_loss.png')
-
-    plt.clf()
-
-    # Plotting acc
-    plt.plot(train_results['epoch'], train_results['train_acc'], label='train_acc')
-    plt.plot(val_results['epoch'], val_results['val_acc'], label='val_acc')
-    plt.legend()
-    plt.xlabel('epoch')
-    plt.ylabel('value')
-    plt.title(f'Accuracy of {self.model_name}-{self.model_option}')
-    plt.legend()
-    plt.savefig(f'{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/{version}/graph_acc.png')
-
-    if "test_loss" in log_results.columns:
-      test_results = log_results[['test_loss', 'test_acc']].dropna()
-      test_loss = test_results['test_loss'].tolist()[0]
-      test_acc = test_results['test_acc'].tolist()[0]
-    else:
-      test_loss = None
-      test_acc = None
-      
-    return test_loss, test_acc, best_epoch
-
   def forward(self, x):
     return self.model(x)
 
@@ -270,7 +221,7 @@ class FinetuneModule(pl.LightningModule):
     elif self.scheduler_name == "cd":
       # Cosine decay
       scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 
-                                                             T_max=5)
+                                                             T_max=3)
       
     elif self.scheduler_name == "cdwr":
       # Cosine decay warm restart
@@ -288,6 +239,55 @@ class FinetuneModule(pl.LightningModule):
 
   def test_dataloader(self):
     return self.test_loader
+
+def plot_results(monitor_value, save_path):
+  if not os.path.exists(f"{save_path}/metrics.csv"):
+    return None, None, None
+  
+  log_results = pd.read_csv(f"{save_path}/metrics.csv")
+  train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
+  train_results = train_results.groupby(['epoch'], as_index=False).mean()
+  val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
+  val_results = val_results.groupby(['epoch'], as_index=False).mean()
+  
+  if monitor_value == 'val_loss':
+    min_idx = val_results['val_loss'].idxmin()
+    best_epoch = val_results.loc[min_idx, 'epoch']
+  elif monitor_value == 'val_acc':
+    max_idx = val_results['val_acc'].idxmax()
+    best_epoch = val_results.loc[max_idx, 'epoch']
+  
+  # Plotting loss
+  plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
+  plt.plot(val_results['epoch'], val_results['val_loss'], label='val_loss')
+  plt.legend()
+  plt.xlabel('epoch')
+  plt.ylabel('value')
+  plt.title('Loss Graph')
+  plt.legend()
+  plt.savefig(f'{save_path}/graph_loss.png')
+
+  plt.clf()
+
+  # Plotting acc
+  plt.plot(train_results['epoch'], train_results['train_acc'], label='train_acc')
+  plt.plot(val_results['epoch'], val_results['val_acc'], label='val_acc')
+  plt.legend()
+  plt.xlabel('epoch')
+  plt.ylabel('value')
+  plt.title('Accuracy Graph')
+  plt.legend()
+  plt.savefig(f'{save_path}/graph_acc.png')
+
+  if "test_loss" in log_results.columns:
+    test_results = log_results[['test_loss', 'test_acc']].dropna()
+    test_loss = test_results['test_loss'].tolist()
+    test_acc = test_results['test_acc'].tolist()
+  else:
+    test_loss = None
+    test_acc = None
+    
+  return test_loss, test_acc, best_epoch
 
 if __name__ == '__main__':
   print("Python version: ", sys.version)
@@ -324,10 +324,12 @@ if __name__ == '__main__':
   print(f"Stochastic depth: {stochastic_depth}")
   print(f"Freeze: {freeze}")
   print(f"Load from checkpoint: {checkpoint}")
+  
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}")
   if not os.path.exists(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}")
+  model_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}"
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
@@ -341,11 +343,11 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}")
 
   ## For callbacks
-  patience = 20
+  patience = 12
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
+  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
   epochs = 60
   epoch_ratio = 0.5 # check val every percent of an epoch
   label_smoothing = 0.1
@@ -387,10 +389,11 @@ if __name__ == '__main__':
                     os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
                     if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
   if len(versions) == 0:
-    new_version = f"version_0"
+    new_version = "version_0"
   else:
     latest_version = versions[-1]
     latest_version_num = int(latest_version.split('_')[1])
+    # new_version = f"version_{latest_version_num}"
     new_version = f"version_{latest_version_num + 1}"
   
   # Logger
@@ -407,18 +410,17 @@ if __name__ == '__main__':
                                       verbose=True,)
 
   checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
-                                        mode='max',
-                                        save_top_k=1,
-                                        filename='best_model',
-                                        dirpath=f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}',
-                                        verbose=True,)
+                                                     mode='max',
+                                                     save_top_k=3,
+                                                     filename='{epoch}-{step}-{val_acc:.3f}',
+                                                     dirpath=f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}',
+                                                     verbose=True,)
   
   if checkpoint:
     selected_version = "version_5"
+    selected_checkpoint = ""
     
-    # Make Lightning module
-    checkpoint_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{selected_version}/best_model.ckpt"
-    module = FinetuneModule.load_from_checkpoint(checkpoint_path, 
+    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/{selected_checkpoint}", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
                                                  loop_settings=loop_settings)
@@ -438,22 +440,30 @@ if __name__ == '__main__':
         # Training loop
         train_start_time = time.time()
         trainer.fit(module, 
-                    ckpt_path=checkpoint_path)
+                    ckpt_path=f"{model_path}/{selected_version}/{selected_checkpoint}")
         train_end_time = time.time() - train_start_time
-        print(f"Evaluation time: {train_end_time} seconds")
+        print(f"Training time: {train_end_time} seconds")
         
-        # Evaluation
-        test_start_time = time.time()
-        trainer.test(module)
-        test_end_time = time.time() - test_start_time
-        print(f"Evaluation time: {test_end_time} seconds")
+        # Evaluation of the 3 top models
+        for checkpoint in sorted(os.listdir(f"{model_path}/{new_version}")):
+          if checkpoint.endswith('.ckpt'):
+            print(f"Checkpoint: {checkpoint}")    
+            module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/{checkpoint}", 
+                                                              model_settings=model_settings,
+                                                              optimizer_settings=optimizer_settings, 
+                                                              loop_settings=loop_settings)
+        
+            test_start_time = time.time()
+            trainer.test(module_test)
+            test_end_time = time.time() - test_start_time
+            print(f"Evaluation time: {test_end_time} seconds")
         
         # Plot loss and accuracy
         test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, new_version)
         print(f"Best epoch [{monitor_value}]: {best_epoch}")
         
         # Write down hyperparameters and results
-        with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}/notes.txt', 'w') as file:
+        with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
           file.write('### For models ###\n')
           file.write(f'Interval: {interval}\n')
           file.write(f'Model name: {model_name}\n')
@@ -483,7 +493,6 @@ if __name__ == '__main__':
           file.write(f"Test accuracy: {tess_acc}\n")
           file.write(f"Best epoch (val_acc): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
-          file.write(f"Evaluation time: {test_end_time} seconds\n")
           file.write(f"Continue: {selected_version}")
         
       except Exception as e:
@@ -506,15 +515,11 @@ if __name__ == '__main__':
         end_time = time.time()
         print(f"Evaluation time: {end_time - start_time} seconds")
         
-        # Plot loss and accuracy
-        test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, selected_version)
-        print(f"Best epoch [{monitor_value}]: {best_epoch}")
-        
       except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
     
-  else:
+  else:    
     module = FinetuneModule(model_settings=model_settings, 
                             optimizer_settings=optimizer_settings, 
                             loop_settings=loop_settings)
@@ -536,18 +541,26 @@ if __name__ == '__main__':
       train_end_time = time.time() - train_start_time
       print(f"Training time: {train_end_time} seconds")
       
-      # Evaluation
-      test_start_time = time.time()
-      trainer.test(module)
-      test_end_time = time.time() - test_start_time
-      print(f"Evaluation time: {test_end_time} seconds")
+      # Evaluation of the 3 top models
+      for checkpoint in sorted(os.listdir(f"{model_path}/{new_version}")):
+        if checkpoint.endswith('.ckpt'):
+          print(f"Checkpoint: {checkpoint}")    
+          module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/{checkpoint}", 
+                                                            model_settings=model_settings,
+                                                            optimizer_settings=optimizer_settings, 
+                                                            loop_settings=loop_settings)
+      
+          test_start_time = time.time()
+          trainer.test(module_test)
+          test_end_time = time.time() - test_start_time
+          print(f"Evaluation time: {test_end_time} seconds")
       
       # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, new_version)
+      test_loss, tess_acc, best_epoch = plot_results(monitor_value, f"{model_path}/{new_version}")
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Write down hyperparameters and results
-      with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}/notes.txt', 'w') as file:
+      with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
         file.write('### For models ###\n')
         file.write(f'Interval: {interval}\n')
         file.write(f'Model name: {model_name}\n')
@@ -577,7 +590,6 @@ if __name__ == '__main__':
         file.write(f"Test accuracy: {tess_acc}\n")
         file.write(f"Best epoch (val_acc): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
-        file.write(f"Evaluation time: {test_end_time} seconds\n")
         
     except Exception as e:
       print(e)
