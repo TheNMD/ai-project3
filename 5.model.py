@@ -8,6 +8,7 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 
 import torch, torchvision, timm, torchsummary
 from torchvision.transforms import v2
+from torchmetrics.classification import MulticlassConfusionMatrix
 import pytorch_lightning as pl
 import numpy as np
 import cv2 as cv
@@ -168,30 +169,44 @@ class FinetuneModule(pl.LightningModule):
   def forward(self, x):
     return self.model(x)
 
-  def common_step(self, batch, batch_idx):
+  def training_step(self, batch, batch_idx):
     x, y = batch
     logits = self(x)
     criterion = torch.nn.CrossEntropyLoss(label_smoothing=0.1)
-    loss = criterion(logits, y)
+    train_loss = criterion(logits, y)
     predictions = logits.argmax(-1)
     correct = (predictions == y).sum().item()
-    accuracy = correct / x.shape[0]
-    return loss, accuracy
-
-  def training_step(self, batch, batch_idx):
-    train_loss, train_acc = self.common_step(batch, batch_idx)
+    train_acc = correct / x.shape[0]
+    
     self.log("train_loss", train_loss)
     self.log("train_acc", train_acc)
     return train_loss
 
   def validation_step(self, batch, batch_idx):
-    val_loss, val_acc = self.common_step(batch, batch_idx)
+    x, y = batch
+    logits = self(x)
+    criterion = torch.nn.CrossEntropyLoss()
+    val_loss = criterion(logits, y)
+    predictions = logits.argmax(-1)
+    correct = (predictions == y).sum().item()
+    val_acc = correct / x.shape[0]
+    
     self.log("val_loss", val_loss, on_epoch=True)
     self.log("val_acc", val_acc, on_epoch=True)
     return val_loss
 
   def test_step(self, batch, batch_idx):
-    test_loss, test_acc = self.common_step(batch, batch_idx)
+    x, y = batch
+    logits = self(x)
+    criterion = torch.nn.CrossEntropyLoss()
+    test_loss = criterion(logits, y)
+    predictions = logits.argmax(-1)
+    correct = (predictions == y).sum().item()
+    test_acc = correct / x.shape[0]
+    
+    metric = MulticlassConfusionMatrix(num_classes=self.num_classes)
+    print(metric(predictions, y))
+    
     self.log("test_loss", test_loss)
     self.log("test_acc", test_acc)
     return test_loss
@@ -347,9 +362,9 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
-  epochs = 60
-  epoch_ratio = 0.5 # check val every percent of an epoch
+  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
+  epochs = 1
+  epoch_ratio = 0.25 # check val every percent of an epoch
   label_smoothing = 0.1
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
@@ -393,7 +408,6 @@ if __name__ == '__main__':
   else:
     latest_version = versions[-1]
     latest_version_num = int(latest_version.split('_')[1])
-    # new_version = f"version_{latest_version_num}"
     new_version = f"version_{latest_version_num + 1}"
   
   # Logger
@@ -411,16 +425,15 @@ if __name__ == '__main__':
 
   checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
                                                      mode='max',
-                                                     save_top_k=3,
-                                                     filename='{epoch}-{step}-{val_acc:.3f}',
-                                                     dirpath=f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}',
+                                                     save_top_k=1,
+                                                     filename='best_model',
+                                                     dirpath=f'{model_path}/{new_version}',
                                                      verbose=True,)
   
   if checkpoint:
     selected_version = "version_5"
-    selected_checkpoint = ""
     
-    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/{selected_checkpoint}", 
+    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
                                                  loop_settings=loop_settings)
@@ -440,23 +453,15 @@ if __name__ == '__main__':
         # Training loop
         train_start_time = time.time()
         trainer.fit(module, 
-                    ckpt_path=f"{model_path}/{selected_version}/{selected_checkpoint}")
+                    ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
         train_end_time = time.time() - train_start_time
         print(f"Training time: {train_end_time} seconds")
         
-        # Evaluation of the 3 top models
-        for checkpoint in sorted(os.listdir(f"{model_path}/{new_version}")):
-          if checkpoint.endswith('.ckpt'):
-            print(f"Checkpoint: {checkpoint}")    
-            module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/{checkpoint}", 
-                                                              model_settings=model_settings,
-                                                              optimizer_settings=optimizer_settings, 
-                                                              loop_settings=loop_settings)
-        
-            test_start_time = time.time()
-            trainer.test(module_test)
-            test_end_time = time.time() - test_start_time
-            print(f"Evaluation time: {test_end_time} seconds")
+        # Evaluation
+        test_start_time = time.time()
+        trainer.test(module)
+        test_end_time = time.time() - test_start_time
+        print(f"Evaluation time: {test_end_time} seconds")
         
         # Plot loss and accuracy
         test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, new_version)
@@ -541,19 +546,11 @@ if __name__ == '__main__':
       train_end_time = time.time() - train_start_time
       print(f"Training time: {train_end_time} seconds")
       
-      # Evaluation of the 3 top models
-      for checkpoint in sorted(os.listdir(f"{model_path}/{new_version}")):
-        if checkpoint.endswith('.ckpt'):
-          print(f"Checkpoint: {checkpoint}")    
-          module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/{checkpoint}", 
-                                                            model_settings=model_settings,
-                                                            optimizer_settings=optimizer_settings, 
-                                                            loop_settings=loop_settings)
-      
-          test_start_time = time.time()
-          trainer.test(module_test)
-          test_end_time = time.time() - test_start_time
-          print(f"Evaluation time: {test_end_time} seconds")
+      # Evaluation
+      test_start_time = time.time()
+      trainer.test(module)
+      test_end_time = time.time() - test_start_time
+      print(f"Evaluation time: {test_end_time} seconds")
       
       # Plot loss and accuracy
       test_loss, tess_acc, best_epoch = plot_results(monitor_value, f"{model_path}/{new_version}")
