@@ -362,9 +362,9 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
+  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
   epochs = 1
-  epoch_ratio = 0.25 # check val every percent of an epoch
+  epoch_ratio = 0.5 # check val every percent of an epoch
   label_smoothing = 0.1
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
@@ -400,15 +400,14 @@ if __name__ == '__main__':
     devices = 'auto'
     strategy = 'auto'
   
-  versions = sorted([folder for folder in 
-                    os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
-                    if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
+  versions = [folder for folder in 
+              os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
+              if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')]
   if len(versions) == 0:
     new_version = "version_0"
   else:
-    latest_version = versions[-1]
-    latest_version_num = int(latest_version.split('_')[1])
-    new_version = f"version_{latest_version_num + 1}"
+    version_nums = sorted([int(version.split('_')[1]) for version in versions])
+    new_version = f"version_{version_nums[-1] + 1}"
   
   # Logger
   logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
@@ -431,7 +430,7 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    selected_version = "version_5"
+    selected_version = ""
     
     module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
