@@ -37,7 +37,7 @@ elif ENV == "colab":
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):
     super().__init__()
-    # self.save_hyperparameters()
+    self.save_hyperparameters()
 
     self.interval = model_settings['interval']
     self.model_name = model_settings['model_name']
@@ -54,6 +54,7 @@ class FinetuneModule(pl.LightningModule):
 
     self.batch_size = loop_settings['batch_size']
     self.epochs = loop_settings['epochs']
+    self.label_smoothing = loop_settings['label_smoothing']
 
     self.train_loader = self.load_data("train", train_size, True)
     self.val_loader   = self.load_data("val", test_size, False)
@@ -172,7 +173,7 @@ class FinetuneModule(pl.LightningModule):
   def training_step(self, batch, batch_idx):
     x, y = batch
     logits = self(x)
-    criterion = torch.nn.CrossEntropyLoss(label_smoothing=0.1)
+    criterion = torch.nn.CrossEntropyLoss(label_smoothing=self.label_smoothing)
     train_loss = criterion(logits, y)
     predictions = logits.argmax(-1)
     correct = (predictions == y).sum().item()
@@ -204,7 +205,7 @@ class FinetuneModule(pl.LightningModule):
     correct = (predictions == y).sum().item()
     test_acc = correct / x.shape[0]
     
-    metric = MulticlassConfusionMatrix(num_classes=self.num_classes)
+    metric = MulticlassConfusionMatrix(num_classes=self.num_classes).to(self.device)
     print(metric(predictions, y))
     
     self.log("test_loss", test_loss)
@@ -362,9 +363,9 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
+  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
   epochs = 1
-  epoch_ratio = 0.5 # check val every percent of an epoch
+  epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
@@ -406,8 +407,8 @@ if __name__ == '__main__':
   if len(versions) == 0:
     new_version = "version_0"
   else:
-    version_nums = sorted([int(version.split('_')[1]) for version in versions])
-    new_version = f"version_{version_nums[-1] + 1}"
+    latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
+    new_version = f"version_{latest_version + 1}"
   
   # Logger
   logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
@@ -451,8 +452,7 @@ if __name__ == '__main__':
       try:
         # Training loop
         train_start_time = time.time()
-        trainer.fit(module, 
-                    ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
+        trainer.fit(module, ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
         train_end_time = time.time() - train_start_time
         print(f"Training time: {train_end_time} seconds")
         
@@ -468,34 +468,10 @@ if __name__ == '__main__':
         
         # Write down hyperparameters and results
         with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
-          file.write('### For models ###\n')
-          file.write(f'Interval: {interval}\n')
-          file.write(f'Model name: {model_name}\n')
-          file.write(f'Model option: {model_option}\n')
-          file.write(f'Stochastic depth: {stochastic_depth}\n')
-          file.write(f'Freeze: {model_option}\n\n')
-          
-          file.write('### For optimizer & scheduler ###\n')
-          file.write(f'Optimizer: {optimizer_name}\n')
-          file.write(f'Learning rate: {learning_rate}\n')
-          file.write(f'Weight decay: {weight_decay}\n')
-          file.write(f'Scheduler: {scheduler_name}\n\n')
-          
-          file.write('### For callbacks ###\n')
-          file.write(f'Patience: {patience}\n')
-          file.write(f'Min delta: {min_delta}\n\n')
-          
-          file.write('### For training loop ###\n')
-          file.write(f'Batch size: {batch_size}\n')
-          file.write(f'Epochs: {epochs}\n')
-          file.write(f'Epoch ratio: {epoch_ratio}\n')
-          file.write(f'Label smoothing: {label_smoothing}\n')
-          file.write(f'Num GPUs: {num_gpus}\n\n')
-          
           file.write('### Results ###\n')
           file.write(f"Test loss: {test_loss}\n")
           file.write(f"Test accuracy: {tess_acc}\n")
-          file.write(f"Best epoch (val_acc): {best_epoch}\n")
+          file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
           file.write(f"Continue: {selected_version}")
         
@@ -557,34 +533,10 @@ if __name__ == '__main__':
       
       # Write down hyperparameters and results
       with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
-        file.write('### For models ###\n')
-        file.write(f'Interval: {interval}\n')
-        file.write(f'Model name: {model_name}\n')
-        file.write(f'Model option: {model_option}\n')
-        file.write(f'Stochastic depth: {stochastic_depth}\n')
-        file.write(f'Freeze: {model_option}\n\n')
-        
-        file.write('### For optimizer & scheduler ###\n')
-        file.write(f'Optimizer: {optimizer_name}\n')
-        file.write(f'Learning rate: {learning_rate}\n')
-        file.write(f'Weight decay: {weight_decay}\n')
-        file.write(f'Scheduler: {scheduler_name}\n\n')
-        
-        file.write('### For callbacks ###\n')
-        file.write(f'Patience: {patience}\n')
-        file.write(f'Min delta: {min_delta}\n\n')
-        
-        file.write('### For training loop ###\n')
-        file.write(f'Batch size: {batch_size}\n')
-        file.write(f'Epochs: {epochs}\n')
-        file.write(f'Epoch ratio: {epoch_ratio}\n')
-        file.write(f'Label smoothing: {label_smoothing}\n')
-        file.write(f'Num GPUs: {num_gpus}\n\n')
-        
         file.write('### Results ###\n')
         file.write(f"Test loss: {test_loss}\n")
         file.write(f"Test accuracy: {tess_acc}\n")
-        file.write(f"Best epoch (val_acc): {best_epoch}\n")
+        file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
         
     except Exception as e:
