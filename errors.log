@@ -31,3 +31,9 @@
 0         Non-trainable params
 87.6 M    Total params
 350.286   Total estimated model params size (MB)
+2024-04-25 01:34:07,433 - INFO - Metric val_acc improved. New best score: 0.638
+2024-04-25 01:34:07,438 - INFO - Epoch 0, global step 3127: 'val_acc' reached 0.63847 (best 0.63847), saving model to '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/7200/convnext-b-pretrained/version_1/best_model.ckpt' as top 1
+2024-04-25 01:50:15,483 - INFO - Metric val_acc improved by 0.025 >= min_delta = 0.001. New best score: 0.663
+2024-04-25 01:50:15,495 - INFO - Epoch 0, global step 6254: 'val_acc' reached 0.66314 (best 0.66314), saving model to '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/7200/convnext-b-pretrained/version_1/best_model.ckpt' as top 1
+2024-04-25 01:50:22,071 - INFO - `Trainer.fit` stopped: `max_epochs=1` reached.
+2024-04-25 01:50:23,510 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]

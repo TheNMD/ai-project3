@@ -8,7 +8,6 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 
 import torch, torchvision, timm, torchsummary
 from torchvision.transforms import v2
-from torchmetrics.classification import MulticlassConfusionMatrix
 import pytorch_lightning as pl
 import numpy as np
 import cv2 as cv
@@ -181,7 +180,6 @@ class FinetuneModule(pl.LightningModule):
     
     self.log("train_loss", train_loss)
     self.log("train_acc", train_acc)
-    return train_loss
 
   def validation_step(self, batch, batch_idx):
     x, y = batch
@@ -194,7 +192,6 @@ class FinetuneModule(pl.LightningModule):
     
     self.log("val_loss", val_loss, on_epoch=True)
     self.log("val_acc", val_acc, on_epoch=True)
-    return val_loss
 
   def test_step(self, batch, batch_idx):
     x, y = batch
@@ -205,12 +202,8 @@ class FinetuneModule(pl.LightningModule):
     correct = (predictions == y).sum().item()
     test_acc = correct / x.shape[0]
     
-    metric = MulticlassConfusionMatrix(num_classes=self.num_classes).to(self.device)
-    print(metric(predictions, y))
-    
     self.log("test_loss", test_loss)
     self.log("test_acc", test_acc)
-    return test_loss
 
   def configure_optimizers(self):
     if self.optimizer_name == "adam":
