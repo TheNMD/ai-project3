@@ -36,7 +36,6 @@ elif ENV == "colab":
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):
     super().__init__()
-    self.save_hyperparameters()
 
     self.interval = model_settings['interval']
     self.model_name = model_settings['model_name']
@@ -180,6 +179,7 @@ class FinetuneModule(pl.LightningModule):
     
     self.log("train_loss", train_loss)
     self.log("train_acc", train_acc)
+    return train_loss
 
   def validation_step(self, batch, batch_idx):
     x, y = batch
@@ -192,6 +192,7 @@ class FinetuneModule(pl.LightningModule):
     
     self.log("val_loss", val_loss, on_epoch=True)
     self.log("val_acc", val_acc, on_epoch=True)
+    return val_loss
 
   def test_step(self, batch, batch_idx):
     x, y = batch
@@ -204,6 +205,7 @@ class FinetuneModule(pl.LightningModule):
     
     self.log("test_loss", test_loss)
     self.log("test_acc", test_acc)
+    return test_loss
 
   def configure_optimizers(self):
     if self.optimizer_name == "adam":
@@ -356,8 +358,8 @@ if __name__ == '__main__':
   min_delta = 1e-3
 
   ## For training loop
-  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
-  epochs = 1
+  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
+  epochs = 60
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   print(f"Batch size: {batch_size}")
@@ -424,7 +426,7 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    selected_version = ""
+    selected_version = "version_4"
     
     module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
@@ -461,12 +463,16 @@ if __name__ == '__main__':
         
         # Write down hyperparameters and results
         with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
+          file.write('### Hyperparameters ###\n')
+          file.write(f'{model_settings}\n')
+          file.write(f'{optimizer_settings}\n')
+          file.write(f'{loop_settings}\n\n')
+
           file.write('### Results ###\n')
           file.write(f"Test loss: {test_loss}\n")
           file.write(f"Test accuracy: {tess_acc}\n")
           file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
-          file.write(f"Continue: {selected_version}")
         
       except Exception as e:
         print(e)
@@ -526,6 +532,11 @@ if __name__ == '__main__':
       
       # Write down hyperparameters and results
       with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
+        file.write('### Hyperparameters ###\n')
+        file.write(f'{model_settings}\n')
+        file.write(f'{optimizer_settings}\n')
+        file.write(f'{loop_settings}\n\n')
+
         file.write('### Results ###\n')
         file.write(f"Test loss: {test_loss}\n")
         file.write(f"Test accuracy: {tess_acc}\n")
