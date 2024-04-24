@@ -59,7 +59,7 @@ class FinetuneModule(pl.LightningModule):
     self.test_loader  = self.load_data("test", test_size, False)
 
   def load_model(self):
-    def add_stochastic_depth(model_name, model, drop_prob=0.2):
+    def add_stochastic_depth(model_name, model, drop_prob):
       if drop_prob == 0: return model
       if model_name == "convnext":
           for layer in model.modules():
@@ -114,8 +114,8 @@ class FinetuneModule(pl.LightningModule):
         for param in model.parameters(): param.requires_grad = False
       num_feature = model.head.fc.in_features
       model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
-      model = add_stochastic_depth(name, model, self.stochastic_depth)
       model.head.fc.weight.data.mul_(0.001)
+      model = add_stochastic_depth(name, model, self.stochastic_depth)
       
     with open(f'{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/architecture.txt', 'w') as f:
       f.write("### Summary ###\n")
@@ -386,9 +386,12 @@ if __name__ == '__main__':
   versions = sorted([folder for folder in 
                     os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
                     if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
-  latest_version = versions[-1]
-  latest_version_num = int(latest_version.split('_')[1])
-  new_version = f"version_{latest_version_num + 1}"
+  if len(versions) == 0:
+    new_version = f"version_0"
+  else:
+    latest_version = versions[-1]
+    latest_version_num = int(latest_version.split('_')[1])
+    new_version = f"version_{latest_version_num + 1}"
   
   # Logger
   logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
@@ -486,8 +489,8 @@ if __name__ == '__main__':
       except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
-        if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}'):
-          shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}')
+        if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
+          shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
           
     else:
       trainer = pl.Trainer(accelerator=accelerator, 
@@ -579,6 +582,6 @@ if __name__ == '__main__':
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
-      if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}'):
-        shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}')
+      if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
+        shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
   

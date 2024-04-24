@@ -1,0 +1,10 @@
+2024-04-24 10:16:48,654 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-04-24 10:16:48,713 - INFO - GPU available: True (cuda), used: True
+2024-04-24 10:16:48,975 - INFO - TPU available: False, using: 0 TPU cores
+2024-04-24 10:16:48,976 - INFO - IPU available: False, using: 0 IPUs
+2024-04-24 10:16:48,976 - INFO - HPU available: False, using: 0 HPUs
+2024-04-24 10:16:48,980 - ERROR - [Errno 2] No such file or directory: 'result/checkpoint/7200/convnext-b-pretrained/version_6/notes.txt'
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/5.model.py", line 547, in <module>
+    with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}/notes.txt', 'w') as file:
+FileNotFoundError: [Errno 2] No such file or directory: 'result/checkpoint/7200/convnext-b-pretrained/version_6/notes.txt'
