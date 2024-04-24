@@ -314,7 +314,7 @@ if __name__ == '__main__':
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l | swinv2-t | swinv2-b
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.2 # 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   continue_training = False
@@ -454,7 +454,8 @@ if __name__ == '__main__':
           file.write('### For models ###\n')
           file.write(f'Interval: {interval}\n')
           file.write(f'Model name: {model_name}\n')
-          file.write(f'Model Option: {model_option}\n')
+          file.write(f'Model option: {model_option}\n')
+          file.write(f'Stochastic depth: {stochastic_depth}\n')
           file.write(f'Freeze: {model_option}\n\n')
           
           file.write('### For optimizer & scheduler ###\n')
@@ -547,7 +548,8 @@ if __name__ == '__main__':
         file.write('### For models ###\n')
         file.write(f'Interval: {interval}\n')
         file.write(f'Model name: {model_name}\n')
-        file.write(f'Model Option: {model_option}\n')
+        file.write(f'Model option: {model_option}\n')
+        file.write(f'Stochastic depth: {stochastic_depth}\n')
         file.write(f'Freeze: {model_option}\n\n')
         
         file.write('### For optimizer & scheduler ###\n')
