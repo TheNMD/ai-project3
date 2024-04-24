@@ -8,7 +8,6 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 
 import torch, torchvision, timm, torchsummary
 from torchvision.transforms import v2
-from torchvision.ops import stochastic_depth
 import pytorch_lightning as pl
 import numpy as np
 import cv2 as cv
@@ -43,6 +42,7 @@ class FinetuneModule(pl.LightningModule):
     self.model_name = model_settings['model_name']
     self.model_option = model_settings['model_option']
     self.num_classes = model_settings['num_classes']
+    self.stochastic_depth = model_settings['stochastic_depth']
     self.freeze = model_settings['freeze']
     self.model, train_size, test_size = self.load_model()
 
@@ -59,6 +59,14 @@ class FinetuneModule(pl.LightningModule):
     self.test_loader  = self.load_data("test", test_size, False)
 
   def load_model(self):
+    def add_stochastic_depth(model_name, model, drop_prob=0.2):
+      if drop_prob == 0: return model
+      if model_name == "convnext":
+          for layer in model.modules():
+              if isinstance(layer, timm.models.convnext.ConvNeXtBlock):
+                  layer.drop_path = timm.layers.DropPath(drop_prob)
+      return model
+    
     name_and_size = self.model_name.split('-')
     name, size = name_and_size[0], name_and_size[1]
     
@@ -106,6 +114,7 @@ class FinetuneModule(pl.LightningModule):
         for param in model.parameters(): param.requires_grad = False
       num_feature = model.head.fc.in_features
       model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
+      model = add_stochastic_depth(name, model, self.stochastic_depth)
       model.head.fc.weight.data.mul_(0.001)
       
     with open(f'{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/architecture.txt', 'w') as f:
@@ -206,7 +215,6 @@ class FinetuneModule(pl.LightningModule):
     return test_loss, test_acc, best_epoch
 
   def forward(self, x):
-    # x = stochastic_depth(x, p=0.2, mode='batch')
     return self.model(x)
 
   def common_step(self, batch, batch_idx):
@@ -302,19 +310,19 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  ### vit-b      | vit-l 
-  ### swinv2-t   | swinv2-b
-  ### convnext-s | convnext-b | convnext-l
-  model_name = "convnext-b"
-  model_option = "pretrained" # pretrained | custom
   interval = 7200 # 0 | 7200 | 21600 | 43200
-  num_classes = 5 
+  model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l | swinv2-t | swinv2-b
+  model_option = "pretrained" # pretrained | custom
+  num_classes = 5
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   continue_training = False
   
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
+  print(f"Stochastic depth: {stochastic_depth}")
+  print(f"Freeze: {freeze}")
   print(f"Load from checkpoint: {checkpoint}")
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}")
@@ -349,7 +357,8 @@ if __name__ == '__main__':
   model_settings = {'interval': interval,
                     'model_name': model_name, 
                     'model_option': model_option,
-                    'num_classes': num_classes, 
+                    'num_classes': num_classes,
+                    'stochastic_depth': stochastic_depth, 
                     'freeze': freeze}
   
   optimizer_settings = {'optimizer_name': optimizer_name, 
@@ -445,7 +454,8 @@ if __name__ == '__main__':
           file.write('### For models ###\n')
           file.write(f'Interval: {interval}\n')
           file.write(f'Model name: {model_name}\n')
-          file.write(f'Model Option: {model_option}\n')
+          file.write(f'Model option: {model_option}\n')
+          file.write(f'Stochastic depth: {stochastic_depth}\n')
           file.write(f'Freeze: {model_option}\n\n')
           
           file.write('### For optimizer & scheduler ###\n')
@@ -538,7 +548,8 @@ if __name__ == '__main__':
         file.write('### For models ###\n')
         file.write(f'Interval: {interval}\n')
         file.write(f'Model name: {model_name}\n')
-        file.write(f'Model Option: {model_option}\n')
+        file.write(f'Model option: {model_option}\n')
+        file.write(f'Stochastic depth: {stochastic_depth}\n')
         file.write(f'Freeze: {model_option}\n\n')
         
         file.write('### For optimizer & scheduler ###\n')
