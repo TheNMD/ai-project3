@@ -8,7 +8,6 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 
 import torch, torchvision, timm, torchsummary
 from torchvision.transforms import v2
-from torchvision.ops import stochastic_depth
 import pytorch_lightning as pl
 import numpy as np
 import cv2 as cv
@@ -59,6 +58,13 @@ class FinetuneModule(pl.LightningModule):
     self.test_loader  = self.load_data("test", test_size, False)
 
   def load_model(self):
+    def add_stochastic_depth(model_name, model, drop_prob=0.2):
+      if model_name == "convnext":
+          for layer in model.modules():
+              if isinstance(layer, timm.models.convnext.ConvNeXtBlock):
+                  layer.drop_path = timm.layers.DropPath(drop_prob)
+      return model
+    
     name_and_size = self.model_name.split('-')
     name, size = name_and_size[0], name_and_size[1]
     
@@ -95,12 +101,15 @@ class FinetuneModule(pl.LightningModule):
     elif name == "convnext":
       if size == "s":
         model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
+        model = add_stochastic_depth(name, model, 0.1)
         train_size, test_size = 224, 224
       elif size == "b":
         model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
+        model = add_stochastic_depth(name, model, 0.2)
         train_size, test_size = 224, 224
       elif size == "l":
         model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
+        model = add_stochastic_depth(name, model, 0.3)
         train_size, test_size = 224, 224
       if self.freeze:
         for param in model.parameters(): param.requires_grad = False
@@ -206,7 +215,6 @@ class FinetuneModule(pl.LightningModule):
     return test_loss, test_acc, best_epoch
 
   def forward(self, x):
-    # x = stochastic_depth(x, p=0.2, mode='batch')
     return self.model(x)
 
   def common_step(self, batch, batch_idx):
