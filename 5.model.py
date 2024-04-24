@@ -489,8 +489,8 @@ if __name__ == '__main__':
       except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
-        if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}'):
-          shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}')
+        if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
+          shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
           
     else:
       trainer = pl.Trainer(accelerator=accelerator, 
@@ -582,6 +582,6 @@ if __name__ == '__main__':
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
-      if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}'):
-        shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}')
+      if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
+        shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
   
