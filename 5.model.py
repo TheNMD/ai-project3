@@ -36,7 +36,6 @@ elif ENV == "colab":
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):
     super().__init__()
-    # self.save_hyperparameters()
 
     self.interval = model_settings['interval']
     self.model_name = model_settings['model_name']
@@ -53,6 +52,7 @@ class FinetuneModule(pl.LightningModule):
 
     self.batch_size = loop_settings['batch_size']
     self.epochs = loop_settings['epochs']
+    self.label_smoothing = loop_settings['label_smoothing']
 
     self.train_loader = self.load_data("train", train_size, True)
     self.val_loader   = self.load_data("val", test_size, False)
@@ -168,30 +168,41 @@ class FinetuneModule(pl.LightningModule):
   def forward(self, x):
     return self.model(x)
 
-  def common_step(self, batch, batch_idx):
+  def training_step(self, batch, batch_idx):
     x, y = batch
     logits = self(x)
-    criterion = torch.nn.CrossEntropyLoss(label_smoothing=0.1)
-    loss = criterion(logits, y)
+    criterion = torch.nn.CrossEntropyLoss(label_smoothing=self.label_smoothing)
+    train_loss = criterion(logits, y)
     predictions = logits.argmax(-1)
     correct = (predictions == y).sum().item()
-    accuracy = correct / x.shape[0]
-    return loss, accuracy
-
-  def training_step(self, batch, batch_idx):
-    train_loss, train_acc = self.common_step(batch, batch_idx)
+    train_acc = correct / x.shape[0]
+    
     self.log("train_loss", train_loss)
     self.log("train_acc", train_acc)
     return train_loss
 
   def validation_step(self, batch, batch_idx):
-    val_loss, val_acc = self.common_step(batch, batch_idx)
+    x, y = batch
+    logits = self(x)
+    criterion = torch.nn.CrossEntropyLoss()
+    val_loss = criterion(logits, y)
+    predictions = logits.argmax(-1)
+    correct = (predictions == y).sum().item()
+    val_acc = correct / x.shape[0]
+    
     self.log("val_loss", val_loss, on_epoch=True)
     self.log("val_acc", val_acc, on_epoch=True)
     return val_loss
 
   def test_step(self, batch, batch_idx):
-    test_loss, test_acc = self.common_step(batch, batch_idx)
+    x, y = batch
+    logits = self(x)
+    criterion = torch.nn.CrossEntropyLoss()
+    test_loss = criterion(logits, y)
+    predictions = logits.argmax(-1)
+    correct = (predictions == y).sum().item()
+    test_acc = correct / x.shape[0]
+    
     self.log("test_loss", test_loss)
     self.log("test_acc", test_acc)
     return test_loss
@@ -349,7 +360,7 @@ if __name__ == '__main__':
   ## For training loop
   batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
   epochs = 60
-  epoch_ratio = 0.5 # check val every percent of an epoch
+  epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
@@ -385,16 +396,14 @@ if __name__ == '__main__':
     devices = 'auto'
     strategy = 'auto'
   
-  versions = sorted([folder for folder in 
-                    os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
-                    if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')])
+  versions = [folder for folder in 
+              os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
+              if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')]
   if len(versions) == 0:
     new_version = "version_0"
   else:
-    latest_version = versions[-1]
-    latest_version_num = int(latest_version.split('_')[1])
-    # new_version = f"version_{latest_version_num}"
-    new_version = f"version_{latest_version_num + 1}"
+    latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
+    new_version = f"version_{latest_version + 1}"
   
   # Logger
   logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
@@ -411,16 +420,15 @@ if __name__ == '__main__':
 
   checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
                                                      mode='max',
-                                                     save_top_k=3,
-                                                     filename='{epoch}-{step}-{val_acc:.3f}',
-                                                     dirpath=f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{latest_version}',
+                                                     save_top_k=1,
+                                                     filename='best_model',
+                                                     dirpath=f'{model_path}/{new_version}',
                                                      verbose=True,)
   
   if checkpoint:
-    selected_version = "version_5"
-    selected_checkpoint = ""
+    selected_version = "version_4"
     
-    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/{selected_checkpoint}", 
+    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
                                                  loop_settings=loop_settings)
@@ -439,24 +447,15 @@ if __name__ == '__main__':
       try:
         # Training loop
         train_start_time = time.time()
-        trainer.fit(module, 
-                    ckpt_path=f"{model_path}/{selected_version}/{selected_checkpoint}")
+        trainer.fit(module, ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
         train_end_time = time.time() - train_start_time
         print(f"Training time: {train_end_time} seconds")
         
-        # Evaluation of the 3 top models
-        for checkpoint in sorted(os.listdir(f"{model_path}/{new_version}")):
-          if checkpoint.endswith('.ckpt'):
-            print(f"Checkpoint: {checkpoint}")    
-            module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/{checkpoint}", 
-                                                              model_settings=model_settings,
-                                                              optimizer_settings=optimizer_settings, 
-                                                              loop_settings=loop_settings)
-        
-            test_start_time = time.time()
-            trainer.test(module_test)
-            test_end_time = time.time() - test_start_time
-            print(f"Evaluation time: {test_end_time} seconds")
+        # Evaluation
+        test_start_time = time.time()
+        trainer.test(module)
+        test_end_time = time.time() - test_start_time
+        print(f"Evaluation time: {test_end_time} seconds")
         
         # Plot loss and accuracy
         test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, new_version)
@@ -464,36 +463,16 @@ if __name__ == '__main__':
         
         # Write down hyperparameters and results
         with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
-          file.write('### For models ###\n')
-          file.write(f'Interval: {interval}\n')
-          file.write(f'Model name: {model_name}\n')
-          file.write(f'Model option: {model_option}\n')
-          file.write(f'Stochastic depth: {stochastic_depth}\n')
-          file.write(f'Freeze: {model_option}\n\n')
-          
-          file.write('### For optimizer & scheduler ###\n')
-          file.write(f'Optimizer: {optimizer_name}\n')
-          file.write(f'Learning rate: {learning_rate}\n')
-          file.write(f'Weight decay: {weight_decay}\n')
-          file.write(f'Scheduler: {scheduler_name}\n\n')
-          
-          file.write('### For callbacks ###\n')
-          file.write(f'Patience: {patience}\n')
-          file.write(f'Min delta: {min_delta}\n\n')
-          
-          file.write('### For training loop ###\n')
-          file.write(f'Batch size: {batch_size}\n')
-          file.write(f'Epochs: {epochs}\n')
-          file.write(f'Epoch ratio: {epoch_ratio}\n')
-          file.write(f'Label smoothing: {label_smoothing}\n')
-          file.write(f'Num GPUs: {num_gpus}\n\n')
-          
+          file.write('### Hyperparameters ###\n')
+          file.write(f'{model_settings}\n')
+          file.write(f'{optimizer_settings}\n')
+          file.write(f'{loop_settings}\n\n')
+
           file.write('### Results ###\n')
           file.write(f"Test loss: {test_loss}\n")
           file.write(f"Test accuracy: {tess_acc}\n")
-          file.write(f"Best epoch (val_acc): {best_epoch}\n")
+          file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
-          file.write(f"Continue: {selected_version}")
         
       except Exception as e:
         print(e)
@@ -541,19 +520,11 @@ if __name__ == '__main__':
       train_end_time = time.time() - train_start_time
       print(f"Training time: {train_end_time} seconds")
       
-      # Evaluation of the 3 top models
-      for checkpoint in sorted(os.listdir(f"{model_path}/{new_version}")):
-        if checkpoint.endswith('.ckpt'):
-          print(f"Checkpoint: {checkpoint}")    
-          module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/{checkpoint}", 
-                                                            model_settings=model_settings,
-                                                            optimizer_settings=optimizer_settings, 
-                                                            loop_settings=loop_settings)
-      
-          test_start_time = time.time()
-          trainer.test(module_test)
-          test_end_time = time.time() - test_start_time
-          print(f"Evaluation time: {test_end_time} seconds")
+      # Evaluation
+      test_start_time = time.time()
+      trainer.test(module)
+      test_end_time = time.time() - test_start_time
+      print(f"Evaluation time: {test_end_time} seconds")
       
       # Plot loss and accuracy
       test_loss, tess_acc, best_epoch = plot_results(monitor_value, f"{model_path}/{new_version}")
@@ -561,34 +532,15 @@ if __name__ == '__main__':
       
       # Write down hyperparameters and results
       with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
-        file.write('### For models ###\n')
-        file.write(f'Interval: {interval}\n')
-        file.write(f'Model name: {model_name}\n')
-        file.write(f'Model option: {model_option}\n')
-        file.write(f'Stochastic depth: {stochastic_depth}\n')
-        file.write(f'Freeze: {model_option}\n\n')
-        
-        file.write('### For optimizer & scheduler ###\n')
-        file.write(f'Optimizer: {optimizer_name}\n')
-        file.write(f'Learning rate: {learning_rate}\n')
-        file.write(f'Weight decay: {weight_decay}\n')
-        file.write(f'Scheduler: {scheduler_name}\n\n')
-        
-        file.write('### For callbacks ###\n')
-        file.write(f'Patience: {patience}\n')
-        file.write(f'Min delta: {min_delta}\n\n')
-        
-        file.write('### For training loop ###\n')
-        file.write(f'Batch size: {batch_size}\n')
-        file.write(f'Epochs: {epochs}\n')
-        file.write(f'Epoch ratio: {epoch_ratio}\n')
-        file.write(f'Label smoothing: {label_smoothing}\n')
-        file.write(f'Num GPUs: {num_gpus}\n\n')
-        
+        file.write('### Hyperparameters ###\n')
+        file.write(f'{model_settings}\n')
+        file.write(f'{optimizer_settings}\n')
+        file.write(f'{loop_settings}\n\n')
+
         file.write('### Results ###\n')
         file.write(f"Test loss: {test_loss}\n")
         file.write(f"Test accuracy: {tess_acc}\n")
-        file.write(f"Best epoch (val_acc): {best_epoch}\n")
+        file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
         
     except Exception as e:
