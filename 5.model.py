@@ -42,6 +42,7 @@ class FinetuneModule(pl.LightningModule):
     self.model_name = model_settings['model_name']
     self.model_option = model_settings['model_option']
     self.num_classes = model_settings['num_classes']
+    self.stochastic_depth = model_settings['stochastic_depth']
     self.freeze = model_settings['freeze']
     self.model, train_size, test_size = self.load_model()
 
@@ -59,6 +60,7 @@ class FinetuneModule(pl.LightningModule):
 
   def load_model(self):
     def add_stochastic_depth(model_name, model, drop_prob=0.2):
+      if drop_prob == 0: return model
       if model_name == "convnext":
           for layer in model.modules():
               if isinstance(layer, timm.models.convnext.ConvNeXtBlock):
@@ -101,20 +103,18 @@ class FinetuneModule(pl.LightningModule):
     elif name == "convnext":
       if size == "s":
         model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
-        model = add_stochastic_depth(name, model, 0.1)
         train_size, test_size = 224, 224
       elif size == "b":
         model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
-        model = add_stochastic_depth(name, model, 0.2)
         train_size, test_size = 224, 224
       elif size == "l":
         model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
-        model = add_stochastic_depth(name, model, 0.3)
         train_size, test_size = 224, 224
       if self.freeze:
         for param in model.parameters(): param.requires_grad = False
       num_feature = model.head.fc.in_features
       model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
+      model = add_stochastic_depth(name, model, self.stochastic_depth)
       model.head.fc.weight.data.mul_(0.001)
       
     with open(f'{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/architecture.txt', 'w') as f:
@@ -310,19 +310,19 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  ### vit-b      | vit-l 
-  ### swinv2-t   | swinv2-b
-  ### convnext-s | convnext-b | convnext-l
-  model_name = "convnext-b"
-  model_option = "pretrained" # pretrained | custom
   interval = 7200 # 0 | 7200 | 21600 | 43200
-  num_classes = 5 
+  model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l | swinv2-t | swinv2-b
+  model_option = "pretrained" # pretrained | custom
+  num_classes = 5
+  stochastic_depth = 0.2 # 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   continue_training = False
   
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
+  print(f"Stochastic depth: {stochastic_depth}")
+  print(f"Freeze: {freeze}")
   print(f"Load from checkpoint: {checkpoint}")
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}")
@@ -357,7 +357,8 @@ if __name__ == '__main__':
   model_settings = {'interval': interval,
                     'model_name': model_name, 
                     'model_option': model_option,
-                    'num_classes': num_classes, 
+                    'num_classes': num_classes,
+                    'stochastic_depth': stochastic_depth, 
                     'freeze': freeze}
   
   optimizer_settings = {'optimizer_name': optimizer_name, 
