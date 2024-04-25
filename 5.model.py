@@ -362,6 +362,7 @@ if __name__ == '__main__':
   epochs = 60
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
+  
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
   print(f"Label smoothing: {label_smoothing}")
@@ -413,10 +414,10 @@ if __name__ == '__main__':
   monitor_value = "val_acc"
   
   early_stop_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
-                                      mode='max',
-                                      patience=patience,
-                                      min_delta=min_delta,
-                                      verbose=True,)
+                                                   mode='max',
+                                                   patience=patience,
+                                                   min_delta=min_delta,
+                                                   verbose=True,)
 
   checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
                                                      mode='max',
