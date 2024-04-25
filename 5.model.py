@@ -542,10 +542,14 @@ if __name__ == '__main__':
         file.write(f"Test accuracy: {tess_acc}\n")
         file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
-        
+      
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
       if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
         shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
+        
+  # Move architecture file to the corresponding version
+  if os.path.exists(f"{model_path}/architecture.txt"):
+    shutil.move(f"{model_path}/architecture.txt", f"{model_path}/{new_version}/architecture.txt")
   
