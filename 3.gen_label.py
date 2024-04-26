@@ -288,7 +288,7 @@ if __name__ == '__main__':
     plot_distribution(interval=0)
     plot_distribution(interval=7200)
     plot_distribution(interval=21600)
-    plot_distribution(interval=43200)
+    # plot_distribution(interval=43200)
 
 
         
