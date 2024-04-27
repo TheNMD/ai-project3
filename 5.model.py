@@ -232,7 +232,7 @@ class FinetuneModule(pl.LightningModule):
     elif self.scheduler_name == "cd":
       # Cosine decay
       scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 
-                                                             T_max=3)
+                                                             T_max=5)
       
     elif self.scheduler_name == "cdwr":
       # Cosine decay warm restart
@@ -344,7 +344,7 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 1e-4      # 1e-3 | 1e-4  | 5e-5 
+  learning_rate = 5e-4      # 1e-3 | 1e-4  | 5e-5 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
   
@@ -354,7 +354,7 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}")
 
   ## For callbacks
-  patience = 12
+  patience = 20
   min_delta = 1e-3
 
   ## For training loop
