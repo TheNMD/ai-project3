@@ -15,7 +15,7 @@ def median_blur(image, kernel_size=5):
 
 transforms = v2.Compose([v2.ToImage(),
                         #  v2.Lambda(lambda image: median_blur(image, kernel_size=5)), 
-                         v2.GaussianBlur(kernel_size=round(random.gauss(7, 0.5)), sigma=1.5),
+                        #  v2.GaussianBlur(kernel_size=7, sigma=1.5),
                         #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                         #  v2.RandomErasing(p=0.95, value=255),
                          v2.ToDtype(torch.float32, scale=True),
@@ -26,6 +26,32 @@ transforms = v2.Compose([v2.ToImage(),
 image = Image.open('image/unlabeled2/2020-07-01 10-50-25.jpg')
 image.save("test_transforms0.png")
 
-for i in range(10):
-    image = transforms(image)
-    image.save(f"test_transforms{i}.png")
+image = transforms(image)
+image.save("test_transforms1.png")
+    
+# import random
+
+# num_7 = 0
+# num_8 = 0
+# num_9 = 0
+# num_10 = 0
+# num_11 = 0
+
+# for i in range(200000):
+#     num = round(random.gauss(9, 0.5))
+#     if num == 7:
+#         num_7 += 1
+#     if num == 8:
+#         num_8 += 1
+#     if num == 9:
+#         num_9 += 1
+#     if num == 10:
+#         num_10 += 1
+#     if num == 11:
+#         num_11 += 1
+        
+# print(num_7)
+# print(num_8)
+# print(num_9)
+# print(num_10)
+# print(num_11)
