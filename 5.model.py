@@ -259,7 +259,6 @@ def plot_results(monitor_value, save_path):
   train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
   val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
-  val_results = val_results.groupby(['epoch'], as_index=False).mean()
   
   if monitor_value == 'val_loss':
     min_idx = val_results['val_loss'].idxmin()
@@ -267,6 +266,8 @@ def plot_results(monitor_value, save_path):
   elif monitor_value == 'val_acc':
     max_idx = val_results['val_acc'].idxmax()
     best_epoch = val_results.loc[max_idx, 'epoch']
+  
+  val_results = val_results.groupby(['epoch'], as_index=False).mean()
   
   # Plotting loss
   plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
@@ -321,7 +322,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 7200 # 0 | 7200 | 21600 | 43200
+  interval = 0 # 0 | 7200 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l | swinv2-t | swinv2-b
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
@@ -344,7 +345,7 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 5e-4      # 1e-3 | 1e-4  | 5e-5 
+  learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
   
@@ -526,7 +527,7 @@ if __name__ == '__main__':
       trainer.test(module)
       test_end_time = time.time() - test_start_time
       print(f"Evaluation time: {test_end_time} seconds")
-      
+
       # Plot loss and accuracy
       test_loss, tess_acc, best_epoch = plot_results(monitor_value, f"{model_path}/{new_version}")
       print(f"Best epoch [{monitor_value}]: {best_epoch}")

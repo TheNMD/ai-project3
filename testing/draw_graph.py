@@ -6,7 +6,6 @@ def plot_results(monitor_value="val_acc"):
   train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
   val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
-  val_results = val_results.groupby(['epoch'], as_index=False).mean()
 
   if monitor_value == 'val_loss':
     min_idx = val_results['val_loss'].idxmin()
@@ -14,6 +13,8 @@ def plot_results(monitor_value="val_acc"):
   elif monitor_value == 'val_acc':
     max_idx = val_results['val_acc'].idxmax()
     best_epoch = val_results.loc[max_idx, 'epoch']
+  
+  val_results = val_results.groupby(['epoch'], as_index=False).mean()
   
   # Plotting loss
   plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
