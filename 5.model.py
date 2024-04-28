@@ -1,4 +1,4 @@
-import os, sys, platform, shutil, time
+import os, sys, platform, shutil, time, random
 import zipfile
 import warnings
 warnings.filterwarnings('ignore')
@@ -140,7 +140,7 @@ class FinetuneModule(pl.LightningModule):
                               #  v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                               #  v2.GaussianBlur(kernel_size=5, sigma=2), 
                                v2.ToDtype(torch.float32, scale=True),
-                               v2.RandAugment(num_ops=2, magnitude=9, fill=255),
+                               v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                                v2.RandomErasing(p=0.25, value=255),
                                v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                               ])
@@ -322,7 +322,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 0 # 0 | 7200 | 21600 | 43200
+  interval = 7200 # 0 | 7200 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l | swinv2-t | swinv2-b
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
@@ -356,10 +356,10 @@ if __name__ == '__main__':
 
   ## For callbacks
   patience = 20
-  min_delta = 1e-3
+  min_delta = 1e-4
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
+  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
   epochs = 60
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
@@ -466,9 +466,9 @@ if __name__ == '__main__':
         # Write down hyperparameters and results
         with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
           file.write('### Hyperparameters ###\n')
-          file.write(f'{model_settings}\n')
-          file.write(f'{optimizer_settings}\n')
-          file.write(f'{loop_settings}\n\n')
+          file.write(f'model_settings = {model_settings}\n')
+          file.write(f'optimizer_settings = {optimizer_settings}\n')
+          file.write(f'loop_settings {loop_settings}\n\n')
 
           file.write('### Results ###\n')
           file.write(f"Test loss: {test_loss}\n")
@@ -535,9 +535,9 @@ if __name__ == '__main__':
       # Write down hyperparameters and results
       with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
         file.write('### Hyperparameters ###\n')
-        file.write(f'{model_settings}\n')
-        file.write(f'{optimizer_settings}\n')
-        file.write(f'{loop_settings}\n\n')
+        file.write(f'model_settings = {model_settings}\n')
+        file.write(f'optimizer_settings = {optimizer_settings}\n')
+        file.write(f'loop_settings {loop_settings}\n\n')
 
         file.write('### Results ###\n')
         file.write(f"Test loss: {test_loss}\n")
