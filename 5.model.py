@@ -326,7 +326,7 @@ if __name__ == '__main__':
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l | swinv2-t | swinv2-b
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   continue_training = False
@@ -359,7 +359,7 @@ if __name__ == '__main__':
   min_delta = 1e-4
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128 | 256
+  batch_size = 32 # 8 | 16 | 32 | 64 | 128 | 256
   epochs = 60
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
