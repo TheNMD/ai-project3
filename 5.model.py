@@ -47,6 +47,7 @@ class FinetuneModule(pl.LightningModule):
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
+    self.lr_decay = optimizer_settings['lr_decay']
     self.weight_decay = optimizer_settings['weight_decay']
     self.scheduler_name = optimizer_settings['scheduler_name']
 
@@ -215,10 +216,27 @@ class FinetuneModule(pl.LightningModule):
                                    weight_decay=self.weight_decay)
       
     elif self.optimizer_name == "adamw":
-      optimizer = torch.optim.AdamW(self.model.parameters(), 
-                                    lr=self.learning_rate, 
-                                    betas=(0.9, 0.999), 
-                                    weight_decay=self.weight_decay)
+      if self.lr_decay == 0:
+        optimizer = torch.optim.AdamW(self.model.parameters(), 
+                                      lr=self.learning_rate, 
+                                      betas=(0.9, 0.999), 
+                                      weight_decay=self.weight_decay)
+      else:
+        # layer-wise lr decay
+        lr = self.learning_rate
+        counter = 0
+        optimizer_settings = []
+        
+        for layer in self.model.modules():
+          if isinstance(layer, timm.models.convnext.ConvNeXtBlock):
+              if counter != 0: lr *= self.lr_decay
+              optimizer_settings += [{'params': layer.parameters(), 
+                                      'lr': lr, 
+                                      'betas' : (0.9, 0.999), 
+                                      'weight_decay' : weight_decay}]
+              counter += 1
+        
+        optimizer = torch.optim.AdamW(optimizer_settings)
       
     elif self.optimizer_name == "sgd":
       optimizer = torch.optim.SGD(self.model.parameters(), 
@@ -323,10 +341,10 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   interval = 7200 # 0 | 7200 | 21600 | 43200
-  model_name = "convnext-l" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
+  model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   continue_training = False
@@ -345,12 +363,14 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5 
+  learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5
+  lr_decay = 0.8            # 0    |0.7  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
   
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
+  print(f"Layer-wise learning rate decay: {lr_decay}")
   print(f"Weight decay: {weight_decay}")
   print(f"Scheduler: {scheduler_name}")
 
@@ -377,7 +397,8 @@ if __name__ == '__main__':
                     'freeze': freeze}
   
   optimizer_settings = {'optimizer_name': optimizer_name, 
-                        'learning_rate': learning_rate, 
+                        'learning_rate': learning_rate,
+                        'lr_decay': lr_decay, 
                         'weight_decay': weight_decay, 
                         'scheduler_name': scheduler_name}
   
