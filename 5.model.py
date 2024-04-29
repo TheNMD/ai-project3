@@ -47,6 +47,7 @@ class FinetuneModule(pl.LightningModule):
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
+    self.lr_decay = optimizer_settings['lr_decay']
     self.weight_decay = optimizer_settings['weight_decay']
     self.scheduler_name = optimizer_settings['scheduler_name']
 
@@ -209,23 +210,53 @@ class FinetuneModule(pl.LightningModule):
 
   def configure_optimizers(self):
     if self.optimizer_name == "adam":
-      optimizer = torch.optim.Adam(self.model.parameters(), 
-                                   lr=self.learning_rate, 
-                                   betas=(0.9, 0.999), 
-                                   weight_decay=self.weight_decay)
+      if self.lr_decay == 0:
+        optimizer_settings = [{'params': self.model.parameters(), 
+                               'lr': self.learning_rate, 
+                               'betas' : (0.9, 0.999), 
+                               'weight_decay' : self.weight_decay}]
+      else:
+        # layer-wise lr decay
+        layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
+        optimizer_settings = [{'params': layers[i].parameters(), 
+                               'lr': self.learning_rate * pow(self.lr_decay, i), 
+                               'betas' : (0.9, 0.999), 
+                               'weight_decay' : self.weight_decay} for i in range(len(layers))]
+        
+      optimizer = torch.optim.Adam(optimizer_settings)
       
     elif self.optimizer_name == "adamw":
-      optimizer = torch.optim.AdamW(self.model.parameters(), 
-                                    lr=self.learning_rate, 
-                                    betas=(0.9, 0.999), 
-                                    weight_decay=self.weight_decay)
+      if self.lr_decay == 0:
+        optimizer_settings = [{'params': self.model.parameters(), 
+                               'lr': self.learning_rate, 
+                               'betas' : (0.9, 0.999), 
+                               'weight_decay' : self.weight_decay}]
+      else:
+        # layer-wise lr decay
+        layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
+        optimizer_settings = [{'params': layers[i].parameters(), 
+                               'lr': self.learning_rate * pow(self.lr_decay, i), 
+                               'betas' : (0.9, 0.999), 
+                               'weight_decay' : self.weight_decay} for i in range(len(layers))]
+        
+      optimizer = torch.optim.AdamW(optimizer_settings)
       
     elif self.optimizer_name == "sgd":
-      optimizer = torch.optim.SGD(self.model.parameters(), 
-                                  lr=self.learning_rate, 
-                                  momentum=0.9, 
-                                  weight_decay=0)
-      
+      if self.lr_decay == 0:
+        optimizer_settings = [{'params': self.model.parameters(), 
+                               'lr': self.learning_rate, 
+                               'momentum' : 0.9, 
+                               'weight_decay' : 0}]
+      else:
+        # layer-wise lr decay
+        layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
+        optimizer_settings = [{'params': layers[i].parameters(), 
+                               'lr': self.learning_rate * pow(self.lr_decay, i), 
+                               'momentum' : 0.9, 
+                               'weight_decay' : 0} for i in range(len(layers))]
+        
+      optimizer = torch.optim.SGD(optimizer_settings)
+        
     if self.scheduler_name == "none":
       return {"optimizer": optimizer}
     
@@ -323,10 +354,10 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   interval = 7200 # 0 | 7200 | 21600 | 43200
-  model_name = "convnext-l" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
+  model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   continue_training = False
@@ -336,6 +367,7 @@ if __name__ == '__main__':
   print(f"Stochastic depth: {stochastic_depth}")
   print(f"Freeze: {freeze}")
   print(f"Load from checkpoint: {checkpoint}")
+  print(f"Continue training: {continue_training}\n")
   
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}")
@@ -345,14 +377,16 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5 
+  learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5
+  lr_decay = 0.8            # 0    | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
   
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
+  print(f"Layer-wise learning rate decay: {lr_decay}")
   print(f"Weight decay: {weight_decay}")
-  print(f"Scheduler: {scheduler_name}")
+  print(f"Scheduler: {scheduler_name}\n")
 
   ## For callbacks
   patience = 12
@@ -366,7 +400,7 @@ if __name__ == '__main__':
   
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
-  print(f"Label smoothing: {label_smoothing}")
+  print(f"Label smoothing: {label_smoothing}\n")
 
   # Combine all settings
   model_settings = {'interval': interval,
@@ -377,7 +411,8 @@ if __name__ == '__main__':
                     'freeze': freeze}
   
   optimizer_settings = {'optimizer_name': optimizer_name, 
-                        'learning_rate': learning_rate, 
+                        'learning_rate': learning_rate,
+                        'lr_decay': lr_decay, 
                         'weight_decay': weight_decay, 
                         'scheduler_name': scheduler_name}
   
