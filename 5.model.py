@@ -209,53 +209,56 @@ class FinetuneModule(pl.LightningModule):
     return test_loss
 
   def configure_optimizers(self):
+    def get_optimizer_settings():
+      if self.optimizer_name == "adam" or self.optimizer_name == "adamw":
+        if self.lr_decay == 0:
+          optimizer_settings = [{'params': self.model.parameters(), 
+                                 'lr': self.learning_rate, 
+                                 'betas' : (0.9, 0.999), 
+                                 'weight_decay' : self.weight_decay}]
+        else:
+          # layer-wise lr decay
+          if self.model_name.split('-')[0] == "convnext":
+            layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
+          elif self.model_name.split('-')[0] == "vit":
+            # TODO add layers for ViT
+            pass
+          
+          optimizer_settings = [{'params': layers[i].parameters(), 
+                                'lr': self.learning_rate * pow(self.lr_decay, i), 
+                                'betas' : (0.9, 0.999), 
+                                'weight_decay' : self.weight_decay} for i in range(len(layers))]
+          
+      elif self.optimizer_name == "sgd":
+        if self.lr_decay == 0:
+          optimizer_settings = [{'params': self.model.parameters(), 
+                                'lr': self.learning_rate, 
+                                'momentum' : 0.9, 
+                                'weight_decay' : 0}]
+        else:
+          # layer-wise lr decay
+          if self.model_name.split('-')[0] == "convnext":
+            layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
+          elif self.model_name.split('-')[0] == "vit":
+            # TODO add layers for ViT
+            pass
+          
+          optimizer_settings = [{'params': layers[i].parameters(), 
+                                'lr': self.learning_rate * pow(self.lr_decay, i), 
+                                'momentum' : 0.9, 
+                                'weight_decay' : 0} for i in range(len(layers))]
+    
+      return optimizer_settings
+      
+    
     if self.optimizer_name == "adam":
-      if self.lr_decay == 0:
-        optimizer_settings = [{'params': self.model.parameters(), 
-                               'lr': self.learning_rate, 
-                               'betas' : (0.9, 0.999), 
-                               'weight_decay' : self.weight_decay}]
-      else:
-        # layer-wise lr decay
-        layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
-        optimizer_settings = [{'params': layers[i].parameters(), 
-                               'lr': self.learning_rate * pow(self.lr_decay, i), 
-                               'betas' : (0.9, 0.999), 
-                               'weight_decay' : self.weight_decay} for i in range(len(layers))]
-        
-      optimizer = torch.optim.Adam(optimizer_settings)
+      optimizer = torch.optim.Adam(get_optimizer_settings())
       
     elif self.optimizer_name == "adamw":
-      if self.lr_decay == 0:
-        optimizer_settings = [{'params': self.model.parameters(), 
-                               'lr': self.learning_rate, 
-                               'betas' : (0.9, 0.999), 
-                               'weight_decay' : self.weight_decay}]
-      else:
-        # layer-wise lr decay
-        layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
-        optimizer_settings = [{'params': layers[i].parameters(), 
-                               'lr': self.learning_rate * pow(self.lr_decay, i), 
-                               'betas' : (0.9, 0.999), 
-                               'weight_decay' : self.weight_decay} for i in range(len(layers))]
-        
-      optimizer = torch.optim.AdamW(optimizer_settings)
+      optimizer = torch.optim.AdamW(get_optimizer_settings())
       
     elif self.optimizer_name == "sgd":
-      if self.lr_decay == 0:
-        optimizer_settings = [{'params': self.model.parameters(), 
-                               'lr': self.learning_rate, 
-                               'momentum' : 0.9, 
-                               'weight_decay' : 0}]
-      else:
-        # layer-wise lr decay
-        layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
-        optimizer_settings = [{'params': layers[i].parameters(), 
-                               'lr': self.learning_rate * pow(self.lr_decay, i), 
-                               'momentum' : 0.9, 
-                               'weight_decay' : 0} for i in range(len(layers))]
-        
-      optimizer = torch.optim.SGD(optimizer_settings)
+      optimizer = torch.optim.SGD(get_optimizer_settings())
         
     if self.scheduler_name == "none":
       return {"optimizer": optimizer}
