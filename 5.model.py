@@ -354,6 +354,7 @@ if __name__ == '__main__':
   print(f"Stochastic depth: {stochastic_depth}")
   print(f"Freeze: {freeze}")
   print(f"Load from checkpoint: {checkpoint}")
+  print(f"Continue training: {continue_training}\n")
   
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}")
@@ -372,21 +373,21 @@ if __name__ == '__main__':
   print(f"Learning rate: {learning_rate}")
   print(f"Layer-wise learning rate decay: {lr_decay}")
   print(f"Weight decay: {weight_decay}")
-  print(f"Scheduler: {scheduler_name}")
+  print(f"Scheduler: {scheduler_name}\n")
 
   ## For callbacks
   patience = 12
   min_delta = 1e-4
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128
+  batch_size = 32 # 8 | 16 | 32 | 64 | 128
   epochs = 60
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
-  print(f"Label smoothing: {label_smoothing}")
+  print(f"Label smoothing: {label_smoothing}\n")
 
   # Combine all settings
   model_settings = {'interval': interval,
