@@ -221,7 +221,7 @@ class FinetuneModule(pl.LightningModule):
           if self.model_name.split('-')[0] == "convnext":
             layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
           elif self.model_name.split('-')[0] == "vit":
-            # TODO add settings for ViT
+            # TODO add layers for ViT
             pass
           
           optimizer_settings = [{'params': layers[i].parameters(), 
@@ -240,7 +240,7 @@ class FinetuneModule(pl.LightningModule):
           if self.model_name.split('-')[0] == "convnext":
             layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
           elif self.model_name.split('-')[0] == "vit":
-            # TODO add settings for ViT
+            # TODO add layers for ViT
             pass
           
           optimizer_settings = [{'params': layers[i].parameters(), 
