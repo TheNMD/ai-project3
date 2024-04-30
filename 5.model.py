@@ -219,15 +219,12 @@ class FinetuneModule(pl.LightningModule):
         else:
           # layer-wise lr decay
           if self.model_name.split('-')[0] == "convnext":
-            layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
-          elif self.model_name.split('-')[0] == "vit":
-            # TODO add layers for ViT
-            pass
+            layers = [param for _, param in self.model.named_parameters() if param.requires_grad]
           
-          optimizer_settings = [{'params': layers[i].parameters(), 
-                                'lr': self.learning_rate * pow(self.lr_decay, i), 
-                                'betas' : (0.9, 0.999), 
-                                'weight_decay' : self.weight_decay} for i in range(len(layers))]
+          optimizer_settings = [{'params': layers[depth], 
+                                 'lr': self.learning_rate * pow(self.lr_decay, depth), 
+                                 'betas' : (0.9, 0.999), 
+                                 'weight_decay' : self.weight_decay} for depth in range(len(layers))]
           
       elif self.optimizer_name == "sgd":
         if self.lr_decay == 0:
@@ -237,16 +234,12 @@ class FinetuneModule(pl.LightningModule):
                                 'weight_decay' : 0}]
         else:
           # layer-wise lr decay
-          if self.model_name.split('-')[0] == "convnext":
-            layers = [layer for layer in self.model.modules() if isinstance(layer, timm.models.convnext.ConvNeXtBlock)]
-          elif self.model_name.split('-')[0] == "vit":
-            # TODO add layers for ViT
-            pass
+          layers = [param for _, param in self.model.named_parameters() if param.requires_grad]
           
-          optimizer_settings = [{'params': layers[i].parameters(), 
-                                'lr': self.learning_rate * pow(self.lr_decay, i), 
+          optimizer_settings = [{'params': layers[depth], 
+                                'lr': self.learning_rate * pow(self.lr_decay, depth), 
                                 'momentum' : 0.9, 
-                                'weight_decay' : 0} for i in range(len(layers))]
+                                'weight_decay' : 0} for depth in range(len(layers))]
     
       return optimizer_settings
       
@@ -356,7 +349,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 7200 # 0 | 7200 | 21600 | 43200
+  interval = 21600 # 0 | 7200 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
@@ -381,7 +374,7 @@ if __name__ == '__main__':
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
   learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5
-  lr_decay = 0.0            # 0    | 0.8 
+  lr_decay = 0.0            # 0.0  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
   
