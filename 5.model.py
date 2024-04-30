@@ -396,7 +396,7 @@ if __name__ == '__main__':
   min_delta = 1e-4
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128
+  batch_size = 64 # 8 | 16 | 32 | 64 | 128
   epochs = 60
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
