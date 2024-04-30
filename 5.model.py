@@ -218,13 +218,27 @@ class FinetuneModule(pl.LightningModule):
                                  'weight_decay' : self.weight_decay}]
         else:
           # layer-wise lr decay
-          if self.model_name.split('-')[0] == "convnext":
-            layers = [param for _, param in self.model.named_parameters() if param.requires_grad]
+          optimizer_settings = []
+          learning_rate = self.learning_rate
           
-          optimizer_settings = [{'params': layers[depth], 
-                                 'lr': self.learning_rate * pow(self.lr_decay, depth), 
-                                 'betas' : (0.9, 0.999), 
-                                 'weight_decay' : self.weight_decay} for depth in range(len(layers))]
+          layer_names = [n for n, _ in self.model.named_parameters()]
+          layer_names.reverse()
+          
+          previous_group_name = layer_names[0].split('.')[0]
+
+          for name in layer_names:
+            current_group_name = name.split('.')[0]
+            
+            if current_group_name != previous_group_name:
+                learning_rate *= self.lr_decay
+                
+            previous_group_name = current_group_name
+
+            optimizer_settings += [{'params': [p for n, p in self.model.named_parameters() 
+                                               if n == name and p.requires_grad], 
+                                    'lr': learning_rate, 
+                                    'betas' : (0.9, 0.999), 
+                                    'weight_decay' : self.weight_decay}]
           
       elif self.optimizer_name == "sgd":
         if self.lr_decay == 0:
@@ -234,12 +248,27 @@ class FinetuneModule(pl.LightningModule):
                                 'weight_decay' : 0}]
         else:
           # layer-wise lr decay
-          layers = [param for _, param in self.model.named_parameters() if param.requires_grad]
+          optimizer_settings = []
+          learning_rate = self.learning_rate
           
-          optimizer_settings = [{'params': layers[depth], 
-                                'lr': self.learning_rate * pow(self.lr_decay, depth), 
-                                'momentum' : 0.9, 
-                                'weight_decay' : 0} for depth in range(len(layers))]
+          layer_names = [name for name, _ in self.model.named_parameters()]
+          layer_names.reverse()
+          
+          previous_group_name = layer_names[0].split('.')[0]
+
+          for name in layer_names:
+            current_group_name = name.split('.')[0]
+            
+            if current_group_name != previous_group_name:
+                learning_rate *= self.lr_decay
+                
+            previous_group_name = current_group_name
+          
+            optimizer_settings += [{'params': [p for n, p in self.model.named_parameters() 
+                                               if n == name and p.requires_grad], 
+                                    'lr': learning_rate, 
+                                    'momentum' : 0.9, 
+                                    'weight_decay' : 0}]
     
       return optimizer_settings
       
@@ -349,7 +378,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 21600 # 0 | 7200 | 21600 | 43200
+  interval = 7200 # 0 | 7200 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
@@ -374,7 +403,7 @@ if __name__ == '__main__':
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
   learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5
-  lr_decay = 0.0            # 0.0  | 0.8 
+  lr_decay = 0.8            # 0.0  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
   
