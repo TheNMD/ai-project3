@@ -2,7 +2,7 @@ import timm
 
 model = timm.create_model('convnext_base.fb_in22k', pretrained=True)
 
-learning_rate = 1e-3
+learning_rate = 5e-5
 lr_decay = 0.8
 weight_decay = 1e-8
 
@@ -19,11 +19,16 @@ optimizer_settings = []
 layer_names = [n for n, p in model.named_parameters()]
 layer_names.reverse()
 previous_group_name = layer_names[0].split('.')[0]
+
 for idx, name in enumerate(layer_names):
     current_group_name = name.split('.')[0]
     
+    if current_group_name == "stages":
+        current_group_name += name.split('.')[1]
+         
     if current_group_name != previous_group_name:
         learning_rate *= lr_decay
+        
     previous_group_name = current_group_name
     
     # display info
@@ -38,4 +43,4 @@ for idx, name in enumerate(layer_names):
 # for ele in optimizer_settings:
 #     print(ele, "\n")
 
-print(len(optimizer_settings))
+# print(len(optimizer_settings))
