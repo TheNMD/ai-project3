@@ -427,7 +427,7 @@ if __name__ == '__main__':
   batch_size = 128 # 8 | 16 | 32 | 64 | 128
   epochs = 60
   epoch_ratio = 0.5 # Check val every percentage of an epoch
-  label_smoothing = 0.1
+  label_smoothing = 0.2
   
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
