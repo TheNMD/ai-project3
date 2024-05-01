@@ -141,7 +141,7 @@ class FinetuneModule(pl.LightningModule):
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                               #  v2.GaussianBlur(kernel_size=5, sigma=2), 
                                v2.ToDtype(torch.float32, scale=True),
-                               v2.RandAugment(num_ops=3, magnitude=round(random.gauss(9, 1)), fill=255),
+                               v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                               #  v2.RandomErasing(p=0.25, value=255),
                                v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
                                             std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
@@ -230,6 +230,10 @@ class FinetuneModule(pl.LightningModule):
 
           for name in layer_names:
             current_group_name = name.split('.')[0]
+            
+            # TODO Check if changing lr by stage is more effective
+            if current_group_name == "stages":
+              current_group_name += name.split('.')[1]
             
             if current_group_name != previous_group_name:
                 learning_rate *= self.lr_decay
@@ -404,7 +408,7 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5
+  learning_rate = 5e-5      # 1e-3 | 1e-4  | 5e-5
   lr_decay = 0.8            # 0.0  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
@@ -416,7 +420,7 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}\n")
 
   ## For callbacks
-  patience = 12
+  patience = 24
   min_delta = 1e-4
 
   ## For training loop
