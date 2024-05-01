@@ -141,9 +141,10 @@ class FinetuneModule(pl.LightningModule):
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                               #  v2.GaussianBlur(kernel_size=5, sigma=2), 
                                v2.ToDtype(torch.float32, scale=True),
-                               v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
+                               v2.RandAugment(num_ops=3, magnitude=round(random.gauss(9, 1)), fill=255),
                               #  v2.RandomErasing(p=0.25, value=255),
-                               v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
+                               v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
+                                            std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                               ])
       
     elif set_name == "val" or set_name == "test":
@@ -153,7 +154,8 @@ class FinetuneModule(pl.LightningModule):
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                               #  v2.GaussianBlur(kernel_size=5, sigma=2), 
                                v2.ToDtype(torch.float32, scale=True),
-                               v2.Normalize(mean=[0.9844, 0.9930, 0.9632], std=[0.0641, 0.0342, 0.1163]),
+                               v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
+                                            std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                               ]) 
 
     dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}/{set_name}",
@@ -382,7 +384,7 @@ if __name__ == '__main__':
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   continue_training = False
