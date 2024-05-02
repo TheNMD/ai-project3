@@ -385,10 +385,10 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   interval = 7200 # 0 | 7200 | 21600 | 43200
-  model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
+  model_name = "vit-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.0 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   continue_training = False
@@ -408,8 +408,8 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 5e-5      # 1e-3 | 1e-4  | 5e-5
-  lr_decay = 0.8            # 0.0  | 0.8 
+  learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5
+  lr_decay = 0.0            # 0.0  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
   
@@ -427,7 +427,7 @@ if __name__ == '__main__':
   batch_size = 128 # 8 | 16 | 32 | 64 | 128
   epochs = 60
   epoch_ratio = 0.5 # Check val every percentage of an epoch
-  label_smoothing = 0.2
+  label_smoothing = 0.1
   
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
