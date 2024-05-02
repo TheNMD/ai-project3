@@ -106,7 +106,9 @@ class FinetuneModule(pl.LightningModule):
         model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
         train_size, test_size = 224, 224
       elif size == "b":
+        # TODO Try this model
         model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
+        # model = timm.create_model('convnext_base.fb_in22k_ft_in1k', pretrained=True)
         train_size, test_size = 224, 224
       elif size == "l":
         model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
@@ -408,7 +410,7 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5
+  learning_rate = 1e-4      # 1e-3 | 1e-4  | 5e-5
   lr_decay = 0.0            # 0.0  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
