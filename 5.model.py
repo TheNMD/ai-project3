@@ -88,29 +88,14 @@ class FinetuneModule(pl.LightningModule):
       num_feature = model.head.in_features
       model.head = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
       model.head.weight.data.mul_(0.001)
-    elif name == "swinv2":
-      if size == "t":
-        model = timm.create_model('swinv2_tiny_window16_256.ms_in1k', pretrained=is_pretrained)
-        train_size, test_size = 256, 256
-      elif size == "b":
-        model = timm.create_model('swinv2_base_window8_256.ms_in1k', pretrained=is_pretrained)
-        train_size, test_size = 256, 256
-      if self.freeze:
-        for param in model.parameters(): param.requires_grad = False
-      num_feature = model.head.fc.in_features
-      model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
-      model.head.fc.weight.data.mul_(0.001)
     
     elif name == "convnext":
       if size == "s":
         model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
         train_size, test_size = 224, 224
       elif size == "b":
-        # TODO Try this model
-        # model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
-        # train_size, test_size = 224, 224
-        model = timm.create_model('convnext_base.fb_in22k_ft_in1k', pretrained=is_pretrained)
-        train_size, test_size = 224, 288
+        model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
+        train_size, test_size = 224, 224
       elif size == "l":
         model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
         train_size, test_size = 224, 224
