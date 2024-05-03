@@ -378,8 +378,8 @@ if __name__ == '__main__':
   num_classes = 5
   stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
-  checkpoint = False
-  continue_training = False
+  checkpoint = True
+  continue_training = True
   
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
@@ -482,8 +482,9 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    selected_version = "version_4"
+    selected_version = "version_0"
     
+    model_path = f"{result_path}/checkpoint/0/{model_name}-{model_option}" 
     module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
