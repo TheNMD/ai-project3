@@ -504,7 +504,8 @@ if __name__ == '__main__':
       try:
         # Training loop
         train_start_time = time.time()
-        trainer.fit(module, ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
+        # trainer.fit(module, ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
+        trainer.fit(module)
         train_end_time = time.time() - train_start_time
         print(f"Training time: {train_end_time} seconds")
         
