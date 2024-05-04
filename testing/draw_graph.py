@@ -24,7 +24,7 @@ def plot_results(monitor_value="val_acc"):
   plt.ylabel('value')
   plt.title('Loss graph')
   plt.legend()
-  plt.savefig('test_graph_loss.png')
+  plt.savefig('graph_loss.png')
 
   plt.clf()
 
@@ -36,7 +36,7 @@ def plot_results(monitor_value="val_acc"):
   plt.ylabel('value')
   plt.title('Accuracy graph')
   plt.legend()
-  plt.savefig('test_graph_acc.png')
+  plt.savefig('graph_acc.png')
 
   if "test_loss" in log_results.columns:
     test_results = log_results[['test_loss', 'test_acc']].dropna()

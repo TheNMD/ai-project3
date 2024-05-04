@@ -12,7 +12,7 @@ data.zip
 image.zip
 result.zip
 
-*.ckpt
 metrics.csv
-test_graph_acc.png
-test_graph_loss.png
+graph_acc.png
+graph_loss.png
+best_model.ckpt
