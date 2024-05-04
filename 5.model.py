@@ -379,13 +379,15 @@ if __name__ == '__main__':
   stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = True
-  continue_training = True
+  train_from_checkpoint = True
+  continue_training = False
   
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
   print(f"Stochastic depth: {stochastic_depth}")
   print(f"Freeze: {freeze}")
   print(f"Load from checkpoint: {checkpoint}")
+  print(f"Train from checkpoint: {train_from_checkpoint}\n")
   print(f"Continue training: {continue_training}\n")
   
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
@@ -482,15 +484,16 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
+    selected_interval = "0"
+    selected_model_path = f"{result_path}/checkpoint/{selected_interval}/{model_name}-{model_option}" 
     selected_version = "version_1"
-    
-    model_path = f"{result_path}/checkpoint/0/{model_name}-{model_option}" 
-    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/best_model.ckpt", 
+
+    module = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
                                                  loop_settings=loop_settings)
     
-    if continue_training:
+    if train_from_checkpoint:
       trainer = pl.Trainer(accelerator=accelerator, 
                            devices=devices, 
                            strategy=strategy,
@@ -504,8 +507,10 @@ if __name__ == '__main__':
       try:
         # Training loop
         train_start_time = time.time()
-        # trainer.fit(module, ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
-        trainer.fit(module)
+        if continue_training:
+          trainer.fit(module, ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
+        else:
+          trainer.fit(module)
         train_end_time = time.time() - train_start_time
         print(f"Training time: {train_end_time} seconds")
         
@@ -531,6 +536,8 @@ if __name__ == '__main__':
           file.write(f"Test accuracy: {tess_acc}\n")
           file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
+          file.write(f"Load from: {selected_interval}-{selected_version}\n")
+          file.write(f"Continue training: {continue_training}\n")
         
       except Exception as e:
         print(e)
@@ -600,7 +607,6 @@ if __name__ == '__main__':
         file.write(f"Test accuracy: {tess_acc}\n")
         file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
-      
       
       # Move architecture file to the corresponding version
       if os.path.exists(f"{model_path}/architecture.txt"):
