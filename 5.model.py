@@ -515,7 +515,7 @@ if __name__ == '__main__':
         print(f"Evaluation time: {test_end_time} seconds")
         
         # Plot loss and accuracy
-        test_loss, tess_acc, best_epoch = module.plot_results(monitor_value, new_version)
+        test_loss, tess_acc, best_epoch = plot_results(monitor_value, new_version)
         print(f"Best epoch [{monitor_value}]: {best_epoch}")
         
         # Write down hyperparameters and results
@@ -600,13 +600,15 @@ if __name__ == '__main__':
         file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
       
+      
+      # Move architecture file to the corresponding version
+      if os.path.exists(f"{model_path}/architecture.txt"):
+        shutil.move(f"{model_path}/architecture.txt", f"{model_path}/{new_version}/architecture.txt")
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
       if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
         shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
         
-  # Move architecture file to the corresponding version
-  if os.path.exists(f"{model_path}/architecture.txt"):
-    shutil.move(f"{model_path}/architecture.txt", f"{model_path}/{new_version}/architecture.txt")
+
   
