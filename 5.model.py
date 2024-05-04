@@ -508,7 +508,7 @@ if __name__ == '__main__':
         # Training loop
         train_start_time = time.time()
         if continue_training:
-          trainer.fit(module, ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
+          trainer.fit(module, ckpt_path=f"{selected_model_path}/{selected_version}/best_model.ckpt")
         else:
           trainer.fit(module)
         train_end_time = time.time() - train_start_time
@@ -525,7 +525,7 @@ if __name__ == '__main__':
         print(f"Best epoch [{monitor_value}]: {best_epoch}")
         
         # Write down hyperparameters and results
-        with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
+        with open(f"{selected_model_path}/{new_version}/notes.txt", 'w') as file:
           file.write('### Hyperparameters ###\n')
           file.write(f'model_settings = {model_settings}\n')
           file.write(f'optimizer_settings = {optimizer_settings}\n')
