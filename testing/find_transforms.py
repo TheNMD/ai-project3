@@ -23,7 +23,7 @@ transforms = v2.Compose([v2.ToImage(),
                          v2.ToPILImage(),
                         ])
 
-image = Image.open('image/unlabeled2/2020-07-01 10-50-25.jpg')
+image = Image.open('image/labeled/7200/train/heavy_rain/2020-07-01 10-50-25.jpg')
 image.save("test_transforms0.png")
 
 image = transforms(image)
