@@ -229,33 +229,33 @@ if __name__ == '__main__':
     if not os.path.exists("image/labeled"):
         os.makedirs("image/labeled")
     
-    num_processes = 16
-    chunk_size = 100 * num_processes 
+    # # Label images
+    # num_processes = 16
+    # chunk_size = 100 * num_processes 
     
-    # Label images
-    try:
-        counter = 0
-        # Use multiprocessing to iterate over the metadata 
-        with mp.Pool(processes=num_processes) as pool:
-            metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
-            for chunk in metadata_chunks:
-                sub_metadata_chunks = np.array_split(chunk, num_processes)
+    # try:
+    #     counter = 0
+    #     # Use multiprocessing to iterate over the metadata 
+    #     with mp.Pool(processes=num_processes) as pool:
+    #         metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
+    #         for chunk in metadata_chunks:
+    #             sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
-                start_time = time.time()
-                results = pool.map(label_image, sub_metadata_chunks)
-                update_metadata(pd.concat(results))
-                end_time = time.time() - start_time
+    #             start_time = time.time()
+    #             results = pool.map(label_image, sub_metadata_chunks)
+    #             update_metadata(pd.concat(results))
+    #             end_time = time.time() - start_time
 
-                counter += 1
-                print(f"### Chunk: {counter} | Time: {end_time} ###")
+    #             counter += 1
+    #             print(f"### Chunk: {counter} | Time: {end_time} ###")
                 
-        metadata = pd.read_csv("metadata_temp.csv")
-        metadata = metadata[metadata['label_0'] != 'Error']
-        metadata.reset_index(drop=True, inplace=True)
-        metadata.to_csv("metadata.csv", index=False)
-    except Exception as e:
-        print(e)
-        logging.error(e, exc_info=True)
+    #     metadata = pd.read_csv("metadata_temp.csv")
+    #     metadata = metadata[metadata['label_0'] != 'Error']
+    #     metadata.reset_index(drop=True, inplace=True)
+    #     metadata.to_csv("metadata.csv", index=False)
+    # except Exception as e:
+    #     print(e)
+    #     logging.error(e, exc_info=True)
     
     # Label future images
     try:
@@ -267,17 +267,18 @@ if __name__ == '__main__':
             end_time = time.time() - start_time
 
             print(f"Time: {end_time} ###")
-        
-        combine_metadata(interval=3600)
-        # combine_metadata(interval=7200)
-        combine_metadata(interval=10800)
-        combine_metadata(interval=14400)
-        # combine_metadata(interval=21600)
-        # combine_metadata(interval=43200)
 
     except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
+    
+    # Combine all metadata
+    combine_metadata(interval=3600)
+    # combine_metadata(interval=7200)
+    combine_metadata(interval=10800)
+    combine_metadata(interval=14400)
+    # combine_metadata(interval=21600)
+    # combine_metadata(interval=43200)
     
     # Plot label and avg reflectivity distribution
     # plot_distribution(interval=0)
