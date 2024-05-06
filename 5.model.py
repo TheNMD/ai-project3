@@ -282,7 +282,7 @@ class FinetuneModule(pl.LightningModule):
     elif self.scheduler_name == "cd":
       # Cosine decay
       scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 
-                                                             T_max=3)
+                                                             T_max=5)
       
     elif self.scheduler_name == "cdwr":
       # Cosine decay warm restart
@@ -372,7 +372,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 3600 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
+  interval = 7200 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
@@ -387,7 +387,7 @@ if __name__ == '__main__':
   print(f"Stochastic depth: {stochastic_depth}")
   print(f"Freeze: {freeze}")
   print(f"Load from checkpoint: {checkpoint}")
-  print(f"Train from checkpoint: {train_from_checkpoint}\n")
+  print(f"Train from checkpoint: {train_from_checkpoint}")
   print(f"Continue training: {continue_training}\n")
   
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
@@ -410,12 +410,12 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}\n")
 
   ## For callbacks
-  patience = 24
+  patience = 22
   min_delta = 1e-4
 
   ## For training loop
   batch_size = 128 # 8 | 16 | 32 | 64 | 128
-  epochs = 60
+  epochs = 100
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
