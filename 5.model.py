@@ -372,14 +372,14 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 7200 # 0 | 7200 | 21600 | 43200
+  interval = 7200 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
   stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
-  checkpoint = True
-  train_from_checkpoint = True
+  checkpoint = False
+  train_from_checkpoint = False
   continue_training = False
   
   print(f"Interval: {interval}")
