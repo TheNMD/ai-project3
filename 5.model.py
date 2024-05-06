@@ -282,7 +282,7 @@ class FinetuneModule(pl.LightningModule):
     elif self.scheduler_name == "cd":
       # Cosine decay
       scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 
-                                                             T_max=5)
+                                                             T_max=3)
       
     elif self.scheduler_name == "cdwr":
       # Cosine decay warm restart
@@ -372,7 +372,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 7200 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
+  interval = 10800 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
@@ -410,7 +410,7 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}\n")
 
   ## For callbacks
-  patience = 22
+  patience = 24
   min_delta = 1e-4
 
   ## For training loop
