@@ -33,6 +33,19 @@ elif ENV == "colab":
   image_path = "image"
   result_path = "drive/MyDrive/Coding/result"
 
+class CustomRandAugment(v2.RandAugment):
+  def __init__(self, num_ops, magnitude, fill):
+      super().__init__(num_ops=num_ops, magnitude=magnitude, fill=fill)
+      
+      del self._AUGMENTATION_SPACE['Brightness']
+      del self._AUGMENTATION_SPACE['Color']
+      del self._AUGMENTATION_SPACE['Contrast']
+      del self._AUGMENTATION_SPACE['Sharpness']
+      del self._AUGMENTATION_SPACE['Posterize']
+      del self._AUGMENTATION_SPACE['Solarize']
+      del self._AUGMENTATION_SPACE['AutoContrast']
+      del self._AUGMENTATION_SPACE['Equalize']
+
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):
     super().__init__()
@@ -88,6 +101,7 @@ class FinetuneModule(pl.LightningModule):
       num_feature = model.head.in_features
       model.head = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
       model.head.weight.data.mul_(0.001)
+      # model = add_stochastic_depth(name, model, self.stochastic_depth)
     
     elif name == "convnext":
       if size == "s":
@@ -127,10 +141,10 @@ class FinetuneModule(pl.LightningModule):
                                v2.ToImage(), 
                                v2.Resize((image_size, image_size)),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
-                              #  v2.GaussianBlur(kernel_size=5, sigma=2), 
-                               v2.ToDtype(torch.float32, scale=True),
                                v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
+                              #  CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255), 
                               #  v2.RandomErasing(p=0.25, value=255),
+                               v2.ToDtype(torch.float32, scale=True),
                                v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
                                             std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                               ])
@@ -140,7 +154,6 @@ class FinetuneModule(pl.LightningModule):
                                v2.ToImage(), 
                                v2.Resize((image_size, image_size)),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
-                              #  v2.GaussianBlur(kernel_size=5, sigma=2), 
                                v2.ToDtype(torch.float32, scale=True),
                                v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
                                             std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
@@ -372,7 +385,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 3600 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
+  interval = 7200 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
