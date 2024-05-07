@@ -56,11 +56,12 @@ transforms = v2.Compose([v2.ToImage(),
 
 image = Image.open('sample_data/SomeImages/2020-07-01 07-10-43.jpg')
 print("Original image size (width, height):", image.size)
-image.save("test_transforms0.png")
+image.save("testing/test_transforms0.png")
+
 
 for i in range(1, 11):
     image_transformed = transforms(image)
-    image_transformed.save(f"test_transforms{i}.png")
+    image_transformed.save(f"testing/test_transforms{i}.png")
 
 
     
