@@ -141,11 +141,10 @@ class FinetuneModule(pl.LightningModule):
                                v2.ToImage(), 
                                v2.Resize((image_size, image_size)),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
-                              # v2.Lambda(lambda image: v2.functional.autocontrast(image)),
-                               v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
-                              #  CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255), 
+                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
+                              #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
+                               CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255), 
                               #  v2.RandomErasing(p=0.25, value=255),
-
                                v2.ToDtype(torch.float32, scale=True),
                                v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
                                             std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
@@ -156,7 +155,7 @@ class FinetuneModule(pl.LightningModule):
                                v2.ToImage(), 
                                v2.Resize((image_size, image_size)),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
-                              # v2.Lambda(lambda image: v2.functional.autocontrast(image)),
+                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                                v2.ToDtype(torch.float32, scale=True),
                                v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
                                             std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
@@ -415,7 +414,7 @@ if __name__ == '__main__':
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
   learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5
-  lr_decay = 0.0            # 0.0  | 0.8 
+  lr_decay = 0.8            # 0.0  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
   
@@ -427,7 +426,7 @@ if __name__ == '__main__':
 
   ## For callbacks
   patience = 22
-  min_delta = 1e-4
+  min_delta = 1e-6
 
   ## For training loop
   batch_size = 128 # 8 | 16 | 32 | 64 | 128
