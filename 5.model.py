@@ -141,9 +141,11 @@ class FinetuneModule(pl.LightningModule):
                                v2.ToImage(), 
                                v2.Resize((image_size, image_size)),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
+                              # v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                                v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                               #  CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255), 
                               #  v2.RandomErasing(p=0.25, value=255),
+
                                v2.ToDtype(torch.float32, scale=True),
                                v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
                                             std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
@@ -154,6 +156,7 @@ class FinetuneModule(pl.LightningModule):
                                v2.ToImage(), 
                                v2.Resize((image_size, image_size)),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
+                              # v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                                v2.ToDtype(torch.float32, scale=True),
                                v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
                                             std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
