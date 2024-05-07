@@ -14,10 +14,13 @@ def add_stochastic_depth(model_name, model, drop_prob):
 # model.head = torch.nn.Linear(in_features=num_feature, out_features=5)
 # model.head.weight.data.mul_(0.001)
 
-model = timm.create_model('convnext_base.fb_in22k_ft_in1k', pretrained=True)
+model = timm.create_model('convnext_base.fb_in22k', pretrained=True)
+# print(model)
+
 num_feature = model.head.fc.in_features
+
 model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
 model.head.fc.weight.data.mul_(0.001)
 model = add_stochastic_depth("convnext", model, 0.2)
 
-print(model)
+# print(model)
