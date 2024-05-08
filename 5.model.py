@@ -140,7 +140,7 @@ class FinetuneModule(pl.LightningModule):
       transforms = v2.Compose([
                                v2.ToImage(), 
                                v2.Resize((image_size, image_size)),
-                               v2.RandomErasing(p=0.25, value=255),
+                              #  v2.RandomErasing(p=0.25, value=255),
                               #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                                CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
