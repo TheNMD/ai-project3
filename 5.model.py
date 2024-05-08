@@ -37,14 +37,14 @@ class CustomRandAugment(v2.RandAugment):
   def __init__(self, num_ops, magnitude, fill):
       super().__init__(num_ops=num_ops, magnitude=magnitude, fill=fill)
       
-      del self._AUGMENTATION_SPACE['Brightness']
-      del self._AUGMENTATION_SPACE['Color']
-      del self._AUGMENTATION_SPACE['Contrast']
-      del self._AUGMENTATION_SPACE['Sharpness']
-      del self._AUGMENTATION_SPACE['Posterize']
-      del self._AUGMENTATION_SPACE['Solarize']
+      # del self._AUGMENTATION_SPACE['Brightness']
+      # del self._AUGMENTATION_SPACE['Color']
+      # del self._AUGMENTATION_SPACE['Contrast']
+      # del self._AUGMENTATION_SPACE['Sharpness']
+      # del self._AUGMENTATION_SPACE['Posterize']
+      # del self._AUGMENTATION_SPACE['Solarize']
       del self._AUGMENTATION_SPACE['AutoContrast']
-      del self._AUGMENTATION_SPACE['Equalize']
+      # del self._AUGMENTATION_SPACE['Equalize']
 
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):

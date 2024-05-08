@@ -46,7 +46,7 @@ transforms = v2.Compose([v2.ToImage(),
                         #  v2.Resize((image_size, image_size)),
                         #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                         #  v2.RandomErasing(p=0.95, value=255),
-                         CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
+                        #  CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                          v2.Lambda(lambda image: median_blur(image, 5)),
                          v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                          v2.ToDtype(torch.float32, scale=True),
@@ -56,14 +56,13 @@ transforms = v2.Compose([v2.ToImage(),
                          v2.ToPILImage(),
                         ])
 
-image = Image.open('sample_data/SomeImages/2020-07-06 03-00-34.jpg')
+# image = Image.open('sample_data/SomeImages/2020-07-06 03-00-34.jpg')
 # print("Original image size (width, height):", image.size)
 # image.save("testing/test_transforms0.png")
 
-# image = Image.open('testing/test_transforms4.png')
+image = Image.open('testing/test_transforms4.png')
 image_transformed = transforms(image)
-# print(image_transformed)
-image_transformed.save("testing/test_transforms6.png")
+image_transformed.save("testing/test_transforms5.png")
 
 
     
