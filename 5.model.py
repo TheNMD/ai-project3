@@ -234,9 +234,11 @@ class FinetuneModule(pl.LightningModule):
           for name in layer_names:
             current_group_name = name.split('.')[0]
             
-            # TODO Check if changing lr by stage is more effective
             if current_group_name == "stages":
-              current_group_name += name.split('.')[1]
+                current_block_num = int(name.split('.')[3])
+                if current_block_num % 3 == 1: current_block_num += 1 
+                elif current_block_num % 3 == 0: current_block_num += 2
+                current_group_name = f"{name.split('.')[0]}{name.split('.')[1]}{name.split('.')[2]}{current_block_num}"
             
             if current_group_name != previous_group_name:
                 learning_rate *= self.lr_decay
@@ -387,7 +389,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 7200 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
+  interval = 3600 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
