@@ -43,7 +43,7 @@ for idx, name in enumerate(layer_names):
                             'weight_decay' : weight_decay}]
 
 
-# for ele in optimizer_settings:
-#     print(ele, "\n")
+lr_list = sorted(list(set([ele['lr'] for ele in optimizer_settings])), reverse=True)
+print(lr_list)
 
 # print(len(optimizer_settings))
