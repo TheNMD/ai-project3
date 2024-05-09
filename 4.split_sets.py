@@ -93,8 +93,8 @@ if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
     
-    if os.path.exists(f"image/labeled/{interval}"):
-        # os.makedirs(f"image/labeled/{interval}")
+    if not os.path.exists(f"image/labeled/{interval}"):
+        os.makedirs(f"image/labeled/{interval}")
         shutil.move(f"image/labeled/{interval}_avg_reflectivity_dist.png", f"image/labeled/{interval}/{interval}_avg_reflectivity_dist.png")
         shutil.move(f"image/labeled/{interval}_label_dist.png", f"image/labeled/{interval}/{interval}_label_dist.png")
         shutil.move(f"image/labeled/{interval}_label_dist.txt", f"image/labeled/{interval}/{interval}_label_dist.txt")
