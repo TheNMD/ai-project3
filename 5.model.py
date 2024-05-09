@@ -140,7 +140,7 @@ class FinetuneModule(pl.LightningModule):
       transforms = v2.Compose([
                                v2.ToImage(), 
                                v2.Resize((image_size, image_size)),
-                              #  v2.RandomErasing(p=0.25, value=255),
+                               v2.RandomErasing(p=0.25, value=255),
                               #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                                CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
@@ -389,7 +389,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 3600 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
+  interval = 0 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
@@ -416,7 +416,7 @@ if __name__ == '__main__':
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
   learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5
-  lr_decay = 0.8            # 0.0  | 0.8 
+  lr_decay = 0.0            # 0.0  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
   
