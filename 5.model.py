@@ -389,7 +389,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 1800 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
+  interval = 10800 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
