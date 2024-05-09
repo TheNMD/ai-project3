@@ -1,7 +1,0 @@
-label_1800
-clear              113007
-light_rain          73114
-moderate_rain       51715
-heavy_rain          13114
-very_heavy_rain        89
-Name: count, dtype: int64
