@@ -140,7 +140,7 @@ class FinetuneModule(pl.LightningModule):
       transforms = v2.Compose([
                                v2.ToImage(), 
                                v2.Resize((image_size, image_size)),
-                               v2.RandomErasing(p=0.25, value=255),
+                              #  v2.RandomErasing(p=0.25, value=255),
                               #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                                CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
@@ -389,7 +389,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 3600 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
+  interval = 14400 # 0 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
@@ -487,11 +487,11 @@ if __name__ == '__main__':
   # Callbacks
   monitor_value = "val_acc"
   
-  early_stop_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
-                                                   mode='max',
-                                                   patience=patience,
-                                                   min_delta=min_delta,
-                                                   verbose=True,)
+  early_stopping_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
+                                                       mode='max',
+                                                       patience=patience,
+                                                       min_delta=min_delta,
+                                                       verbose=True,)
 
   checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
                                                      mode='max',
@@ -517,7 +517,7 @@ if __name__ == '__main__':
                            max_epochs=epochs,
                            min_epochs=21,
                            logger=logger,
-                           callbacks=[early_stop_callback, checkpoint_callback],
+                           callbacks=[early_stopping_callback, checkpoint_callback],
                            val_check_interval=epoch_ratio,
                            log_every_n_steps=50,    # log train_loss and train_acc every n batches
                            precision=16)            # use mixed precision to speed up training
@@ -592,7 +592,7 @@ if __name__ == '__main__':
                           max_epochs=epochs,
                           min_epochs=21,
                           logger=logger,
-                          callbacks=[early_stop_callback, checkpoint_callback],
+                          callbacks=[early_stopping_callback, checkpoint_callback],
                           val_check_interval=epoch_ratio,
                           log_every_n_steps=50,    # log train_loss and train_acc every n batches
                           precision=16)             # use mixed precision to speed up training
