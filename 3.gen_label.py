@@ -259,11 +259,13 @@ if __name__ == '__main__':
     
     # Label future images
     try:
-        # Use multiprocessing to iterate over the metadata 
-        with mp.Pool(processes=3) as pool:
+        # Use multiprocessing to iterate over the metadata
+        # timestamps = [7200, 21600, 43200]
+        # timestamps = [3600, 10800, 14400]
+        timestamps = [1080]
+        with mp.Pool(processes=len(timestamps)) as pool:
             start_time = time.time()
-            # pool.map(find_future_images, [7200, 21600, 43200])
-            pool.map(find_future_images, [3600, 10800, 14400])
+            pool.map(find_future_images, timestamps)
             end_time = time.time() - start_time
 
             print(f"Time: {end_time} ###")
@@ -273,15 +275,17 @@ if __name__ == '__main__':
         logging.error(e, exc_info=True)
     
     # Combine all metadata
-    combine_metadata(interval=3600)
+    combine_metadata(interval=1800)
+    # combine_metadata(interval=3600)
     # combine_metadata(interval=7200)
-    combine_metadata(interval=10800)
-    combine_metadata(interval=14400)
+    # combine_metadata(interval=10800)
+    # combine_metadata(interval=14400)
     # combine_metadata(interval=21600)
     # combine_metadata(interval=43200)
     
     # Plot label and avg reflectivity distribution
     # plot_distribution(interval=0)
+    plot_distribution(interval=1800)
     # plot_distribution(interval=3600)
     # plot_distribution(interval=7200)
     # plot_distribution(interval=10800)
