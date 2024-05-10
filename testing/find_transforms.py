@@ -19,7 +19,6 @@ def median_blur(image, kernel_size):
 # "TranslateX"
 # "TranslateY"
 # "Rotate"
-
 # "Brightness"   : F.adjust_brightness(img, 1.0 + magnitude)
 # "Contrast"     : F.adjust_contrast(img, 1.0 + magnitude)
 # "Sharpness"    : F.adjust_sharpness(img, 1.0 + magnitude)
