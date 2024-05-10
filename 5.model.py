@@ -140,7 +140,7 @@ class FinetuneModule(pl.LightningModule):
       transforms = v2.Compose([
                                v2.ToImage(), 
                                v2.Resize((image_size, image_size)),
-                               v2.RandomErasing(p=0.25, value=255),
+                              #  v2.RandomErasing(p=0.25, value=255),
                               #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                                CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
@@ -389,7 +389,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 1800 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
+  interval = 14400 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
