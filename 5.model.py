@@ -390,10 +390,10 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   interval = 7200 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
-  model_name = "convnext-l" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
+  model_name = "vit-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.0 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   train_from_checkpoint = False
