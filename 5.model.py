@@ -71,6 +71,9 @@ class FinetuneModule(pl.LightningModule):
     self.train_loader = self.load_data("train", train_size, True)
     self.val_loader   = self.load_data("val", test_size, False)
     self.test_loader  = self.load_data("test", test_size, False)
+    
+    self.correct_results = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0}
+    self.wrong_results = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0}
 
   def load_model(self):
     def add_stochastic_depth(model_name, model, drop_prob):
@@ -208,11 +211,25 @@ class FinetuneModule(pl.LightningModule):
     predictions = logits.argmax(-1)
     correct = (predictions == y).sum().item()
     test_acc = correct / x.shape[0]
-    
-    self.log("test_loss", test_loss)
-    self.log("test_acc", test_acc)
+
+    y_list = y.tolist()
+    predictions_list = predictions.tolist()
+    for i in range(len(y_list)):
+      
+      if y_list[i] != predictions_list[i]:
+        self.wrong_results[str(y_list[i])] += 1
+      else:
+        self.correct_results[str(y_list[i])] += 1
+
+    self.log("test_loss", test_loss, on_epoch=True)
+    self.log("test_acc", test_acc, on_epoch=True)
     return test_loss
 
+  def on_test_end(self):
+    new_keys = {"0": "clear", "1": "heavy_rain", "2": "light_rain", "3": "moderate_rain", "4" : "very_heavy_rain"}
+    self.correct_results = {new_keys.get(k, k): v for k, v in self.correct_results.items()}
+    self.wrong_results = {new_keys.get(k, k): v for k, v in self.wrong_results.items()}
+  
   def configure_optimizers(self):
     def get_optimizer_settings():
       if self.optimizer_name == "adam" or self.optimizer_name == "adamw":
@@ -368,6 +385,25 @@ def plot_results(monitor_value, save_path):
     
   return test_loss, test_acc, best_epoch
 
+def draw_accuracy_by_class(correct_results, wrong_results, save_path):
+    x = list(correct_results.keys())
+    y1 = [correct_results[label] / (correct_results[label] + wrong_results[label]) for label in x]
+    y2 = [wrong_results[label] / (correct_results[label] + wrong_results[label]) for label in x]
+    
+    plt.figure(figsize=(12, 8))
+    plt.bar(x, y1, color='lightgreen', label="correct_label")
+    plt.bar(x, y2, bottom=y1, color='lightcoral', label="wrong_label")
+    plt.xlabel("labels")
+    plt.ylabel("percentage")
+    plt.legend(["correct_label", "wrong_label"])
+    plt.title("Accuracy by each class")
+    plt.legend()
+    
+    plt.savefig(f'{save_path}/graph_test_acc_by_class.png')
+    
+    return {x[0] :y1[0], x[1] :y1[1], x[2] :y1[2], x[3] :y1[3], x[4] :y1[4]}
+
+
 if __name__ == '__main__':
   print("Python version: ", sys.version)
   print("Ubuntu version: ", platform.release())
@@ -390,10 +426,10 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   interval = 7200 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
-  model_name = "vit-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
+  model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.0 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   train_from_checkpoint = False
@@ -415,7 +451,7 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 1e-4      # 1e-3 | 1e-4  | 5e-5
+  learning_rate = 1e-3     # 1e-3 | 1e-4  | 5e-5
   lr_decay = 0.0            # 0.0  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
@@ -501,9 +537,9 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    selected_interval = "0"
+    selected_interval = "7200"
     selected_model_path = f"{result_path}/checkpoint/{selected_interval}/{model_name}-{model_option}" 
-    selected_version = "version_1"
+    selected_version = "version_6"
 
     module = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
@@ -613,6 +649,10 @@ if __name__ == '__main__':
       # Plot loss and accuracy
       test_loss, tess_acc, best_epoch = plot_results(monitor_value, f"{model_path}/{new_version}")
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
+      
+      # Plot testing accuracy by class
+      accuracy_by_class = draw_accuracy_by_class(module.correct_results, module.wrong_results, f"{model_path}/{new_version}")
+      print(f"Accuracy by class: {accuracy_by_class}")
       
       # Write down hyperparameters and results
       with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
