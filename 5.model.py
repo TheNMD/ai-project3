@@ -208,9 +208,9 @@ class FinetuneModule(pl.LightningModule):
     predictions = logits.argmax(-1)
     correct = (predictions == y).sum().item()
     test_acc = correct / x.shape[0]
-    
-    self.log("test_loss", test_loss)
-    self.log("test_acc", test_acc)
+
+    self.log("test_loss", test_loss, on_epoch=True)
+    self.log("test_acc", test_acc, on_epoch=True)
     return test_loss
 
   def configure_optimizers(self):
@@ -501,9 +501,9 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    selected_interval = "0"
+    selected_interval = "7200"
     selected_model_path = f"{result_path}/checkpoint/{selected_interval}/{model_name}-{model_option}" 
-    selected_version = "version_1"
+    selected_version = "version_6"
 
     module = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
