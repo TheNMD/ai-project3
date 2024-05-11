@@ -169,8 +169,8 @@ def find_future_images(interval):
                 continue
                     
             current_time = row['timestamp_0']
-            future_metadata = metadata[(metadata['timestamp_0'] - current_time > pd.Timedelta(interval, "s")) &
-                                    (metadata['timestamp_0'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
+            future_metadata = metadata[(metadata['timestamp_0'] - current_time >= pd.Timedelta(interval - 60, "s")) &
+                                    (metadata['timestamp_0'] - current_time <= pd.Timedelta(interval + 600, "s"))].head(1)
             
             if future_metadata.empty:
                 metadata.loc[idx, [timestamp_col]] = "NotAvail"
@@ -288,6 +288,7 @@ if __name__ == '__main__':
     #     logging.error(e, exc_info=True)
     
     find_future_images(3600)
+    find_future_images(7200)
     
     # Combine all metadata
     # combine_metadata(interval=1800)
@@ -301,8 +302,8 @@ if __name__ == '__main__':
     # Plot label and avg reflectivity distribution
     # plot_distribution(interval=0)
     # plot_distribution(interval=1800)
-    # plot_distribution(interval=3600)
-    # plot_distribution(interval=7200)
+    plot_distribution(interval=3600)
+    plot_distribution(interval=7200)
     # plot_distribution(interval=10800)
     # plot_distribution(interval=14400)
     # plot_distribution(interval=21600)
