@@ -451,7 +451,7 @@ if __name__ == '__main__':
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
-  learning_rate = 1e-3     # 1e-3 | 1e-4  | 5e-5
+  learning_rate = 1e-3      # 1e-3 | 1e-4  | 5e-5
   lr_decay = 0.0            # 0.0  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
@@ -679,8 +679,8 @@ if __name__ == '__main__':
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
-      # if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
-      #   shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
+      if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
+        shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
         
 
   
