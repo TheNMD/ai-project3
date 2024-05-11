@@ -152,40 +152,48 @@ def update_metadata(new_metadata):
     updated_metadata.to_csv("metadata_temp.csv", index=False)        
 
 def find_future_images(interval):
-    metadata = pd.read_csv("metadata.csv")
-    metadata['timestamp_0'] = pd.to_datetime(metadata['timestamp_0'], format="%Y-%m-%d %H-%M-%S")
-    
-    timestamp_col = f"timestamp_{interval}"
-    label_col = f"label_{interval}"
-    avg_reflectivity_col = f"avg_reflectivity_{interval}"
-
-    if timestamp_col not in metadata.columns: metadata[timestamp_col] = np.nan
-    if label_col not in metadata.columns: metadata[label_col] = np.nan
-    if avg_reflectivity_col not in metadata.columns: metadata[avg_reflectivity_col] = np.nan
-
-    for idx, row in metadata.iterrows():
-        if type(row[timestamp_col]) is str:
-            continue
-                
-        current_time = row['timestamp_0']
-        future_metadata = metadata[(metadata['timestamp_0'] - current_time > pd.Timedelta(interval, "s")) &
-                                   (metadata['timestamp_0'] - current_time < pd.Timedelta(interval + 1800, "s"))].head(1)
+    for i in ["odd", "even"]:
+        metadata = pd.read_csv(f"metadata_{i}.csv")
+        metadata['timestamp_0'] = pd.to_datetime(metadata['timestamp_0'], format="%Y-%m-%d %H-%M-%S")
         
-        if future_metadata.empty:
-            metadata.loc[idx, [timestamp_col]] = "NotAvail"
-            metadata.loc[idx, [avg_reflectivity_col]] = "NotAvail"
-            metadata.loc[idx, [label_col]] = "NotAvail"
-        else:
-            future_timestamp = future_metadata['timestamp_0'].tolist()[0]
-            metadata.loc[idx, [timestamp_col]] = future_timestamp
-            metadata.loc[idx, [avg_reflectivity_col]] = metadata.loc[metadata['timestamp_0'] == future_timestamp, 'avg_reflectivity_0'].tolist()[0]
-            metadata.loc[idx, [label_col]] = metadata.loc[metadata['timestamp_0'] == future_timestamp, 'label_0'].tolist()[0]
-        
-        print(current_time)
+        timestamp_col = f"timestamp_{interval}"
+        label_col = f"label_{interval}"
+        avg_reflectivity_col = f"avg_reflectivity_{interval}"
 
-    metadata['timestamp_0'] = metadata['timestamp_0'].astype(str).str.replace(':', '-')
-    metadata[timestamp_col] = metadata[timestamp_col].astype(str).str.replace(':', '-')
-    metadata.to_csv(f"metadata_{interval}.csv", index=False)
+        if timestamp_col not in metadata.columns: metadata[timestamp_col] = np.nan
+        if label_col not in metadata.columns: metadata[label_col] = np.nan
+        if avg_reflectivity_col not in metadata.columns: metadata[avg_reflectivity_col] = np.nan
+
+        for idx, row in metadata.iterrows():
+            if type(row[timestamp_col]) is str:
+                continue
+                    
+            current_time = row['timestamp_0']
+            future_metadata = metadata[(metadata['timestamp_0'] - current_time >= pd.Timedelta(interval - 60, "s")) &
+                                    (metadata['timestamp_0'] - current_time <= pd.Timedelta(interval + 600, "s"))].head(1)
+            
+            if future_metadata.empty:
+                metadata.loc[idx, [timestamp_col]] = "NotAvail"
+                metadata.loc[idx, [avg_reflectivity_col]] = "NotAvail"
+                metadata.loc[idx, [label_col]] = "NotAvail"
+            else:
+                future_timestamp = future_metadata['timestamp_0'].tolist()[0]
+                metadata.loc[idx, [timestamp_col]] = future_timestamp
+                metadata.loc[idx, [avg_reflectivity_col]] = metadata.loc[metadata['timestamp_0'] == future_timestamp, 'avg_reflectivity_0'].tolist()[0]
+                metadata.loc[idx, [label_col]] = metadata.loc[metadata['timestamp_0'] == future_timestamp, 'label_0'].tolist()[0]
+            
+            print(current_time)
+
+        metadata['timestamp_0'] = metadata['timestamp_0'].astype(str).str.replace(':', '-')
+        metadata[timestamp_col] = metadata[timestamp_col].astype(str).str.replace(':', '-')
+        metadata.to_csv(f"metadata_{i}_{interval}.csv", index=False)
+        
+    df1 = pd.read_csv(f"metadata_odd_{interval}.csv")
+    df2 = pd.read_csv(f"metadata_even_{interval}.csv")
+
+    merged_df = pd.concat([df1, df2], ignore_index=True)
+    merged_df = merged_df.sort_values(by='timestamp_0').reset_index(drop=True)
+    merged_df.to_csv(f"metadata_{interval}.csv", index=False)
 
 def combine_metadata(interval):
     metadata = pd.read_csv("metadata.csv")
@@ -253,41 +261,58 @@ if __name__ == '__main__':
     #     metadata = metadata[metadata['label_0'] != 'Error']
     #     metadata.reset_index(drop=True, inplace=True)
     #     metadata.to_csv("metadata.csv", index=False)
+        
+    #     metadata_odd = pd.DataFrame()
+    #     for file in os.listdir("image/unlabeled1"):
+    #         if file.endswith("txt"): continue
+    #         timestamp = file[:-4]
+    #         row = metadata[metadata['timestamp_0'] == timestamp]
+    #         metadata_odd = metadata_odd._append(row, ignore_index=True)
+    #     metadata_odd.to_csv("metadata_odd.csv", index=False)   
+        
+    #     metadata_even = pd.DataFrame()
+    #     for file in os.listdir("image/unlabeled2"):
+    #         if file.endswith("txt"): continue
+    #         timestamp = file[:-4]
+    #         row = metadata[metadata['timestamp_0'] == timestamp]
+    #         metadata_even = metadata_even._append(row, ignore_index=True) 
+    #     metadata_even.to_csv("metadata_even.csv", index=False)
+           
     # except Exception as e:
     #     print(e)
     #     logging.error(e, exc_info=True)
     
-    # # Label future images
-    # try:
-    #     # Use multiprocessing to iterate over the metadata
-    #     # timestamps = [7200, 21600, 43200]
-    #     # timestamps = [3600, 10800, 14400]
-    #     with mp.Pool(processes=len(timestamps)) as pool:
-    #         start_time = time.time()
-    #         pool.map(find_future_images, timestamps)
-    #         end_time = time.time() - start_time
+    # Label future images
+    try:
+        # Use multiprocessing to iterate over the metadata
+        # timestamps = [1800, 3600, 7200, 10800, 14400, 21600, 43200]
+        timestamps = [3600, 7200, 10800]
+        with mp.Pool(processes=len(timestamps)) as pool:
+            start_time = time.time()
+            pool.map(find_future_images, timestamps)
+            end_time = time.time() - start_time
 
-    #         print(f"Time: {end_time} ###")
+            print(f"Time: {end_time} ###")
 
-    # except Exception as e:
-    #     print(e)
-    #     logging.error(e, exc_info=True)
+    except Exception as e:
+        print(e)
+        logging.error(e, exc_info=True)
     
     # Combine all metadata
     # combine_metadata(interval=1800)
-    # combine_metadata(interval=3600)
-    # combine_metadata(interval=7200)
-    # combine_metadata(interval=10800)
+    combine_metadata(interval=3600)
+    combine_metadata(interval=7200)
+    combine_metadata(interval=10800)
     # combine_metadata(interval=14400)
     # combine_metadata(interval=21600)
     # combine_metadata(interval=43200)
     
     # Plot label and avg reflectivity distribution
     # plot_distribution(interval=0)
-    plot_distribution(interval=1800)
-    # plot_distribution(interval=3600)
-    # plot_distribution(interval=7200)
-    # plot_distribution(interval=10800)
+    # plot_distribution(interval=1800)
+    plot_distribution(interval=3600)
+    plot_distribution(interval=7200)
+    plot_distribution(interval=10800)
     # plot_distribution(interval=14400)
     # plot_distribution(interval=21600)
     # plot_distribution(interval=43200)
