@@ -580,7 +580,7 @@ if __name__ == '__main__':
         
         # Plot testing accuracy by class
         accuracy_by_class = draw_accuracy_by_class(module.correct_results, module.wrong_results, f"{model_path}/{new_version}")
-        print(f"Accuracy by class: {accuracy_by_class}")
+        print(f"Test accuracy by class: {accuracy_by_class}")
         
         # Write down hyperparameters and results
         with open(f"{selected_model_path}/{new_version}/notes.txt", 'w') as file:
@@ -592,6 +592,7 @@ if __name__ == '__main__':
           file.write('### Results ###\n')
           file.write(f"Test loss: {test_loss}\n")
           file.write(f"Test accuracy: {tess_acc}\n")
+          file.write(f"Test accuracy by class: {accuracy_by_class}\n")
           file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
           file.write(f"Load from: {selected_interval}-{selected_version}\n")
@@ -656,7 +657,7 @@ if __name__ == '__main__':
       
       # Plot testing accuracy by class
       accuracy_by_class = draw_accuracy_by_class(module.correct_results, module.wrong_results, f"{model_path}/{new_version}")
-      print(f"Accuracy by class: {accuracy_by_class}")
+      print(f"Test accuracy by class: {accuracy_by_class}")
       
       # Write down hyperparameters and results
       with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
@@ -668,6 +669,7 @@ if __name__ == '__main__':
         file.write('### Results ###\n')
         file.write(f"Test loss: {test_loss}\n")
         file.write(f"Test accuracy: {tess_acc}\n")
+        file.write(f"Test accuracy by class: {accuracy_by_class}\n")
         file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
       
