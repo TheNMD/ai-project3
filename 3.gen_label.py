@@ -282,30 +282,27 @@ if __name__ == '__main__':
     #     print(e)
     #     logging.error(e, exc_info=True)
     
-    # # Label future images
-    # try:
-    #     # Use multiprocessing to iterate over the metadata
-    #     # timestamps = [1800, 3600, 7200, 10800, 14400, 21600, 43200]
-    #     timestamps = [10800, 14400]
-    #     with mp.Pool(processes=len(timestamps)) as pool:
-    #         start_time = time.time()
-    #         pool.map(find_future_images, timestamps)
-    #         end_time = time.time() - start_time
+    # Label future images
+    try:
+        # Use multiprocessing to iterate over the metadata
+        # timestamps = [1800, 3600, 7200, 10800, 14400, 21600, 43200]
+        timestamps = [3600, 7200, 10800]
+        with mp.Pool(processes=len(timestamps)) as pool:
+            start_time = time.time()
+            pool.map(find_future_images, timestamps)
+            end_time = time.time() - start_time
 
-    #         print(f"Time: {end_time} ###")
+            print(f"Time: {end_time} ###")
 
-    # except Exception as e:
-    #     print(e)
-    #     logging.error(e, exc_info=True)
-    
-    find_future_images(3600)
-    find_future_images(7200)
+    except Exception as e:
+        print(e)
+        logging.error(e, exc_info=True)
     
     # Combine all metadata
     # combine_metadata(interval=1800)
     combine_metadata(interval=3600)
     combine_metadata(interval=7200)
-    # combine_metadata(interval=10800)
+    combine_metadata(interval=10800)
     # combine_metadata(interval=14400)
     # combine_metadata(interval=21600)
     # combine_metadata(interval=43200)
@@ -315,7 +312,7 @@ if __name__ == '__main__':
     # plot_distribution(interval=1800)
     plot_distribution(interval=3600)
     plot_distribution(interval=7200)
-    # plot_distribution(interval=10800)
+    plot_distribution(interval=10800)
     # plot_distribution(interval=14400)
     # plot_distribution(interval=21600)
     # plot_distribution(interval=43200)
