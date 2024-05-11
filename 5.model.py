@@ -575,8 +575,12 @@ if __name__ == '__main__':
         print(f"Evaluation time: {test_end_time} seconds")
         
         # Plot loss and accuracy
-        test_loss, tess_acc, best_epoch = plot_results(monitor_value, new_version)
+        test_loss, tess_acc, best_epoch = plot_results(monitor_value, f"{model_path}/{new_version}")
         print(f"Best epoch [{monitor_value}]: {best_epoch}")
+        
+        # Plot testing accuracy by class
+        accuracy_by_class = draw_accuracy_by_class(module.correct_results, module.wrong_results, f"{model_path}/{new_version}")
+        print(f"Accuracy by class: {accuracy_by_class}")
         
         # Write down hyperparameters and results
         with open(f"{selected_model_path}/{new_version}/notes.txt", 'w') as file:
@@ -673,8 +677,8 @@ if __name__ == '__main__':
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
-      if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
-        shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
+      # if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
+      #   shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
         
 
   
