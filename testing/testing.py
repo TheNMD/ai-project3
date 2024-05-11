@@ -1,17 +1,20 @@
+import os
 import pandas as pd
 
-# metadata = pd.read_csv("metadata_temp.csv")
+metadata = pd.read_csv("metadata.csv")
 
-# df_even = metadata.iloc[::2].copy()
-# df_even.to_csv("metadata_even.csv", index=False)
-
-# df_odd = metadata.iloc[1::2].copy()
-# df_odd.to_csv("metadata_odd.csv", index=False)
-
-df1 = pd.read_csv("metadata_odd_7200.csv")
-df2 = pd.read_csv("metadata_even_7200.csv")
-
-merged_df = pd.concat([df1, df2], ignore_index=True)
-merged_df = merged_df.sort_values(by='timestamp_0').reset_index(drop=True)
-
-merged_df.to_csv("metadata_7200.csv", index=False)
+metadata_odd = pd.DataFrame()
+for file in os.listdir("image/unlabeled1"):
+    if file.endswith("txt"): continue
+    timestamp = file[:-4]
+    row = metadata[metadata['timestamp_0'] == timestamp]
+    metadata_odd = metadata_odd._append(row, ignore_index=True)
+metadata_odd.to_csv("metadata_odd.csv", index=False)   
+    
+metadata_even = pd.DataFrame()
+for file in os.listdir("image/unlabeled2"):
+    if file.endswith("txt"): continue
+    timestamp = file[:-4]
+    row = metadata[metadata['timestamp_0'] == timestamp]
+    metadata_even = metadata_even._append(row, ignore_index=True) 
+metadata_even.to_csv("metadata_even.csv", index=False)   

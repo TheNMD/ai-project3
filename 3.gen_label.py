@@ -261,15 +261,26 @@ if __name__ == '__main__':
     #     metadata = metadata[metadata['label_0'] != 'Error']
     #     metadata.reset_index(drop=True, inplace=True)
     #     metadata.to_csv("metadata.csv", index=False)
+        
+    #     metadata_odd = pd.DataFrame()
+    #     for file in os.listdir("image/unlabeled1"):
+    #         if file.endswith("txt"): continue
+    #         timestamp = file[:-4]
+    #         row = metadata[metadata['timestamp_0'] == timestamp]
+    #         metadata_odd = metadata_odd._append(row, ignore_index=True)
+    #     metadata_odd.to_csv("metadata_odd.csv", index=False)   
+        
+    #     metadata_even = pd.DataFrame()
+    #     for file in os.listdir("image/unlabeled2"):
+    #         if file.endswith("txt"): continue
+    #         timestamp = file[:-4]
+    #         row = metadata[metadata['timestamp_0'] == timestamp]
+    #         metadata_even = metadata_even._append(row, ignore_index=True) 
+    #     metadata_even.to_csv("metadata_even.csv", index=False)
+           
     # except Exception as e:
     #     print(e)
     #     logging.error(e, exc_info=True)
-    
-    metadata = pd.read_csv("metadata.csv")
-    df_even = metadata.iloc[::2].copy()
-    df_even.to_csv("metadata_even.csv", index=False)
-    df_odd = metadata.iloc[1::2].copy()
-    df_odd.to_csv("metadata_odd.csv", index=False)   
     
     # # Label future images
     # try:
