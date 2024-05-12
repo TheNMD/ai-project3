@@ -1,0 +1,97 @@
+2024-05-12 00:39:31,529 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-05-12 00:39:31,537 - INFO - GPU available: True (cuda), used: True
+2024-05-12 00:39:31,553 - INFO - TPU available: False, using: 0 TPU cores
+2024-05-12 00:39:31,553 - INFO - IPU available: False, using: 0 IPUs
+2024-05-12 00:39:31,553 - INFO - HPU available: False, using: 0 HPUs
+2024-05-12 00:39:31,554 - INFO - You are using a CUDA device ('NVIDIA RTX A6000') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-05-12 00:39:31,759 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-05-12 00:39:31,782 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-05-12 00:45:19,552 - INFO - Metric val_acc improved. New best score: 0.661
+2024-05-12 00:45:19,555 - INFO - Epoch 0, global step 781: 'val_acc' reached 0.66055 (best 0.66055), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 00:51:07,862 - INFO - Metric val_acc improved by 0.023 >= min_delta = 1e-06. New best score: 0.683
+2024-05-12 00:51:07,863 - INFO - Epoch 0, global step 1562: 'val_acc' reached 0.68319 (best 0.68319), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 00:56:56,530 - INFO - Epoch 1, global step 2344: 'val_acc' was not in top 1
+2024-05-12 01:02:39,428 - INFO - Metric val_acc improved by 0.025 >= min_delta = 1e-06. New best score: 0.708
+2024-05-12 01:02:39,430 - INFO - Epoch 1, global step 3125: 'val_acc' reached 0.70810 (best 0.70810), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 01:08:27,639 - INFO - Metric val_acc improved by 0.016 >= min_delta = 1e-06. New best score: 0.724
+2024-05-12 01:08:27,641 - INFO - Epoch 2, global step 3907: 'val_acc' reached 0.72422 (best 0.72422), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 01:14:16,132 - INFO - Metric val_acc improved by 0.009 >= min_delta = 1e-06. New best score: 0.734
+2024-05-12 01:14:16,134 - INFO - Epoch 2, global step 4688: 'val_acc' reached 0.73358 (best 0.73358), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 01:20:06,091 - INFO - Metric val_acc improved by 0.022 >= min_delta = 1e-06. New best score: 0.756
+2024-05-12 01:20:06,093 - INFO - Epoch 3, global step 5470: 'val_acc' reached 0.75574 (best 0.75574), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 01:25:54,529 - INFO - Metric val_acc improved by 0.008 >= min_delta = 1e-06. New best score: 0.764
+2024-05-12 01:25:54,530 - INFO - Epoch 3, global step 6251: 'val_acc' reached 0.76366 (best 0.76366), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 01:31:46,988 - INFO - Metric val_acc improved by 0.014 >= min_delta = 1e-06. New best score: 0.778
+2024-05-12 01:31:46,990 - INFO - Epoch 4, global step 7033: 'val_acc' reached 0.77810 (best 0.77810), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 01:37:37,166 - INFO - Metric val_acc improved by 0.007 >= min_delta = 1e-06. New best score: 0.785
+2024-05-12 01:37:37,167 - INFO - Epoch 4, global step 7814: 'val_acc' reached 0.78550 (best 0.78550), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 01:43:27,367 - INFO - Epoch 5, global step 8596: 'val_acc' was not in top 1
+2024-05-12 01:49:11,684 - INFO - Epoch 5, global step 9377: 'val_acc' was not in top 1
+2024-05-12 01:54:57,993 - INFO - Metric val_acc improved by 0.007 >= min_delta = 1e-06. New best score: 0.792
+2024-05-12 01:54:57,995 - INFO - Epoch 6, global step 10159: 'val_acc' reached 0.79226 (best 0.79226), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 02:00:48,880 - INFO - Metric val_acc improved by 0.003 >= min_delta = 1e-06. New best score: 0.795
+2024-05-12 02:00:48,881 - INFO - Epoch 6, global step 10940: 'val_acc' reached 0.79546 (best 0.79546), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 02:06:39,446 - INFO - Epoch 7, global step 11722: 'val_acc' was not in top 1
+2024-05-12 02:12:24,812 - INFO - Metric val_acc improved by 0.002 >= min_delta = 1e-06. New best score: 0.797
+2024-05-12 02:12:24,814 - INFO - Epoch 7, global step 12503: 'val_acc' reached 0.79750 (best 0.79750), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 02:18:15,885 - INFO - Epoch 8, global step 13285: 'val_acc' was not in top 1
+2024-05-12 02:23:57,358 - INFO - Epoch 8, global step 14066: 'val_acc' was not in top 1
+2024-05-12 02:29:37,039 - INFO - Epoch 9, global step 14848: 'val_acc' was not in top 1
+2024-05-12 02:35:12,049 - INFO - Epoch 9, global step 15629: 'val_acc' was not in top 1
+2024-05-12 02:40:50,428 - INFO - Epoch 10, global step 16411: 'val_acc' was not in top 1
+2024-05-12 02:46:26,482 - INFO - Epoch 10, global step 17192: 'val_acc' was not in top 1
+2024-05-12 02:52:06,344 - INFO - Metric val_acc improved by 0.004 >= min_delta = 1e-06. New best score: 0.802
+2024-05-12 02:52:06,346 - INFO - Epoch 11, global step 17974: 'val_acc' reached 0.80186 (best 0.80186), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 02:57:49,217 - INFO - Metric val_acc improved by 0.004 >= min_delta = 1e-06. New best score: 0.806
+2024-05-12 02:57:49,220 - INFO - Epoch 11, global step 18755: 'val_acc' reached 0.80586 (best 0.80586), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 03:03:39,963 - INFO - Metric val_acc improved by 0.007 >= min_delta = 1e-06. New best score: 0.813
+2024-05-12 03:03:39,964 - INFO - Epoch 12, global step 19537: 'val_acc' reached 0.81325 (best 0.81325), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 03:09:28,494 - INFO - Metric val_acc improved by 0.011 >= min_delta = 1e-06. New best score: 0.824
+2024-05-12 03:09:28,496 - INFO - Epoch 12, global step 20318: 'val_acc' reached 0.82405 (best 0.82405), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 03:15:12,425 - INFO - Metric val_acc improved by 0.008 >= min_delta = 1e-06. New best score: 0.832
+2024-05-12 03:15:12,427 - INFO - Epoch 13, global step 21100: 'val_acc' reached 0.83173 (best 0.83173), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 03:20:55,235 - INFO - Metric val_acc improved by 0.002 >= min_delta = 1e-06. New best score: 0.834
+2024-05-12 03:20:55,237 - INFO - Epoch 13, global step 21881: 'val_acc' reached 0.83365 (best 0.83365), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 03:26:41,953 - INFO - Metric val_acc improved by 0.005 >= min_delta = 1e-06. New best score: 0.839
+2024-05-12 03:26:41,955 - INFO - Epoch 14, global step 22663: 'val_acc' reached 0.83857 (best 0.83857), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 03:32:25,631 - INFO - Metric val_acc improved by 0.002 >= min_delta = 1e-06. New best score: 0.840
+2024-05-12 03:32:25,633 - INFO - Epoch 14, global step 23444: 'val_acc' reached 0.84009 (best 0.84009), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 03:38:10,312 - INFO - Metric val_acc improved by 0.000 >= min_delta = 1e-06. New best score: 0.840
+2024-05-12 03:38:10,314 - INFO - Epoch 15, global step 24226: 'val_acc' reached 0.84017 (best 0.84017), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 03:43:53,997 - INFO - Epoch 15, global step 25007: 'val_acc' was not in top 1
+2024-05-12 03:49:35,225 - INFO - Metric val_acc improved by 0.002 >= min_delta = 1e-06. New best score: 0.842
+2024-05-12 03:49:35,227 - INFO - Epoch 16, global step 25789: 'val_acc' reached 0.84169 (best 0.84169), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 03:55:18,438 - INFO - Metric val_acc improved by 0.001 >= min_delta = 1e-06. New best score: 0.842
+2024-05-12 03:55:18,440 - INFO - Epoch 16, global step 26570: 'val_acc' reached 0.84237 (best 0.84237), saving model to '/app/result/checkpoint/7200/convnext-b-pretrained/version_10/best_model.ckpt' as top 1
+2024-05-12 04:01:03,795 - INFO - Epoch 17, global step 27352: 'val_acc' was not in top 1
+2024-05-12 04:06:44,629 - INFO - Epoch 17, global step 28133: 'val_acc' was not in top 1
+2024-05-12 04:12:26,511 - INFO - Epoch 18, global step 28915: 'val_acc' was not in top 1
+2024-05-12 04:18:06,827 - INFO - Epoch 18, global step 29696: 'val_acc' was not in top 1
+2024-05-12 04:23:48,633 - INFO - Epoch 19, global step 30478: 'val_acc' was not in top 1
+2024-05-12 04:29:33,484 - INFO - Epoch 19, global step 31259: 'val_acc' was not in top 1
+2024-05-12 04:35:14,661 - INFO - Epoch 20, global step 32041: 'val_acc' was not in top 1
+2024-05-12 04:40:46,578 - INFO - Epoch 20, global step 32822: 'val_acc' was not in top 1
+2024-05-12 04:46:15,894 - INFO - Epoch 21, global step 33604: 'val_acc' was not in top 1
+2024-05-12 04:51:42,871 - INFO - Epoch 21, global step 34385: 'val_acc' was not in top 1
+2024-05-12 04:57:05,717 - INFO - Epoch 22, global step 35167: 'val_acc' was not in top 1
+2024-05-12 05:02:26,866 - INFO - Epoch 22, global step 35948: 'val_acc' was not in top 1
+2024-05-12 05:07:49,799 - INFO - Epoch 23, global step 36730: 'val_acc' was not in top 1
+2024-05-12 05:13:14,628 - INFO - Epoch 23, global step 37511: 'val_acc' was not in top 1
+2024-05-12 05:18:37,249 - INFO - Epoch 24, global step 38293: 'val_acc' was not in top 1
+2024-05-12 05:24:00,436 - INFO - Epoch 24, global step 39074: 'val_acc' was not in top 1
+2024-05-12 05:29:23,146 - INFO - Epoch 25, global step 39856: 'val_acc' was not in top 1
+2024-05-12 05:34:45,070 - INFO - Epoch 25, global step 40637: 'val_acc' was not in top 1
+2024-05-12 05:40:08,892 - INFO - Epoch 26, global step 41419: 'val_acc' was not in top 1
+2024-05-12 05:45:31,060 - INFO - Epoch 26, global step 42200: 'val_acc' was not in top 1
+2024-05-12 05:50:56,100 - INFO - Epoch 27, global step 42982: 'val_acc' was not in top 1
+2024-05-12 05:56:18,209 - INFO - Monitored metric val_acc did not improve in the last 22 records. Best score: 0.842. Signaling Trainer to stop.
+2024-05-12 05:56:18,211 - INFO - Epoch 27, global step 43763: 'val_acc' was not in top 1
+2024-05-12 05:56:19,221 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
