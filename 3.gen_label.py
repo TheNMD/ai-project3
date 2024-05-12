@@ -284,8 +284,8 @@ if __name__ == '__main__':
     # Label future images
     try:
         # Use multiprocessing to iterate over the metadata
-        # timestamps = [1800, 3600, 7200, 10800, 14400, 18000, 21600, 43200]
-        timestamps = [10800, 14400, 18000]
+        # timestamps = [3600, 7200, 10800, 14400, 18000, 21600, 43200]
+        timestamps = [14400, 18000, 21600]
         with mp.Pool(processes=len(timestamps)) as pool:
             start_time = time.time()
             pool.map(find_future_images, timestamps)
