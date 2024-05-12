@@ -431,7 +431,7 @@ if __name__ == '__main__':
   num_classes = 5
   stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
-  checkpoint = False
+  checkpoint = True
   train_from_checkpoint = False
   continue_training = False
   
@@ -511,7 +511,7 @@ if __name__ == '__main__':
               os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
               if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')]
   if len(versions) == 0:
-    new_version = "version_0"
+    new_version = "version_10"
   else:
     latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
     new_version = f"version_{latest_version + 1}"
