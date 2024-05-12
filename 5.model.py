@@ -431,7 +431,7 @@ if __name__ == '__main__':
   num_classes = 5
   stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
-  checkpoint = True
+  checkpoint = False
   train_from_checkpoint = False
   continue_training = False
   
