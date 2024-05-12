@@ -511,7 +511,7 @@ if __name__ == '__main__':
               os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
               if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')]
   if len(versions) == 0:
-    new_version = "version_10"
+    new_version = "version_0"
   else:
     latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
     new_version = f"version_{latest_version + 1}"
@@ -539,7 +539,7 @@ if __name__ == '__main__':
   if checkpoint:
     selected_interval = "7200"
     selected_model_path = f"{result_path}/checkpoint/{selected_interval}/{model_name}-{model_option}" 
-    selected_version = "version_6"
+    selected_version = "version_10"
 
     module = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
