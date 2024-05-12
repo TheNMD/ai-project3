@@ -522,7 +522,8 @@ if __name__ == '__main__':
 
   # Callbacks
   monitor_value = "val_acc" # val_acc | val_loss
-  monitor_mode = "max"      # max     | minx
+  if monitor_value == "val_acc": monitor_mode = "max"
+  elif monitor_value == "val_loss": monitor_mode = "min" 
   
   early_stopping_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
                                                        mode='max',
