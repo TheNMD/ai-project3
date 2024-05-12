@@ -425,7 +425,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 7200 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
+  interval = 3600 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 21600 | 43200
   model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
@@ -521,7 +521,9 @@ if __name__ == '__main__':
                                 name=f'{model_name}-{model_option}')
 
   # Callbacks
-  monitor_value = "val_acc"
+  monitor_value = "val_acc" # val_acc | val_loss
+  if monitor_value == "val_acc": monitor_mode = "max"
+  elif monitor_value == "val_loss": monitor_mode = "min" 
   
   early_stopping_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
                                                        mode='max',
@@ -530,7 +532,7 @@ if __name__ == '__main__':
                                                        verbose=True,)
 
   checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
-                                                     mode='max',
+                                                     mode=monitor_mode,
                                                      save_top_k=1,
                                                      filename='best_model',
                                                      dirpath=f'{model_path}/{new_version}',
@@ -628,15 +630,15 @@ if __name__ == '__main__':
                             loop_settings=loop_settings)
 
     trainer = pl.Trainer(accelerator=accelerator, 
-                          devices=devices, 
-                          strategy=strategy,
-                          max_epochs=epochs,
-                          min_epochs=21,
-                          logger=logger,
-                          callbacks=[early_stopping_callback, checkpoint_callback],
-                          val_check_interval=epoch_ratio,
-                          log_every_n_steps=50,    # log train_loss and train_acc every n batches
-                          precision=16)             # use mixed precision to speed up training
+                         devices=devices, 
+                         strategy=strategy,
+                         max_epochs=epochs,
+                         min_epochs=21,
+                         logger=logger,
+                         callbacks=[early_stopping_callback, checkpoint_callback],
+                         val_check_interval=epoch_ratio,
+                         log_every_n_steps=50,    # log train_loss and train_acc every n batches
+                         precision=16)             # use mixed precision to speed up training
     
     try:
       # Training loop
