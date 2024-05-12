@@ -188,10 +188,9 @@ def find_future_images(interval):
         metadata[timestamp_col] = metadata[timestamp_col].astype(str).str.replace(':', '-')
         metadata.to_csv(f"metadata_{i}_{interval}.csv", index=False)
         
-    df1 = pd.read_csv(f"metadata_odd_{interval}.csv")
-    df2 = pd.read_csv(f"metadata_even_{interval}.csv")
-
-    merged_df = pd.concat([df1, df2], ignore_index=True)
+    df_odd = pd.read_csv(f"metadata_odd_{interval}.csv")
+    df_even = pd.read_csv(f"metadata_even_{interval}.csv")
+    merged_df = pd.concat([df_odd, df_even], ignore_index=True)
     merged_df = merged_df.sort_values(by='timestamp_0').reset_index(drop=True)
     merged_df.to_csv(f"metadata_{interval}.csv", index=False)
 
@@ -292,7 +291,7 @@ if __name__ == '__main__':
             pool.map(find_future_images, timestamps)
             end_time = time.time() - start_time
 
-            print(f"Time: {end_time} ###")
+            print(f"Time: {end_time}")
 
     except Exception as e:
         print(e)
