@@ -434,7 +434,6 @@ def draw_accuracy_by_class(correct_results, wrong_results, save_path):
     
     return {x[0] :y1[0], x[1] :y1[1], x[2] :y1[2], x[3] :y1[3], x[4] :y1[4]}
 
-
 if __name__ == '__main__':
   print("Python version: ", sys.version)
   print("Ubuntu version: ", platform.release())
@@ -461,10 +460,10 @@ if __name__ == '__main__':
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-l"
+  model_name = "vit-b"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.0 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   train_from_checkpoint = False
@@ -502,7 +501,7 @@ if __name__ == '__main__':
   min_delta = 1e-4
 
   ## For training loop
-  batch_size = 128 # 32 | 64 | 128 | 264
+  batch_size = 256 # 32 | 64 | 128 | 256
   epochs = 100
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
