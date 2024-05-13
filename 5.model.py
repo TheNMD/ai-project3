@@ -502,7 +502,7 @@ if __name__ == '__main__':
   min_delta = 1e-4
 
   ## For training loop
-  batch_size = 128 # 8 | 16 | 32 | 64 | 128
+  batch_size = 128 # 32 | 64 | 128 | 264
   epochs = 100
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
@@ -574,9 +574,9 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    selected_interval = "7200"
+    selected_interval = "10800"
     selected_model_path = f"{result_path}/checkpoint/{selected_interval}/{model_name}-{model_option}" 
-    selected_version = "version_10"
+    selected_version = "version_1"
 
     module = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
