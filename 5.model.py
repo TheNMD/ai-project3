@@ -93,7 +93,10 @@ class FinetuneModule(pl.LightningModule):
       is_pretrained = True
       
     if name == "vit":
-      if size == "b":
+      if size == "s":
+        model = timm.create_model('vit_small_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
+        train_size, test_size = 224, 224
+      elif size == "b":
         model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
         train_size, test_size = 224, 224
       elif size == "l":
@@ -106,7 +109,7 @@ class FinetuneModule(pl.LightningModule):
       model.head.weight.data.mul_(0.001)
       # model = add_stochastic_depth(name, model, self.stochastic_depth)
     
-    elif name == "swinv":
+    elif name == "swin":
       if size == "s":
         model = timm.create_model('swin_small_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
         train_size, test_size = 224, 224
@@ -454,7 +457,11 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   interval = 7200 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  model_name = "convnext-l" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
+  # convnext-s | convnext-b | convnext-l 
+  # vit-s      | vit-b      | vit-l 
+  # swin-s     | swin-b 
+  # effnetv2-s | effnetv2-m
+  model_name = "convnext-l"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
   stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
