@@ -93,7 +93,10 @@ class FinetuneModule(pl.LightningModule):
       is_pretrained = True
       
     if name == "vit":
-      if size == "b":
+      if size == "s":
+        model = timm.create_model('vit_small_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
+        train_size, test_size = 224, 224
+      elif size == "b":
         model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
         train_size, test_size = 224, 224
       elif size == "l":
@@ -104,6 +107,34 @@ class FinetuneModule(pl.LightningModule):
       num_feature = model.head.in_features
       model.head = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
       model.head.weight.data.mul_(0.001)
+      # model = add_stochastic_depth(name, model, self.stochastic_depth)
+    
+    elif name == "swin":
+      if size == "s":
+        model = timm.create_model('swin_small_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
+        train_size, test_size = 224, 224
+      elif size == "b":
+        model = timm.create_model('swin_base_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
+        train_size, test_size = 224, 224
+      if self.freeze:
+        for param in model.parameters(): param.requires_grad = False
+      num_feature = model.head.fc.in_features
+      model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
+      model.head.fc.weight.data.mul_(0.001)
+      # model = add_stochastic_depth(name, model, self.stochastic_depth)
+    
+    elif name == "effnetv2":
+      if size == "s":
+        model = timm.create_model('tf_efficientnetv2_s.in21k', pretrained=is_pretrained)
+        train_size, test_size = 300, 384
+      elif size == "m":
+        model = timm.create_model('tf_efficientnetv2_m.in21k', pretrained=is_pretrained)
+        train_size, test_size = 384, 480
+      if self.freeze:
+        for param in model.parameters(): param.requires_grad = False
+      num_feature = model.classifier.in_features
+      model.classifier = torch.nn.Linear(in_features=num_feature, out_features=5)
+      model.classifier.weight.data.mul_(0.001)
       # model = add_stochastic_depth(name, model, self.stochastic_depth)
     
     elif name == "convnext":
@@ -425,8 +456,12 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 0 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  model_name = "convnext-b" # convnext-s | convnext-b | convnext-l | vit-b | vit-l
+  interval = 7200 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
+  # convnext-s | convnext-b | convnext-l 
+  # vit-s      | vit-b      | vit-l 
+  # swin-s     | swin-b 
+  # effnetv2-s | effnetv2-m
+  model_name = "convnext-l"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
   stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
@@ -467,7 +502,7 @@ if __name__ == '__main__':
   min_delta = 1e-4
 
   ## For training loop
-  batch_size = 256 # 8 | 16 | 32 | 64 | 128
+  batch_size = 128 # 8 | 16 | 32 | 64 | 128
   epochs = 100
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
