@@ -8,19 +8,23 @@ def add_stochastic_depth(model_name, model, drop_prob):
                 layer.drop_path = timm.layers.DropPath(drop_prob)
     return model
 
-# model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=True)
+model = timm.create_model('tf_efficientnetv2_m.in21k', pretrained=True)
 
-# num_feature = model.head.in_features
-# model.head = torch.nn.Linear(in_features=num_feature, out_features=5)
-# model.head.weight.data.mul_(0.001)
+print(model)
 
-model = timm.create_model('convnext_base.fb_in22k', pretrained=True)
-# print(model)
+num_feature = model.classifier.in_features
+model.classifier = torch.nn.Linear(in_features=num_feature, out_features=5)
+model.classifier.weight.data.mul_(0.001)
 
-num_feature = model.head.fc.in_features
+print(model)
 
-model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
-model.head.fc.weight.data.mul_(0.001)
-model = add_stochastic_depth("convnext", model, 0.2)
+# model = timm.create_model('convnext_base.fb_in22k', pretrained=True)
+# # print(model)
 
-# print(model)
+# num_feature = model.head.fc.in_features
+
+# model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
+# model.head.fc.weight.data.mul_(0.001)
+# model = add_stochastic_depth("convnext", model, 0.2)
+
+# # print(model)
