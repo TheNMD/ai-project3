@@ -45,7 +45,7 @@ def generate_image(metadata_chunk):
 
             plt.title('')
             plt.axis('off')
-            plt.savefig(f"image/unlabeled1/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+            plt.savefig(f"image/unlabeled/{timestamp}.jpg", dpi=150, bbox_inches='tight')
             
             print(f"{timestamp} - Done")
             
@@ -53,7 +53,7 @@ def generate_image(metadata_chunk):
             plt.close()
             del display, grid_data, data
         except Exception as e:
-            with open(f'image/unlabeled1/{timestamp}.txt', 'w') as f: 
+            with open(f'image/unlabeled/{timestamp}.txt', 'w') as f: 
                 f.write('error')
             logging.error(e, exc_info=True)
             continue
@@ -62,27 +62,13 @@ def update_metadata():
     old_metadata = pd.read_csv("metadata.csv")
     old_metadata = old_metadata[['path_0', 'timestamp_0']]
     
-    files = [file for file in os.listdir("image/unlabeled1")]
+    files = [file for file in os.listdir("image/unlabeled")]
     timestamps = [file[:-4] for file in files]
     generated = ["True" if file.endswith('.jpg') else "Error" for file in files]
     new_metadata = pd.DataFrame({'timestamp_0': timestamps, 'generated': generated})
     
     updated_metadata = pd.merge(old_metadata, new_metadata, on='timestamp_0', how='outer')
     updated_metadata.to_csv("metadata.csv", index=False)
-
-def move_alternate_files():
-    source_folder = "image/unlabeled1"
-    destination_folder = "image/unlabeled2"
-    
-    files = os.listdir(source_folder)
-
-    # Iterate over the files and copy every other file
-    for i, file_name in enumerate(files):
-        if i % 2 == 0:  # Every other file
-            source_path = os.path.join(source_folder, file_name)
-            destination_path = os.path.join(destination_folder, file_name)
-            shutil.move(source_path, destination_path)
-            print(f"Copied '{file_name}' to '{destination_folder}'")
 
 if __name__ == '__main__':
     print("Python version: ", sys.version)
@@ -93,9 +79,8 @@ if __name__ == '__main__':
     num_processes = 16
     chunk_size = 100 * num_processes
     
-    if not os.path.exists("image/unlabeled1"):
-        os.makedirs("image/unlabeled1")
-        os.makedirs("image/unlabeled2")
+    if not os.path.exists("image/unlabeled"):
+        os.makedirs("image/unlabeled")
     
     try:
         counter = 0
@@ -117,8 +102,6 @@ if __name__ == '__main__':
         update_metadata()
         print(e)
         logging.error(e, exc_info=True)
-        
-    move_alternate_files()
     
     metadata = pd.read_csv("metadata.csv")
     metadata = metadata[metadata['generated'] != 'Error']
