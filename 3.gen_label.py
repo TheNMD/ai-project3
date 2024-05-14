@@ -285,7 +285,7 @@ if __name__ == '__main__':
     try:
         # Use multiprocessing to iterate over the metadata
         # timestamps = [3600, 7200, 10800, 14400, 18000, 21600, 43200]
-        timestamps = [14400, 18000, 21600]
+        timestamps = [3600, 7200, 10800, 14400, 18000, 21600]
         with mp.Pool(processes=len(timestamps)) as pool:
             start_time = time.time()
             pool.map(find_future_images, timestamps)
@@ -298,10 +298,9 @@ if __name__ == '__main__':
         logging.error(e, exc_info=True)
     
     # Combine all metadata
-    # combine_metadata(interval=1800)
-    # combine_metadata(interval=3600)
-    # combine_metadata(interval=7200)
-    # combine_metadata(interval=10800)
+    combine_metadata(interval=3600)
+    combine_metadata(interval=7200)
+    combine_metadata(interval=10800)
     combine_metadata(interval=14400)
     combine_metadata(interval=18000)
     combine_metadata(interval=21600)
@@ -309,10 +308,9 @@ if __name__ == '__main__':
     
     # Plot label and avg reflectivity distribution
     # plot_distribution(interval=0)
-    # plot_distribution(interval=1800)
-    # plot_distribution(interval=3600)
-    # plot_distribution(interval=7200)
-    # plot_distribution(interval=10800)
+    plot_distribution(interval=3600)
+    plot_distribution(interval=7200)
+    plot_distribution(interval=10800)
     plot_distribution(interval=14400)
     plot_distribution(interval=18000)
     plot_distribution(interval=21600)
