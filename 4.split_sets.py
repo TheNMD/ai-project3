@@ -22,16 +22,8 @@ elif ENV == "colab":
     # %cd drive/MyDrive/Coding/
     data_path = "data/NhaBe"
 
-# 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-<<<<<<< HEAD
-<<<<<<< HEAD
-interval = 21600
-=======
-interval = 21600 
->>>>>>> e7861a4e695eb986d7caa4fde4fb8ddbeb7f907e
-=======
+# 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
 interval = 0 
->>>>>>> f84a98c194ff095d7d3d1364ea46f75c1649429d
 
 def split_df(interval, seed=42):
     metadata = pd.read_csv("metadata.csv")
