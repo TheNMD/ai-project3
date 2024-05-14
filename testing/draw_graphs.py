@@ -22,7 +22,7 @@ def plot_results(monitor_value="val_acc"):
   plt.legend()
   plt.xlabel('epoch')
   plt.ylabel('value')
-  plt.title('Loss graph')
+  plt.title('Loss Graph')
   plt.legend()
   plt.savefig('graph_loss.png')
 
@@ -34,7 +34,7 @@ def plot_results(monitor_value="val_acc"):
   plt.legend()
   plt.xlabel('epoch')
   plt.ylabel('value')
-  plt.title('Accuracy graph')
+  plt.title('Accuracy Graph')
   plt.legend()
   plt.savefig('graph_acc.png')
 
