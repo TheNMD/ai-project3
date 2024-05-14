@@ -33,7 +33,7 @@ def generate_image(metadata_chunk):
         
         timestamp = row['timestamp_0']
         try:
-            data = pyart.io.read_sigmet(f"{data_path}/{row['path_0']}")
+            data = pyart.io.read_sigmet(f"{data_path}/{row['path']}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
             
             grid_data = pyart.map.grid_from_radars(data,
@@ -60,7 +60,7 @@ def generate_image(metadata_chunk):
 
 def update_metadata():
     old_metadata = pd.read_csv("metadata.csv")
-    old_metadata = old_metadata[['path_0', 'timestamp_0']]
+    old_metadata = old_metadata[['path', 'timestamp_0']]
     
     files = [file for file in os.listdir("image/unlabeled")]
     timestamps = [file[:-4] for file in files]
