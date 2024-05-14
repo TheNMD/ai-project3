@@ -198,6 +198,9 @@ class FinetuneModule(pl.LightningModule):
     dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}/{set_name}",
                                                transform=transforms)
     
+    # dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}-temp/{set_name}",
+    #                                            transform=transforms)
+    
     dataloader = torch.utils.data.DataLoader(dataset, 
                                              batch_size=self.batch_size, 
                                              shuffle=shuffle, 
@@ -455,7 +458,8 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  interval = 7200 # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
+   # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
+  interval = 7200
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
