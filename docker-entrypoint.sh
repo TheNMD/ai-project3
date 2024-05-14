@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 3.gen_label.py
+python3 5.model.py
