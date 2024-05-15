@@ -23,7 +23,7 @@ elif ENV == "colab":
     data_path = "data/NhaBe"
 
 # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-interval = 43200 
+interval = 0 
 
 def split_df(interval, seed=42):
     metadata = pd.read_csv("metadata.csv")
@@ -60,34 +60,31 @@ def split_df(interval, seed=42):
     return train_set, val_set, test_set
 
 def move_to_train(metadata_chunk):
-    for idx, row in metadata_chunk.iterrows():
+    for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp_0']
         label = row[f'label_{interval}']
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}-temp/train/{label}/{timestamp}.jpg")
         elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}-temp/train/{label}/{timestamp}.jpg")
-        print(idx)
 
 def move_to_val(metadata_chunk):
-    for idx, row in metadata_chunk.iterrows():
+    for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp_0']
         label = row[f'label_{interval}']
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}-temp/val/{label}/{timestamp}.jpg")
         elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}-temp/val/{label}/{timestamp}.jpg")
-        print(idx)
         
 def move_to_test(metadata_chunk):
-    for idx, row in metadata_chunk.iterrows():
+    for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp_0']
         label = row[f'label_{interval}']
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}-temp/test/{label}/{timestamp}.jpg")
         elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
             shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}-temp/test/{label}/{timestamp}.jpg")
-        print(idx)
 
 if __name__ == '__main__':
     print("Python version: ", sys.version)
@@ -132,6 +129,7 @@ if __name__ == '__main__':
             start_time = time.time()
             pool.map(move_to_train, np.array_split(train_set, num_processes))
             end_time = time.time() - start_time
+            print(end_time)
     except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
@@ -143,6 +141,7 @@ if __name__ == '__main__':
             start_time = time.time()
             pool.map(move_to_val, np.array_split(val_set, num_processes))
             end_time = time.time() - start_time
+            print(end_time)
     except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
@@ -154,6 +153,7 @@ if __name__ == '__main__':
             start_time = time.time()
             pool.map(move_to_test, np.array_split(test_set, num_processes))
             end_time = time.time() - start_time
+            print(end_time)
     except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
