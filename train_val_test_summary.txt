@@ -13,7 +13,7 @@ clear              11155
 light_rain          7345
 moderate_rain       5159
 heavy_rain          1333
-very_heavy_rain        7
+very_heavy_rain        5
 Name: count, dtype: int64
 
 ### Test set ###
@@ -22,6 +22,6 @@ clear              11349
 light_rain          7225
 moderate_rain       5072
 heavy_rain          1351
-very_heavy_rain        4
+very_heavy_rain        6
 Name: count, dtype: int64
 
