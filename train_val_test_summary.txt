@@ -1,0 +1,27 @@
+### Train set ###
+label_7200
+clear              89786
+light_rain         58306
+moderate_rain      41462
+heavy_rain         10371
+very_heavy_rain       73
+Name: count, dtype: int64
+
+### Val set ###
+label_7200
+clear              11155
+light_rain          7345
+moderate_rain       5159
+heavy_rain          1333
+very_heavy_rain        7
+Name: count, dtype: int64
+
+### Test set ###
+label_7200
+clear              11349
+light_rain          7225
+moderate_rain       5072
+heavy_rain          1351
+very_heavy_rain        4
+Name: count, dtype: int64
+
