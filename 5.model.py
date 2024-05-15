@@ -195,11 +195,11 @@ class FinetuneModule(pl.LightningModule):
                                             std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                               ]) 
 
-    dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}/{set_name}",
-                                               transform=transforms)
-    
-    # dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}-temp/{set_name}",
+    # dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}/{set_name}",
     #                                            transform=transforms)
+    
+    dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}-temp/{set_name}",
+                                               transform=transforms)
     
     dataloader = torch.utils.data.DataLoader(dataset, 
                                              batch_size=self.batch_size, 
@@ -459,7 +459,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
    # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 14400
+  interval = 3600
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
