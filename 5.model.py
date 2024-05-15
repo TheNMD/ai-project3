@@ -458,7 +458,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-   # 0 | 1800 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
+   # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
   interval = 14400
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
@@ -502,7 +502,7 @@ if __name__ == '__main__':
 
   ## For callbacks
   patience = 22
-  min_delta = 1e-4
+  min_delta = 5e-4
 
   ## For training loop
   batch_size = 256 # 32 | 64 | 128 | 256
