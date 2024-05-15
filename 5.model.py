@@ -369,7 +369,7 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
     return self.test_loader
 
-def plot_results(monitor_value, save_path):
+def plot_results(monitor_value, min_delta, save_path):
   if not os.path.exists(f"{save_path}/metrics.csv"):
     return None, None, None
   
@@ -378,12 +378,18 @@ def plot_results(monitor_value, save_path):
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
   val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
   
-  if monitor_value == 'val_loss':
-    min_idx = val_results['val_loss'].idxmin()
-    best_epoch = val_results.loc[min_idx, 'epoch']
-  elif monitor_value == 'val_acc':
-    max_idx = val_results['val_acc'].idxmax()
-    best_epoch = val_results.loc[max_idx, 'epoch']
+  monitor_result_list = val_results[monitor_value].tolist()
+  if monitor_value == "val_loss":
+      min_loss = monitor_result_list[0]
+      for value in monitor_result_list[1:]:
+          if value - min_loss < min_delta: min_loss = value
+      best_idx = val_results[val_results['val_acc'] == min_loss].index.tolist()[0]
+  elif monitor_value == "val_acc":
+      max_acc = monitor_result_list[0]
+      for value in monitor_result_list[1:]:
+          if value - max_acc > min_delta: max_acc = value
+      best_idx = val_results[val_results['val_acc'] == max_acc].index.tolist()[0]
+  best_epoch = val_results.loc[best_idx, 'epoch']
   
   val_results = val_results.groupby(['epoch'], as_index=False).mean()
   
@@ -615,7 +621,7 @@ if __name__ == '__main__':
         print(f"Evaluation time: {test_end_time} seconds")
         
         # Plot loss and accuracy
-        test_loss, tess_acc, best_epoch = plot_results(monitor_value, f"{model_path}/{new_version}")
+        test_loss, tess_acc, best_epoch = plot_results(monitor_value, min_delta, f"{model_path}/{new_version}")
         print(f"Best epoch [{monitor_value}]: {best_epoch}")
         
         # Plot testing accuracy by class
@@ -692,7 +698,7 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
 
       # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = plot_results(monitor_value, f"{model_path}/{new_version}")
+      test_loss, tess_acc, best_epoch = plot_results(monitor_value, min_delta, f"{model_path}/{new_version}")
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Plot testing accuracy by class
