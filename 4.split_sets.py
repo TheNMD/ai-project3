@@ -44,7 +44,7 @@ def split_df(interval, seed=42):
     val_set.reset_index(drop=True, inplace=True)
     test_set.reset_index(drop=True, inplace=True)
     
-    with open(f'image/labeled/{interval}-temp/train_val_test_summary.txt', 'w') as file:
+    with open(f'image/labeled/{interval}/train_val_test_summary.txt', 'w') as file:
         file.write("### Train set ###\n")
         frequency_train = train_set[f'label_{interval}'].value_counts()
         file.write(f"{frequency_train}\n\n")
@@ -64,58 +64,58 @@ def move_to_train(metadata_chunk):
         timestamp = row['timestamp_0']
         label = row[f'label_{interval}']
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
-            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}-temp/train/{label}/{timestamp}.jpg")
+            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
         elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
-            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}-temp/train/{label}/{timestamp}.jpg")
+            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}/train/{label}/{timestamp}.jpg")
 
 def move_to_val(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp_0']
         label = row[f'label_{interval}']
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
-            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}-temp/val/{label}/{timestamp}.jpg")
+            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/val/{label}/{timestamp}.jpg")
         elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
-            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}-temp/val/{label}/{timestamp}.jpg")
+            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}/val/{label}/{timestamp}.jpg")
         
 def move_to_test(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         timestamp = row['timestamp_0']
         label = row[f'label_{interval}']
         if os.path.exists(f"image/unlabeled1/{timestamp}.jpg"):
-            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}-temp/test/{label}/{timestamp}.jpg")
+            shutil.copy(f"image/unlabeled1/{timestamp}.jpg", f"image/labeled/{interval}/test/{label}/{timestamp}.jpg")
         elif os.path.exists(f"image/unlabeled2/{timestamp}.jpg"):
-            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}-temp/test/{label}/{timestamp}.jpg")
+            shutil.copy(f"image/unlabeled2/{timestamp}.jpg", f"image/labeled/{interval}/test/{label}/{timestamp}.jpg")
 
 if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
     
-    if not os.path.exists(f"image/labeled/{interval}-temp"):
-        os.makedirs(f"image/labeled/{interval}-temp")
-        shutil.move(f"image/labeled/{interval}_avg_reflectivity_dist.png", f"image/labeled/{interval}-temp/{interval}_avg_reflectivity_dist.png")
-        shutil.move(f"image/labeled/{interval}_label_dist.png", f"image/labeled/{interval}-temp/{interval}_label_dist.png")
-        shutil.move(f"image/labeled/{interval}_label_dist.txt", f"image/labeled/{interval}-temp/{interval}_label_dist.txt")
+    if not os.path.exists(f"image/labeled/{interval}"):
+        os.makedirs(f"image/labeled/{interval}")
+        shutil.move(f"image/labeled/{interval}_avg_reflectivity_dist.png", f"image/labeled/{interval}/{interval}_avg_reflectivity_dist.png")
+        shutil.move(f"image/labeled/{interval}_label_dist.png", f"image/labeled/{interval}/{interval}_label_dist.png")
+        shutil.move(f"image/labeled/{interval}_label_dist.txt", f"image/labeled/{interval}/{interval}_label_dist.txt")
                 
-        os.makedirs(f"image/labeled/{interval}-temp/train")
-        os.makedirs(f"image/labeled/{interval}-temp/train/clear")
-        os.makedirs(f"image/labeled/{interval}-temp/train/light_rain")
-        os.makedirs(f"image/labeled/{interval}-temp/train/moderate_rain")
-        os.makedirs(f"image/labeled/{interval}-temp/train/heavy_rain")
-        os.makedirs(f"image/labeled/{interval}-temp/train/very_heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/train")
+        os.makedirs(f"image/labeled/{interval}/train/clear")
+        os.makedirs(f"image/labeled/{interval}/train/light_rain")
+        os.makedirs(f"image/labeled/{interval}/train/moderate_rain")
+        os.makedirs(f"image/labeled/{interval}/train/heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/train/very_heavy_rain")
         
-        os.makedirs(f"image/labeled/{interval}-temp/val")
-        os.makedirs(f"image/labeled/{interval}-temp/val/clear")
-        os.makedirs(f"image/labeled/{interval}-temp/val/light_rain")
-        os.makedirs(f"image/labeled/{interval}-temp/val/moderate_rain")
-        os.makedirs(f"image/labeled/{interval}-temp/val/heavy_rain")
-        os.makedirs(f"image/labeled/{interval}-temp/val/very_heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/val")
+        os.makedirs(f"image/labeled/{interval}/val/clear")
+        os.makedirs(f"image/labeled/{interval}/val/light_rain")
+        os.makedirs(f"image/labeled/{interval}/val/moderate_rain")
+        os.makedirs(f"image/labeled/{interval}/val/heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/val/very_heavy_rain")
         
-        os.makedirs(f"image/labeled/{interval}-temp/test")
-        os.makedirs(f"image/labeled/{interval}-temp/test/clear")
-        os.makedirs(f"image/labeled/{interval}-temp/test/light_rain")
-        os.makedirs(f"image/labeled/{interval}-temp/test/moderate_rain")
-        os.makedirs(f"image/labeled/{interval}-temp/test/heavy_rain")
-        os.makedirs(f"image/labeled/{interval}-temp/test/very_heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/test")
+        os.makedirs(f"image/labeled/{interval}/test/clear")
+        os.makedirs(f"image/labeled/{interval}/test/light_rain")
+        os.makedirs(f"image/labeled/{interval}/test/moderate_rain")
+        os.makedirs(f"image/labeled/{interval}/test/heavy_rain")
+        os.makedirs(f"image/labeled/{interval}/test/very_heavy_rain")
     
     train_set, val_set, test_set = split_df(interval)
     
