@@ -507,8 +507,10 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}\n")
 
   ## For callbacks
+  monitor_value = "val_acc" # val_acc | val_loss
   patience = 22
-  min_delta = 1e-4
+  min_delta = 1e-4 # 1e-4 | 5e-4
+  min_epochs = 61 # 21 | 41 | 61
 
   ## For training loop
   batch_size = 256 # 32 | 64 | 128 | 256
@@ -565,8 +567,6 @@ if __name__ == '__main__':
                                 name=f'{model_name}-{model_option}')
 
   # Callbacks
-  min_epochs = 61 # 21 | 41 | 61
-  monitor_value = "val_acc" # val_acc | val_loss
   if monitor_value == "val_acc": monitor_mode = "max"
   elif monitor_value == "val_loss": monitor_mode = "min" 
   
