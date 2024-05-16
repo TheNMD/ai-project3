@@ -508,7 +508,7 @@ if __name__ == '__main__':
 
   ## For callbacks
   patience = 22
-  min_delta = 5e-4
+  min_delta = 1e-4
 
   ## For training loop
   batch_size = 256 # 32 | 64 | 128 | 256
