@@ -565,6 +565,7 @@ if __name__ == '__main__':
                                 name=f'{model_name}-{model_option}')
 
   # Callbacks
+  min_epochs = 61 # 21 | 41 | 61
   monitor_value = "val_acc" # val_acc | val_loss
   if monitor_value == "val_acc": monitor_mode = "max"
   elif monitor_value == "val_loss": monitor_mode = "min" 
@@ -597,7 +598,7 @@ if __name__ == '__main__':
                            devices=devices, 
                            strategy=strategy,
                            max_epochs=epochs,
-                           min_epochs=21,
+                           min_epochs=min_epochs,
                            logger=logger,
                            callbacks=[early_stopping_callback, checkpoint_callback],
                            val_check_interval=epoch_ratio,
@@ -677,7 +678,7 @@ if __name__ == '__main__':
                          devices=devices, 
                          strategy=strategy,
                          max_epochs=epochs,
-                         min_epochs=21,
+                         min_epochs=min_epochs,
                          logger=logger,
                          callbacks=[early_stopping_callback, checkpoint_callback],
                          val_check_interval=epoch_ratio,
