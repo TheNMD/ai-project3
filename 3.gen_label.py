@@ -302,10 +302,10 @@ if __name__ == '__main__':
     # combine_metadata(interval=43200)
     
     # Plot label and avg reflectivity distribution
-    plot_distribution(interval=0)
+    # plot_distribution(interval=0)
     plot_distribution(interval=3600)
     plot_distribution(interval=7200)
-    # plot_distribution(interval=10800)
+    plot_distribution(interval=10800)
     # plot_distribution(interval=14400)
     # plot_distribution(interval=18000)
     # plot_distribution(interval=21600)
