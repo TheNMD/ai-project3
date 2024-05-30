@@ -23,7 +23,7 @@ elif ENV == "colab":
     data_path = "data/NhaBe"
 
 # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-interval = 7200 
+interval = 10800 
 
 def split_df(interval, seed=42):
     metadata = pd.read_csv("metadata.csv")
