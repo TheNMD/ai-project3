@@ -199,7 +199,7 @@ class FinetuneModule(pl.LightningModule):
     #                                            transform=transforms)
     
     dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}-temp/{set_name}",
-                                               transform=transforms)
+                                            transform=transforms)
     
     dataloader = torch.utils.data.DataLoader(dataset, 
                                              batch_size=self.batch_size, 
@@ -257,6 +257,7 @@ class FinetuneModule(pl.LightningModule):
 
     self.log("test_loss", test_loss, on_epoch=True)
     self.log("test_acc", test_acc, on_epoch=True)
+    
     return test_loss
 
   def on_test_end(self):
@@ -465,7 +466,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
    # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 0
+  interval = 7200
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -510,11 +511,11 @@ if __name__ == '__main__':
   monitor_value = "val_acc" # val_acc | val_loss
   patience = 22
   min_delta = 1e-4 # 1e-4 | 5e-4
-  min_epochs = 61 # 21 | 41 | 61
+  min_epochs = 21 # 21 | 41 | 61
 
   ## For training loop
-  batch_size = 256 # 32 | 64 | 128 | 256
-  epochs = 200
+  batch_size = 128 # 32 | 64 | 128 | 256
+  epochs = 150
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
@@ -584,8 +585,7 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    selected_interval = "10800"
-    selected_model_path = f"{result_path}/checkpoint/{selected_interval}/{model_name}-{model_option}" 
+    selected_model_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}" 
     selected_version = "version_1"
 
     module = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
@@ -642,7 +642,7 @@ if __name__ == '__main__':
           file.write(f"Test accuracy by class: {accuracy_by_class}\n")
           file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
-          file.write(f"Load from: {selected_interval}-{selected_version}\n")
+          file.write(f"Load from: {interval}-{selected_version}\n")
           file.write(f"Continue training: {continue_training}\n")
         
       except Exception as e:
