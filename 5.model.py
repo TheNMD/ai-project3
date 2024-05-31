@@ -582,10 +582,9 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    selected_model_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}" 
-    selected_version = "version_2"
+    selected_version = "version_13"
 
-    module = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
+    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
                                                  loop_settings=loop_settings)
@@ -606,28 +605,36 @@ if __name__ == '__main__':
         # Training loop
         train_start_time = time.time()
         if continue_training:
-          trainer.fit(module, ckpt_path=f"{selected_model_path}/{selected_version}/best_model.ckpt")
+          trainer.fit(module, ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
         else:
           trainer.fit(module)
         train_end_time = time.time() - train_start_time
         print(f"Training time: {train_end_time} seconds")
         
         # Evaluation
+        module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/best_model.ckpt", 
+                                                          model_settings=model_settings,
+                                                          optimizer_settings=optimizer_settings, 
+                                                          loop_settings=loop_settings)
         test_start_time = time.time()
-        trainer.test(module)
+        trainer.test(module_test)
         test_end_time = time.time() - test_start_time
         print(f"Evaluation time: {test_end_time} seconds")
-        
+
         # Plot loss and accuracy
-        test_loss, tess_acc, best_epoch = plot_results(monitor_value, min_delta, f"{model_path}/{new_version}")
+        test_loss, tess_acc, best_epoch = plot_results(monitor_value, 
+                                                      min_delta, 
+                                                      f"{model_path}/{new_version}")
         print(f"Best epoch [{monitor_value}]: {best_epoch}")
         
         # Plot testing accuracy by class
-        accuracy_by_class = draw_accuracy_by_class(module.correct_results, module.wrong_results, f"{model_path}/{new_version}")
+        accuracy_by_class = draw_accuracy_by_class(module_test.correct_results, 
+                                                  module_test.wrong_results, 
+                                                  f"{model_path}/{new_version}")
         print(f"Test accuracy by class: {accuracy_by_class}")
         
         # Write down hyperparameters and results
-        with open(f"{selected_model_path}/{new_version}/notes.txt", 'w') as file:
+        with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
           file.write('### Hyperparameters ###\n')
           file.write(f'model_settings = {model_settings}\n')
           file.write(f'optimizer_settings = {optimizer_settings}\n')
@@ -642,6 +649,11 @@ if __name__ == '__main__':
           file.write(f"Load from: {interval}-{selected_version}\n")
           file.write(f"Continue training: {continue_training}\n")
         
+              # Move architecture file to the corresponding version
+
+        # Move architecture file to the corresponding version
+        if os.path.exists(f"{model_path}/architecture.txt"):
+          shutil.move(f"{model_path}/architecture.txt", f"{model_path}/{new_version}/architecture.txt")
       except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
@@ -690,17 +702,26 @@ if __name__ == '__main__':
       print(f"Training time: {train_end_time} seconds")
       
       # Evaluation
+      module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/best_model.ckpt", 
+                                                        model_settings=model_settings,
+                                                        optimizer_settings=optimizer_settings, 
+                                                        loop_settings=loop_settings)
       test_start_time = time.time()
-      trainer.test(ckpt_path="best")
+      trainer.test(module)
+      trainer.test(module_test)
       test_end_time = time.time() - test_start_time
       print(f"Evaluation time: {test_end_time} seconds")
 
       # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = plot_results(monitor_value, min_delta, f"{model_path}/{new_version}")
+      test_loss, tess_acc, best_epoch = plot_results(monitor_value, 
+                                                     min_delta, 
+                                                     f"{model_path}/{new_version}")
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Plot testing accuracy by class
-      accuracy_by_class = draw_accuracy_by_class(module.correct_results, module.wrong_results, f"{model_path}/{new_version}")
+      accuracy_by_class = draw_accuracy_by_class(module_test.correct_results, 
+                                                 module_test.wrong_results, 
+                                                 f"{model_path}/{new_version}")
       print(f"Test accuracy by class: {accuracy_by_class}")
       
       # Write down hyperparameters and results
