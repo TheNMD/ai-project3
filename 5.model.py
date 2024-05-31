@@ -582,9 +582,9 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    interval = 3600
+    interval = 7200
     selected_model_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}" 
-    selected_version = "version_2"
+    selected_version = "version_13"
 
     module = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
