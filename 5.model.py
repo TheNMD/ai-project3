@@ -463,7 +463,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
    # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 7200
+  interval = 3600
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -511,7 +511,7 @@ if __name__ == '__main__':
   min_epochs = 21 # 21 | 41 | 61
 
   ## For training loop
-  batch_size = 256 # 32 | 64 | 128 | 256
+  batch_size = 128 # 32 | 64 | 128 | 256
   epochs = 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
