@@ -463,12 +463,12 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
    # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 7200
+  interval = 0
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-l"
+  model_name = "convnext-b"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
   stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
@@ -582,7 +582,7 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    selected_version = "version_13"
+    selected_version = "version_2"
 
     module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
