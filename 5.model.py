@@ -697,8 +697,7 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
 
       selected_model_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}" 
-      selected_version = "version_3"
-      module1 = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
+      module1 = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{new_version}/best_model.ckpt", 
                                                     model_settings=model_settings,
                                                     optimizer_settings=optimizer_settings, 
                                                     loop_settings=loop_settings)
@@ -733,7 +732,7 @@ if __name__ == '__main__':
       print(e)
       logging.error(e, exc_info=True)
       if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
-        shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
+        # shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
         
 
   
