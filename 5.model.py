@@ -468,10 +468,10 @@ if __name__ == '__main__':
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-b"
+  model_name = "convnext-l"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   train_from_checkpoint = False
@@ -583,7 +583,7 @@ if __name__ == '__main__':
   
   if checkpoint:
     selected_model_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}" 
-    selected_version = "version_13"
+    selected_version = "version_2"
 
     module = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
@@ -691,17 +691,9 @@ if __name__ == '__main__':
       
       # Evaluation
       test_start_time = time.time()
-      trainer.test(module)
       trainer.test(ckpt_path="best")
       test_end_time = time.time() - test_start_time
       print(f"Evaluation time: {test_end_time} seconds")
-
-      selected_model_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}" 
-      module1 = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{new_version}/best_model.ckpt", 
-                                                    model_settings=model_settings,
-                                                    optimizer_settings=optimizer_settings, 
-                                                    loop_settings=loop_settings)
-      trainer.test(module1)
 
       # Plot loss and accuracy
       test_loss, tess_acc, best_epoch = plot_results(monitor_value, min_delta, f"{model_path}/{new_version}")
@@ -731,7 +723,7 @@ if __name__ == '__main__':
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
-      # if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
-      #   shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
+      if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
+        shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
 
   
