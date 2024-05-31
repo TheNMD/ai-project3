@@ -468,12 +468,12 @@ if __name__ == '__main__':
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-l"
+  model_name = "convnext-b"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
-  checkpoint = False
+  checkpoint = True
   train_from_checkpoint = False
   continue_training = False
   
@@ -511,8 +511,8 @@ if __name__ == '__main__':
   min_epochs = 21 # 21 | 41 | 61
 
   ## For training loop
-  batch_size = 128 # 32 | 64 | 128 | 256
-  epochs = 150
+  batch_size = 256 # 32 | 64 | 128 | 256
+  epochs = 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
@@ -582,8 +582,9 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
+    interval = 3600
     selected_model_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}" 
-    selected_version = "version_1"
+    selected_version = "version_2"
 
     module = FinetuneModule.load_from_checkpoint(f"{selected_model_path}/{selected_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
