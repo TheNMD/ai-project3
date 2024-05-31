@@ -195,11 +195,8 @@ class FinetuneModule(pl.LightningModule):
                                             std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                               ]) 
 
-    # dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}/{set_name}",
-    #                                            transform=transforms)
-    
-    dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}-temp/{set_name}",
-                                            transform=transforms)
+    dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}/{set_name}",
+                                               transform=transforms)
     
     dataloader = torch.utils.data.DataLoader(dataset, 
                                              batch_size=self.batch_size, 
@@ -466,15 +463,15 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
    # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 7200
+  interval = 0
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-b"
+  model_name = "convnext-l"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = False
   train_from_checkpoint = False
@@ -514,7 +511,7 @@ if __name__ == '__main__':
   min_epochs = 21 # 21 | 41 | 61
 
   ## For training loop
-  batch_size = 256 # 32 | 64 | 128 | 256
+  batch_size = 128 # 32 | 64 | 128 | 256
   epochs = 150
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
