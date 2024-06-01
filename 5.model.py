@@ -457,10 +457,11 @@ def plot_confusion_matrix(labels, predictions, save_path, draw=True):
   
   if draw:
     _, ax = plt.subplots(figsize=(10.5, 8))
-    display_labels = ['clear', 'light_rain', 'moderate_rain', 'heavy_rain', 'very_heavy_rain']
+    display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain', 'very_heavy_rain']
     ConfusionMatrixDisplay.from_predictions(labels,
                                             predictions,
-                                            display_labels=display_labels, 
+                                            display_labels=display_labels,
+                                            normalize='true', 
                                             ax=ax)
     plt.title('Confusion Matrix')
     plt.savefig(f'{save_path}/confusion_matrix.png')
