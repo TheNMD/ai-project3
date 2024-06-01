@@ -37,15 +37,19 @@ elif ENV == "colab":
 class CustomRandAugment(v2.RandAugment):
   def __init__(self, num_ops, magnitude, fill):
       super().__init__(num_ops=num_ops, magnitude=magnitude, fill=fill)
-      
-      # del self._AUGMENTATION_SPACE['Brightness']
-      # del self._AUGMENTATION_SPACE['Color']
-      # del self._AUGMENTATION_SPACE['Contrast']
-      # del self._AUGMENTATION_SPACE['Sharpness']
-      # del self._AUGMENTATION_SPACE['Posterize']
-      # del self._AUGMENTATION_SPACE['Solarize']
-      del self._AUGMENTATION_SPACE['AutoContrast']
-      # del self._AUGMENTATION_SPACE['Equalize']
+
+      try:
+        # del self._AUGMENTATION_SPACE['Brightness']
+        # del self._AUGMENTATION_SPACE['Color']
+        # del self._AUGMENTATION_SPACE['Contrast']
+        # del self._AUGMENTATION_SPACE['Sharpness']
+        # del self._AUGMENTATION_SPACE['Posterize']
+        # del self._AUGMENTATION_SPACE['Solarize']
+        # del self._AUGMENTATION_SPACE['Equalize']
+        del self._AUGMENTATION_SPACE['AutoContrast']
+      except Exception as e:
+        pass
+
 
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):
@@ -491,7 +495,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
    # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 0
+  interval = 7200
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -501,8 +505,8 @@ if __name__ == '__main__':
   num_classes = 5
   stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
-  checkpoint = False
-  ckpt_version = "version_2"
+  checkpoint = True
+  ckpt_version = "version_6"
   train_from_checkpoint = False
   continue_training = False
   
