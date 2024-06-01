@@ -13,6 +13,7 @@ import numpy as np
 import cv2 as cv
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # Set ENV to be 'local', 'server' or 'colab'
 ENV = "server".lower()
@@ -72,8 +73,8 @@ class FinetuneModule(pl.LightningModule):
     self.val_loader   = self.load_data("val", test_size, False)
     self.test_loader  = self.load_data("test", test_size, False)
     
-    self.correct_results = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0}
-    self.wrong_results = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0}
+    self.label_list = []
+    self.prediction_list = []
 
   def load_model(self):
     def add_stochastic_depth(model_name, model, drop_prob):
@@ -243,24 +244,13 @@ class FinetuneModule(pl.LightningModule):
     correct = (predictions == y).sum().item()
     test_acc = correct / x.shape[0]
 
-    y_list = y.tolist()
-    predictions_list = predictions.tolist()
-    for i in range(len(y_list)):
-      
-      if y_list[i] != predictions_list[i]:
-        self.wrong_results[str(y_list[i])] += 1
-      else:
-        self.correct_results[str(y_list[i])] += 1
-
+    self.label_list += y.tolist()
+    self.prediction_list += predictions.tolist()
+    
     self.log("test_loss", test_loss, on_epoch=True)
     self.log("test_acc", test_acc, on_epoch=True)
     
     return test_loss
-
-  def on_test_end(self):
-    new_keys = {"0": "clear", "1": "heavy_rain", "2": "light_rain", "3": "moderate_rain", "4" : "very_heavy_rain"}
-    self.correct_results = {new_keys.get(k, k): v for k, v in self.correct_results.items()}
-    self.wrong_results = {new_keys.get(k, k): v for k, v in self.wrong_results.items()}
   
   def configure_optimizers(self):
     def get_optimizer_settings():
@@ -367,7 +357,7 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
     return self.test_loader
 
-def plot_results(monitor_value, min_delta, save_path):
+def plot_loss_acc(monitor_value, min_delta, save_path, draw=True):
   if not os.path.exists(f"{save_path}/metrics.csv"):
     return None, None, None
   
@@ -391,27 +381,28 @@ def plot_results(monitor_value, min_delta, save_path):
   
   val_results = val_results.groupby(['epoch'], as_index=False).mean()
   
-  # Plotting loss
-  plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
-  plt.plot(val_results['epoch'], val_results['val_loss'], label='val_loss')
-  plt.legend()
-  plt.xlabel('epoch')
-  plt.ylabel('value')
-  plt.title('Loss Graph')
-  plt.legend()
-  plt.savefig(f'{save_path}/graph_loss.png')
+  if draw:
+    # Plotting loss
+    plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
+    plt.plot(val_results['epoch'], val_results['val_loss'], label='val_loss')
+    plt.legend()
+    plt.xlabel('epoch')
+    plt.ylabel('value')
+    plt.title('Loss Graph')
+    plt.legend()
+    plt.savefig(f'{save_path}/graph_loss.png')
 
-  plt.clf()
+    plt.clf()
 
-  # Plotting acc
-  plt.plot(train_results['epoch'], train_results['train_acc'], label='train_acc')
-  plt.plot(val_results['epoch'], val_results['val_acc'], label='val_acc')
-  plt.legend()
-  plt.xlabel('epoch')
-  plt.ylabel('value')
-  plt.title('Accuracy Graph')
-  plt.legend()
-  plt.savefig(f'{save_path}/graph_acc.png')
+    # Plotting acc
+    plt.plot(train_results['epoch'], train_results['train_acc'], label='train_acc')
+    plt.plot(val_results['epoch'], val_results['val_acc'], label='val_acc')
+    plt.legend()
+    plt.xlabel('epoch')
+    plt.ylabel('value')
+    plt.title('Accuracy Graph')
+    plt.legend()
+    plt.savefig(f'{save_path}/graph_acc.png')
 
   if "test_loss" in log_results.columns:
     test_results = log_results[['test_loss', 'test_acc']].dropna()
@@ -423,24 +414,60 @@ def plot_results(monitor_value, min_delta, save_path):
     
   return test_loss, test_acc, best_epoch
 
-def draw_accuracy_by_class(correct_results, wrong_results, save_path):
-    x = list(correct_results.keys())
-    y1 = [correct_results[label] / (correct_results[label] + wrong_results[label]) for label in x]
-    y2 = [wrong_results[label] / (correct_results[label] + wrong_results[label]) for label in x]
-    
-    plt.figure(figsize=(12, 8))
-    plt.bar(x, y1, color='lightgreen', label="correct_label")
-    plt.bar(x, y2, bottom=y1, color='lightcoral', label="wrong_label")
-    plt.xlabel("labels")
-    plt.ylabel("percentage")
-    plt.legend(["correct_label", "wrong_label"])
-    plt.title("Accuracy by each class")
-    plt.legend()
-    
-    plt.savefig(f'{save_path}/graph_test_acc_by_class.png')
-    
-    return {x[0] :y1[0], x[1] :y1[1], x[2] :y1[2], x[3] :y1[3], x[4] :y1[4]}
+def plot_confusion_matrix(labels, predictions, save_path, draw=True):
+  def calculate_metrics(confusion_matrix):
+      num_classes = confusion_matrix.shape[0]
+      precision = np.zeros(num_classes)
+      recall = np.zeros(num_classes)
+      f1 = np.zeros(num_classes)
+      
+      for i in range(num_classes):
+          TP = confusion_matrix[i, i]
+          FP = np.sum(confusion_matrix[:, i]) - TP
+          FN = np.sum(confusion_matrix[i, :]) - TP
+          TN = np.sum(confusion_matrix) - TP - FP - FN
+          precision[i] = TP / (TP + FP) if TP + FP != 0 else 0
+          recall[i] = TP / (TP + FN) if TP + FN != 0 else 0
+          f1[i] = 2 * precision[i] * recall[i] / (precision[i] + recall[i]) if precision[i] + recall[i] != 0 else 0
+      return precision, recall, f1
 
+  for i in range(len(labels)):
+    if str(labels[i]) == "0":
+        labels[i] = "clear"
+    elif str(labels[i]) == "1":
+        labels[i] = "heavy_rain"
+    elif str(labels[i]) == "2":
+        labels[i] = "light_rain"
+    elif str(labels[i]) == "3":
+        labels[i] = "moderate_rain"
+    elif str(labels[i]) == "4":
+        labels[i] = "very_heavy_rain"
+        
+  for i in range(len(predictions)):
+    if str(predictions[i]) == "0":
+        predictions[i] = "clear"
+    elif str(predictions[i]) == "1":
+        predictions[i] = "heavy_rain"
+    elif str(predictions[i]) == "2":
+        predictions[i] = "light_rain"
+    elif str(predictions[i]) == "3":
+        predictions[i] = "moderate_rain"
+    elif str(predictions[i]) == "4":
+        predictions[i] = "very_heavy_rain"
+  
+  if draw:
+    _, ax = plt.subplots(figsize=(10.5, 8))
+    display_labels = ['clear', 'light_rain', 'moderate_rain', 'heavy_rain', 'very_heavy_rain']
+    ConfusionMatrixDisplay.from_predictions(labels,
+                                            predictions,
+                                            display_labels=display_labels, 
+                                            ax=ax)
+    plt.title('Confusion Matrix')
+    plt.savefig(f'{save_path}/confusion_matrix.png')
+
+  cm = confusion_matrix(labels, predictions)
+  return calculate_metrics(cm)
+    
 if __name__ == '__main__':
   print("Python version: ", sys.version)
   print("Ubuntu version: ", platform.release())
@@ -463,17 +490,18 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
    # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 7200
+  interval = 10800
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-l"
+  model_name = "convnext-b"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
-  checkpoint = False
+  checkpoint = True
+  ckpt_version = "version_2"
   train_from_checkpoint = False
   continue_training = False
   
@@ -481,7 +509,8 @@ if __name__ == '__main__':
   print(f"Model: {model_name}-{model_option}")
   print(f"Stochastic depth: {stochastic_depth}")
   print(f"Freeze: {freeze}")
-  print(f"Load from checkpoint: {checkpoint}")
+  if not checkpoint:  print(f"Load from checkpoint: {checkpoint}")
+  else: print(f"Load from checkpoint: {checkpoint} [{ckpt_version}]")
   print(f"Train from checkpoint: {train_from_checkpoint}")
   print(f"Continue training: {continue_training}\n")
   
@@ -511,7 +540,7 @@ if __name__ == '__main__':
   min_epochs = 21 # 21 | 41 | 61
 
   ## For training loop
-  batch_size = 128 # 32 | 64 | 128 | 256
+  batch_size = 256 # 32 | 64 | 128 | 256
   epochs = 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
@@ -582,9 +611,7 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    selected_version = "version_2"
-
-    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{selected_version}/best_model.ckpt", 
+    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{ckpt_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
                                                  loop_settings=loop_settings)
@@ -605,7 +632,7 @@ if __name__ == '__main__':
         # Training loop
         train_start_time = time.time()
         if continue_training:
-          trainer.fit(module, ckpt_path=f"{model_path}/{selected_version}/best_model.ckpt")
+          trainer.fit(module, ckpt_path=f"{model_path}/{ckpt_version}/best_model.ckpt")
         else:
           trainer.fit(module)
         train_end_time = time.time() - train_start_time
@@ -622,16 +649,18 @@ if __name__ == '__main__':
         print(f"Evaluation time: {test_end_time} seconds")
 
         # Plot loss and accuracy
-        test_loss, tess_acc, best_epoch = plot_results(monitor_value, 
-                                                      min_delta, 
-                                                      f"{model_path}/{new_version}")
+        test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
+                                                        min_delta, 
+                                                        f"{model_path}/{new_version}",
+                                                        draw=True)
         print(f"Best epoch [{monitor_value}]: {best_epoch}")
         
         # Plot testing accuracy by class
-        accuracy_by_class = draw_accuracy_by_class(module_test.correct_results, 
-                                                  module_test.wrong_results, 
-                                                  f"{model_path}/{new_version}")
-        print(f"Test accuracy by class: {accuracy_by_class}")
+        precision, recall, f1 = plot_confusion_matrix(module.label_list,
+                                                        module.prediction_list,
+                                                        f"{model_path}/{ckpt_version}",
+                                                        draw=True)
+        print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
         
         # Write down hyperparameters and results
         with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
@@ -643,13 +672,11 @@ if __name__ == '__main__':
           file.write('### Results ###\n')
           file.write(f"Test loss: {test_loss}\n")
           file.write(f"Test accuracy: {tess_acc}\n")
-          file.write(f"Test accuracy by class: {accuracy_by_class}\n")
+          file.write(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}\n")
           file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
           file.write(f"Training time: {train_end_time} seconds\n")
-          file.write(f"Load from: {interval}-{selected_version}\n")
+          file.write(f"Load from: {interval}-{ckpt_version}\n")
           file.write(f"Continue training: {continue_training}\n")
-        
-              # Move architecture file to the corresponding version
 
         # Move architecture file to the corresponding version
         if os.path.exists(f"{model_path}/architecture.txt"):
@@ -674,6 +701,21 @@ if __name__ == '__main__':
         end_time = time.time()
         print(f"Evaluation time: {end_time - start_time} seconds")
         
+        test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
+                                                        min_delta, 
+                                                        f"{model_path}/{ckpt_version}",
+                                                        draw=True)
+        print(f"Best epoch [{monitor_value}]: {best_epoch}")
+        
+        precision, recall, f1 = plot_confusion_matrix(module.label_list,
+                                                      module.prediction_list,
+                                                      f"{model_path}/{ckpt_version}",
+                                                      draw=True)
+        print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
+        
+        # Move architecture file to the corresponding version
+        if os.path.exists(f"{model_path}/architecture.txt"):
+          shutil.move(f"{model_path}/architecture.txt", f"{model_path}/{ckpt_version}/architecture.txt")
       except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
@@ -713,16 +755,18 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
 
       # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = plot_results(monitor_value, 
+      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
                                                      min_delta, 
-                                                     f"{model_path}/{new_version}")
+                                                     f"{model_path}/{new_version}",
+                                                     draw=True)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Plot testing accuracy by class
-      accuracy_by_class = draw_accuracy_by_class(module_test.correct_results, 
-                                                 module_test.wrong_results, 
-                                                 f"{model_path}/{new_version}")
-      print(f"Test accuracy by class: {accuracy_by_class}")
+      precision, recall, f1 = plot_confusion_matrix(module.label_list,
+                                                    module.prediction_list,
+                                                    f"{model_path}/{ckpt_version}",
+                                                    draw=True)
+      print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
       
       # Write down hyperparameters and results
       with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
@@ -734,7 +778,7 @@ if __name__ == '__main__':
         file.write('### Results ###\n')
         file.write(f"Test loss: {test_loss}\n")
         file.write(f"Test accuracy: {tess_acc}\n")
-        file.write(f"Test accuracy by class: {accuracy_by_class}\n")
+        file.write(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}\n")
         file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
       
