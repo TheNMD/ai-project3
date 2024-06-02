@@ -50,7 +50,6 @@ class CustomRandAugment(v2.RandAugment):
       except Exception as e:
         pass
 
-
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):
     super().__init__()
