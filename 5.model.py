@@ -6,7 +6,7 @@ import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-import torch, torchvision, timm, torchsummary
+import torch, torchvision, timm, torchsummary, pickle
 from torchvision.transforms import v2
 import pytorch_lightning as pl
 import numpy as np
@@ -150,7 +150,9 @@ class FinetuneModule(pl.LightningModule):
         model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
         train_size, test_size = 224, 224
       elif size == "l":
-        model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
+        # model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
+        with open('result/convnext-l.pickle', 'rb') as f:
+          model = pickle.load(f)
         train_size, test_size = 224, 224
       if self.freeze:
         for param in model.parameters(): param.requires_grad = False
@@ -500,13 +502,13 @@ if __name__ == '__main__':
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-l"
+  model_name = "convnext-b"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
   stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
-  checkpoint = False
-  ckpt_version = "version_2"
+  checkpoint = True
+  ckpt_version = "version_3"
   train_from_checkpoint = False
   continue_training = False
   
