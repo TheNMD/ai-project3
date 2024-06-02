@@ -150,8 +150,6 @@ class FinetuneModule(pl.LightningModule):
         model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
         train_size, test_size = 224, 224
       elif size == "l":
-        from safetensors.torch import load_file, load_model
-        model = load_file("result/model.safetensors")
         model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
         train_size, test_size = 224, 224
       if self.freeze:
