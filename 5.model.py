@@ -497,18 +497,18 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 0
+  interval = 3600
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-b"
+  model_name = "convnext-l"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
   stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
-  checkpoint = False
-  ckpt_version = "version_3"
+  checkpoint = True
+  ckpt_version = "version_2"
   train_from_checkpoint = False
   continue_training = False
   
