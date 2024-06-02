@@ -6,6 +6,7 @@ WORKDIR /app
 COPY . .
 
 RUN apt-get update && apt-get install -y iputils-ping
+RUN apt-get update && apt-get install -y dnsutils
 
 # Make some required folders inside the container
 RUN mkdir data

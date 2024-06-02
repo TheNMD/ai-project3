@@ -1,17 +1,13 @@
-import timm
+import timm, torchsummary
 import torch
-from safetensors import safe_open
+from safetensors.torch import load_file, load_model
 
-tensors = {}
-with safe_open("result/model.safetensors", framework="pt", device=0) as f:
-    safetensor_data = {k: torch.tensor(v) for k, v in f.items()}
+# file_path = "result/model.safetensors"
+# model = load_file(file_path)
 
-# Initialize the model
-model = timm.create_model('convnext_large.fb_in22k', pretrained=False)
+# print(model)
 
-# Load the weights into the model
-model.load_state_dict(safetensor_data)
+# print(torchsummary.summary(model, (3, 224, 224)))
 
-# Set the model to evaluation mode
-model.eval()
-
+model = timm.create_model('convnext_large.fb_in22k', pretrained=True)
+print(type(model))
