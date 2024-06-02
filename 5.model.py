@@ -761,14 +761,14 @@ if __name__ == '__main__':
 
       # Plot loss and accuracy
       test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
-                                                     min_delta, 
-                                                     f"{model_path}/{new_version}",
-                                                     draw=True)
+                                                      min_delta, 
+                                                      f"{model_path}/{new_version}",
+                                                      draw=True)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Plot testing accuracy by class
-      precision, recall, f1 = plot_confusion_matrix(module.label_list,
-                                                    module.prediction_list,
+      precision, recall, f1 = plot_confusion_matrix(module_test.label_list,
+                                                    module_test.prediction_list,
                                                     f"{model_path}/{ckpt_version}",
                                                     draw=True)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
