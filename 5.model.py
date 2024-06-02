@@ -50,7 +50,6 @@ class CustomRandAugment(v2.RandAugment):
       except Exception as e:
         pass
 
-
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):
     super().__init__()
@@ -497,7 +496,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 7200
+  interval = 0
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -508,7 +507,7 @@ if __name__ == '__main__':
   stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
   checkpoint = True
-  ckpt_version = "version_6"
+  ckpt_version = "version_3"
   train_from_checkpoint = False
   continue_training = False
   
@@ -762,14 +761,14 @@ if __name__ == '__main__':
 
       # Plot loss and accuracy
       test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
-                                                     min_delta, 
-                                                     f"{model_path}/{new_version}",
-                                                     draw=True)
+                                                      min_delta, 
+                                                      f"{model_path}/{new_version}",
+                                                      draw=True)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Plot testing accuracy by class
-      precision, recall, f1 = plot_confusion_matrix(module.label_list,
-                                                    module.prediction_list,
+      precision, recall, f1 = plot_confusion_matrix(module_test.label_list,
+                                                    module_test.prediction_list,
                                                     f"{model_path}/{ckpt_version}",
                                                     draw=True)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
