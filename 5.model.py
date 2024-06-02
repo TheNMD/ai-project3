@@ -497,7 +497,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 0
+  interval = 10800
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
