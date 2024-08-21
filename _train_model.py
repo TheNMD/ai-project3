@@ -95,11 +95,11 @@ if __name__ == '__main__':
   monitor_value = "val_acc" # val_acc | val_loss
   patience = 22
   min_delta = 1e-4 # 1e-4 | 5e-4
-  min_epochs = 21 # 21 | 41 | 61
+  min_epochs = 21 # 0 | 21 | 41 | 61
 
   ## For training loop
   batch_size = 128 # 32 | 64 | 128 | 256
-  epochs = 200    # 100 | 200
+  epochs = 30    # 100 | 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
