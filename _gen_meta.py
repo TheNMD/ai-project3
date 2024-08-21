@@ -13,9 +13,7 @@ import pandas as pd
 # Set ENV to be 'local', 'server' or 'colab'
 ENV = "server".lower()
 
-if ENV == "local":
-  data_path = "data/NhaBe"
-elif ENV == "server":
+if ENV == "local" or ENV == "server":
   data_path = "data"
 elif ENV == "colab":
     from google.colab import drive

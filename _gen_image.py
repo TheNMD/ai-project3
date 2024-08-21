@@ -15,9 +15,7 @@ from memory_profiler import profile
 # Set ENV to be 'local', 'server' or 'colab'
 ENV = "server".lower()
 
-if ENV == "local":
-  data_path = "data/NhaBe"
-elif ENV == "server":
+if ENV == "local" or ENV == "server":
   data_path = "data"
 elif ENV == "colab":
     from google.colab import drive
@@ -45,7 +43,7 @@ def generate_image(metadata_chunk):
 
             plt.title('')
             plt.axis('off')
-            plt.savefig(f"image/unlabeled/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+            plt.savefig(f"image/combined/{timestamp}.jpg", dpi=150, bbox_inches='tight')
             
             print(f"{timestamp} - Done")
             
@@ -53,7 +51,7 @@ def generate_image(metadata_chunk):
             plt.close()
             del display, grid_data, data
         except Exception as e:
-            with open(f'image/unlabeled/{timestamp}.txt', 'w') as f: 
+            with open(f'image/combined/{timestamp}.txt', 'w') as f: 
                 f.write('error')
             logging.error(e, exc_info=True)
             continue
@@ -62,7 +60,7 @@ def update_metadata():
     old_metadata = pd.read_csv("metadata.csv")
     old_metadata = old_metadata[['path', 'timestamp_0']]
     
-    files = [file for file in os.listdir("image/unlabeled")]
+    files = [file for file in os.listdir("image/combined")]
     timestamps = [file[:-4] for file in files]
     generated = ["True" if file.endswith('.jpg') else "Error" for file in files]
     new_metadata = pd.DataFrame({'timestamp_0': timestamps, 'generated': generated})
@@ -79,8 +77,8 @@ if __name__ == '__main__':
     num_processes = 16
     chunk_size = 100 * num_processes
     
-    if not os.path.exists("image/unlabeled"):
-        os.makedirs("image/unlabeled")
+    if not os.path.exists("image/combined"):
+        os.makedirs("image/combined")
     
     try:
         counter = 0

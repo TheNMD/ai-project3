@@ -8,6 +8,8 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 
 import torch, torchvision, timm, torchsummary, pickle
 from torchvision.transforms import v2
+from torch.utils.data import Dataset
+from torchvision.io import read_image
 import pytorch_lightning as pl
 import numpy as np
 import cv2 as cv
@@ -46,6 +48,29 @@ class CustomRandAugment(v2.RandAugment):
         del self._AUGMENTATION_SPACE['AutoContrast']
       except Exception as e:
         pass
+
+class CustomImageDataset(Dataset):
+    def __init__(self, img_labels, img_dir, transform=None, target_transform=None):
+        self.img_labels = img_labels
+        self.img_dir = img_dir
+        self.transform = transform
+        self.target_transform = target_transform
+
+    def __len__(self):
+        return len(self.img_labels)
+
+    def __getitem__(self, idx):
+        img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
+        image = read_image(img_path)
+        label = self.img_labels.iloc[idx, 2]
+        if self.transform:
+            image = self.transform(image)
+        if self.target_transform:
+            label = self.target_transform(label)
+        return image, label
+    
+    def __getname__(self, idx):
+        return os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
 
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):
@@ -146,9 +171,9 @@ class FinetuneModule(pl.LightningModule):
         model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
         train_size, test_size = 224, 224
       elif size == "l":
-        # model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
-        with open('result/convnext-l.pickle', 'rb') as f:
-          model = pickle.load(f)
+        model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
+        # with open('result/convnext-l.pickle', 'rb') as f:
+        #   model = pickle.load(f)
         train_size, test_size = 224, 224
       if self.freeze:
         for param in model.parameters(): param.requires_grad = False
@@ -196,10 +221,15 @@ class FinetuneModule(pl.LightningModule):
                                v2.ToDtype(torch.float32, scale=True),
                                v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
                                             std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
-                              ]) 
+                              ])
+    
+    label_file = pd.read_csv(f"image/{self.interval}_{set_name}.csv")
+    dataset = CustomImageDataset(img_labels=label_file, 
+                                 img_dir="image/combined", 
+                                 transform=transforms)
 
-    dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}/{set_name}",
-                                               transform=transforms)
+    # dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}/{set_name}",
+    #                                            transform=transforms)
     
     dataloader = torch.utils.data.DataLoader(dataset, 
                                              batch_size=self.batch_size, 
