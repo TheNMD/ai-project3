@@ -1,0 +1,279 @@
+import os, sys, platform, shutil, time
+import zipfile
+import warnings
+warnings.filterwarnings('ignore')
+import logging
+logging.basicConfig(filename='errors.log', level=logging.ERROR, 
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+
+import torch
+import pytorch_lightning as pl
+from _init_model import FinetuneModule, plot_loss_acc, plot_confusion_matrix
+
+# Set ENV to be 'local', 'server' or 'colab'
+ENV = "server".lower()
+
+if ENV == "local" or ENV == "server":
+  image_path = "image"
+  result_path = "result"
+elif ENV == "colab":
+  from google.colab import drive
+  drive.mount('/content/drive')
+  if not os.path.exists("image.zip"):
+    shutil.copy('drive/MyDrive/Coding/image.zip', 'image.zip')
+    with zipfile.ZipFile('image.zip', 'r') as zip_ref:
+      zip_ref.extractall()
+  image_path = "image"
+  result_path = "drive/MyDrive/Coding/result"
+    
+if __name__ == '__main__':
+  print("Python version: ", sys.version)
+  print("Ubuntu version: ", platform.release())
+  if torch.cuda.is_available():
+    device = torch.device("cuda")
+    num_gpus = torch.cuda.device_count()
+    print(f"Torch GPU is available: {num_gpus}")
+    for i in range(num_gpus):
+      print(torch.cuda.get_device_name(i), "\n")
+  else:
+    device = torch.device("cpu")
+    num_gpus = 0
+    print("Only Torch CPU is available\n")
+     
+  if not os.path.exists("result"):
+    os.makedirs("result")
+    os.makedirs("result/checkpoint")
+    os.makedirs("result/final")
+  
+  # Hyperparameters
+  ## For model
+  # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
+  interval = 7200
+  # convnext-s | convnext-b | convnext-l 
+  # vit-s      | vit-b      | vit-l 
+  # swin-s     | swin-b 
+  # effnetv2-s | effnetv2-m
+  model_name = "convnext-b"
+  model_option = "pretrained" # pretrained | custom
+  num_classes = 5
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
+  freeze = False
+  checkpoint = False
+  ckpt_version = "version_0"
+  train_from_checkpoint = False
+  continue_training = False
+  
+  print(f"Interval: {interval}")
+  print(f"Model: {model_name}-{model_option}")
+  print(f"Stochastic depth: {stochastic_depth}")
+  print(f"Freeze: {freeze}")
+  if not checkpoint: print(f"Load from checkpoint: {checkpoint}")
+  else: print(f"Load from checkpoint: {checkpoint} [{ckpt_version}]")
+  print(f"Train from checkpoint: {train_from_checkpoint}")
+  print(f"Continue training: {continue_training}\n")
+  
+  if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
+    os.makedirs(f"{result_path}/checkpoint/{interval}")
+  if not os.path.exists(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}"):
+    os.makedirs(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}")
+  model_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}"
+
+  ## For optimizer & scheduler
+  optimizer_name = "adamw"  # adam | adamw | sgd
+  learning_rate = 5e-5      # 1e-3 | 1e-4  | 5e-5
+  lr_decay = 0.0            # 0.0  | 0.8 
+  weight_decay = 1e-8       # 0    | 1e-8 
+  scheduler_name = "cd"     # none | cd    | cdwr  
+  
+  print(f"Optimizer: {optimizer_name}")
+  print(f"Learning rate: {learning_rate}")
+  print(f"Layer-wise learning rate decay: {lr_decay}")
+  print(f"Weight decay: {weight_decay}")
+  print(f"Scheduler: {scheduler_name}\n")
+
+  ## For callbacks
+  monitor_value = "val_acc" # val_acc | val_loss
+  patience = 22
+  min_delta = 1e-4 # 1e-4 | 5e-4
+  min_epochs = 21 # 21 | 41 | 61
+
+  ## For training loop
+  batch_size = 128 # 32 | 64 | 128 | 256
+  epochs = 200    # 100 | 200
+  epoch_ratio = 0.5 # Check val every percentage of an epoch
+  label_smoothing = 0.1
+  
+  print(f"Batch size: {batch_size}")
+  print(f"Epoch: {epochs}")
+  print(f"Label smoothing: {label_smoothing}\n")
+
+  # Combine all settings
+  model_settings = {'interval': interval,
+                    'model_name': model_name, 
+                    'model_option': model_option,
+                    'num_classes': num_classes,
+                    'stochastic_depth': stochastic_depth, 
+                    'freeze': freeze}
+  
+  optimizer_settings = {'optimizer_name': optimizer_name, 
+                        'learning_rate': learning_rate,
+                        'lr_decay': lr_decay, 
+                        'weight_decay': weight_decay, 
+                        'scheduler_name': scheduler_name}
+  
+  loop_settings = {'batch_size': batch_size, 
+                   'epochs': epochs,
+                   'label_smoothing': label_smoothing}
+  
+  if num_gpus > 1:
+    accelerator = 'gpu'
+    devices = 2
+    strategy = 'ddp'
+  elif num_gpus == 1:
+    accelerator = 'gpu'
+    devices = 1
+    strategy = 'auto'
+  else:
+    accelerator = 'cpu'
+    devices = 'auto'
+    strategy = 'auto'
+  
+  versions = [folder for folder in 
+              os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
+              if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')]
+  if len(versions) == 0:
+    new_version = "version_0"
+  else:
+    latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
+    new_version = f"version_{latest_version + 1}"
+  
+  # Logger
+  logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
+                                name=f'{model_name}-{model_option}')
+
+  # Callbacks
+  if monitor_value == "val_acc": monitor_mode = "max"
+  elif monitor_value == "val_loss": monitor_mode = "min" 
+  
+  early_stopping_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
+                                                       mode='max',
+                                                       patience=patience,
+                                                       min_delta=min_delta,
+                                                       verbose=True,)
+
+  checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
+                                                     mode=monitor_mode,
+                                                     save_top_k=1,
+                                                     filename='best_model',
+                                                     dirpath=f'{model_path}/{new_version}',
+                                                     verbose=True,)
+  
+  if checkpoint:
+    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{ckpt_version}/best_model.ckpt", 
+                                                 model_settings=model_settings,
+                                                 optimizer_settings=optimizer_settings, 
+                                                 loop_settings=loop_settings)
+
+    trainer = pl.Trainer(accelerator=accelerator, 
+                          devices=devices, 
+                          strategy=strategy,
+                          logger=False,
+                          enable_checkpointing=False)
+      
+    try:
+      # Evaluation
+      start_time = time.time()
+      trainer.test(module)
+      end_time = time.time()
+      print(f"Evaluation time: {end_time - start_time} seconds")
+      
+      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
+                                                      min_delta, 
+                                                      f"{model_path}/{ckpt_version}",
+                                                      draw=True)
+      print(f"Best epoch [{monitor_value}]: {best_epoch}")
+      
+      precision, recall, f1 = plot_confusion_matrix(module.label_list,
+                                                    module.prediction_list,
+                                                    f"{model_path}/{ckpt_version}",
+                                                    draw=True)
+      print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
+      
+      # Move architecture file to the corresponding version
+      if os.path.exists(f"{model_path}/architecture.txt"):
+        shutil.move(f"{model_path}/architecture.txt", f"{model_path}/{ckpt_version}/architecture.txt")
+    except Exception as e:
+      print(e)
+      logging.error(e, exc_info=True)
+    
+  else:    
+    module = FinetuneModule(model_settings=model_settings, 
+                            optimizer_settings=optimizer_settings, 
+                            loop_settings=loop_settings)
+
+    trainer = pl.Trainer(accelerator=accelerator, 
+                         devices=devices, 
+                         strategy=strategy,
+                         max_epochs=epochs,
+                         min_epochs=min_epochs,
+                         logger=logger,
+                         callbacks=[early_stopping_callback, checkpoint_callback],
+                         val_check_interval=epoch_ratio,
+                         log_every_n_steps=50,    # log train_loss and train_acc every n batches
+                         precision=16)             # use mixed precision to speed up training
+    
+    try:
+      # Training loop
+      train_start_time = time.time()
+      trainer.fit(module)
+      train_end_time = time.time() - train_start_time
+      print(f"Training time: {train_end_time} seconds")
+      
+      # Evaluation
+      module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/best_model.ckpt", 
+                                                        model_settings=model_settings,
+                                                        optimizer_settings=optimizer_settings, 
+                                                        loop_settings=loop_settings)
+      test_start_time = time.time()
+      trainer.test(module_test)
+      test_end_time = time.time() - test_start_time
+      print(f"Evaluation time: {test_end_time} seconds")
+
+      # Plot loss and accuracy
+      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
+                                                      min_delta, 
+                                                      f"{model_path}/{new_version}",
+                                                      draw=True)
+      print(f"Best epoch [{monitor_value}]: {best_epoch}")
+      
+      # Plot testing accuracy by class
+      precision, recall, f1 = plot_confusion_matrix(module_test.label_list,
+                                                    module_test.prediction_list,
+                                                    f"{model_path}/{ckpt_version}",
+                                                    draw=True)
+      print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
+      
+      # Write down hyperparameters and results
+      with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
+        file.write('### Hyperparameters ###\n')
+        file.write(f'model_settings = {model_settings}\n')
+        file.write(f'optimizer_settings = {optimizer_settings}\n')
+        file.write(f'loop_settings {loop_settings}\n\n')
+
+        file.write('### Results ###\n')
+        file.write(f"Test loss: {test_loss}\n")
+        file.write(f"Test accuracy: {tess_acc}\n")
+        file.write(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}\n")
+        file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
+        file.write(f"Training time: {train_end_time} seconds\n")
+      
+      # Move architecture file to the corresponding version
+      if os.path.exists(f"{model_path}/architecture.txt"):
+        shutil.move(f"{model_path}/architecture.txt", f"{model_path}/{new_version}/architecture.txt")
+    except Exception as e:
+      print(e)
+      logging.error(e, exc_info=True)
+      # if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
+      #   shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
+
+  
