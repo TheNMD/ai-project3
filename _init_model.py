@@ -228,7 +228,6 @@ class FinetuneModule(pl.LightningModule):
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
-    self.lr_decay = optimizer_settings['lr_decay']
     self.weight_decay = optimizer_settings['weight_decay']
     self.scheduler_name = optimizer_settings['scheduler_name']
 
