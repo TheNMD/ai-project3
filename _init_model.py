@@ -67,7 +67,7 @@ class CustomImageDataset(Dataset):
         image = read_image(img_path)
         transformed_image = self.transform(image)
         
-        past_img_names = CustomImageDataset.load_past_images(self.img_labels.iloc[idx, 0], self.past_image_num)
+        past_img_names = self.load_past_images(img_name, self.past_image_num)
         past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
         past_images = [read_image(path) for path in past_img_paths]
         transformed_past_images = [self.transform(img) for img in past_images]
@@ -77,13 +77,13 @@ class CustomImageDataset(Dataset):
             
         return transformed_image, label
     
-    def load_past_images(self, image_name, num_past_images=6):
+    def load_past_images(self, image_name, past_image_num=6):
         df = pd.read_csv("image/labels.csv")
-        image_type = df[df['image_name'] == image_name]['type'].item()
+        image_type = df[df['image_name'] == image_name]['type'].tolist()[0]
         filtered_df = df[df['type'] == image_type].reset_index()
         index_of_value = filtered_df[filtered_df['image_name'] == image_name].index[-1]
-        if index_of_value >= num_past_images:
-            past_images = filtered_df['image_name'].iloc[index_of_value - num_past_images:index_of_value].tolist()
+        if index_of_value >= past_image_num:
+            past_images = filtered_df['image_name'].iloc[index_of_value - past_image_num : index_of_value].tolist()
         else:
             past_images = filtered_df['image_name'].iloc[:index_of_value].tolist()
         return past_images

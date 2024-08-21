@@ -19,13 +19,26 @@ elif ENV == "colab":
     drive.mount('/content/drive')
     # %cd drive/MyDrive/Coding/
     data_path = "data/NhaBe"
-    
+
+def map_label_to_num(value):
+    if value == 'clear':
+        return 0
+    elif value == 'light_rain':
+        return 2
+    elif value == 'moderate_rain':
+        return 3
+    elif value == 'heavy_rain':
+        return 1
+    elif value == 'very_heavy_rain':
+        return 4
+
 def split_df(interval, seed=42):
     metadata = pd.read_csv("image/labels.csv")
     
     big_df = metadata[['image_name', 'type', f'label_{interval}']]
     big_df = big_df[big_df[f'label_{interval}'] != 'NotAvail']
     big_df = big_df.sample(frac=1, random_state=seed).reset_index(drop=True)
+    big_df[f'label_{interval}'] = big_df[f'label_{interval}'].apply(map_label_to_num)
     
     split_idx1 = int(len(big_df) * 0.8)
     split_idx2 = int(len(big_df) * 0.1)
@@ -61,6 +74,6 @@ if __name__ == '__main__':
     print("Ubuntu version: ", platform.release())
     
     # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-    interval = 10800 
+    interval = 7200 
     split_df(interval)
         

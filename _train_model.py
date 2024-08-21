@@ -53,12 +53,12 @@ if __name__ == '__main__':
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-B"
+  model_name = "convnext-b"
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
-  stochastic_depth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3 
+  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   freeze = False
-  checkpoint = True
+  checkpoint = False
   ckpt_version = "version_0"
   train_from_checkpoint = False
   continue_training = False
@@ -99,7 +99,7 @@ if __name__ == '__main__':
 
   ## For training loop
   batch_size = 128 # 32 | 64 | 128 | 256
-  epochs = 200
+  epochs = 200    # 100 | 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
