@@ -59,16 +59,12 @@ if __name__ == '__main__':
   stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   checkpoint = False
   ckpt_version = "version_0"
-  train_from_checkpoint = False
-  continue_training = False
   
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
   print(f"Stochastic depth: {stochastic_depth}")
   if not checkpoint: print(f"Load from checkpoint: {checkpoint}")
   else: print(f"Load from checkpoint: {checkpoint} [{ckpt_version}]")
-  print(f"Train from checkpoint: {train_from_checkpoint}")
-  print(f"Continue training: {continue_training}\n")
   
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}")
