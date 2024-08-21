@@ -23,7 +23,7 @@ elif ENV == "colab":
 def split_df(interval, seed=42):
     metadata = pd.read_csv("image/labels.csv")
     
-    big_df = metadata[['image_path', 'type', f'label_{interval}']]
+    big_df = metadata[['image_name', 'type', f'label_{interval}']]
     big_df = big_df[big_df[f'label_{interval}'] != 'NotAvail']
     big_df = big_df.sample(frac=1, random_state=seed).reset_index(drop=True)
     
@@ -61,6 +61,6 @@ if __name__ == '__main__':
     print("Ubuntu version: ", platform.release())
     
     # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-    interval = 7200 
+    interval = 10800 
     split_df(interval)
         
