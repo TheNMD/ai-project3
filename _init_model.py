@@ -1,4 +1,4 @@
-import os, shutil, random
+import os, shutil
 import zipfile
 import warnings
 warnings.filterwarnings('ignore')
@@ -105,12 +105,13 @@ def load_model(radar_range, interval, model_name, model_option, num_classes, sto
     model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
     model.head.fc.weight.data.mul_(0.001)
     model = add_stochastic_depth(name, model, stochastic_depth)
-    
-  with open(f'{save_path}/architecture.txt', 'w') as f:
-    f.write("### Summary ###\n")
-    f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
-    f.write("### Full ###\n")
-    f.write(str(model))
+  
+  if save_path:
+    with open(f'{save_path}/architecture.txt', 'w') as f:
+      f.write("### Summary ###\n")
+      f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
+      f.write("### Full ###\n")
+      f.write(str(model))
 
   return model, train_size, test_size
 
@@ -148,10 +149,10 @@ class CustomImageDataset(Dataset):
         image = read_image(img_path)
         transformed_image = self.transform(image)
         
-        past_img_names = self.load_past_images(img_name, self.past_image_num)
-        past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
-        past_images = [read_image(path) for path in past_img_paths]
-        transformed_past_images = [self.transform(img) for img in past_images]
+        # past_img_names = self.load_past_images(img_name, self.past_image_num)
+        # past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
+        # past_images = [read_image(path) for path in past_img_paths]
+        # transformed_past_images = [self.transform(img) for img in past_images]
         
         # for img in transformed_past_images:
         #     transformed_image += img
@@ -211,7 +212,7 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
   return dataloader
 
 class FinetuneModule(pl.LightningModule):
-  def __init__(self, model_settings, optimizer_settings, loop_settings, save_path):
+  def __init__(self, model_settings, optimizer_settings, loop_settings, save_path=None):
     super().__init__()
 
     self.radar_range = model_settings['radar_range']
@@ -237,12 +238,12 @@ class FinetuneModule(pl.LightningModule):
     self.epochs = loop_settings['epochs']
     self.label_smoothing = loop_settings['label_smoothing']
 
-    self.train_loader = load_data(self.interval, "train", train_size, self.batch_size, False)
-    self.val_loader   = load_data(self.interval, "val", test_size, self.batch_size, False)
-    self.test_loader  = load_data(self.interval, "test", test_size, self.batch_size, False)
+    self.train_loader = load_data(self.radar_range, self.interval, "train", train_size, self.batch_size, False)
+    self.val_loader   = load_data(self.radar_range, self.interval, "val", test_size, self.batch_size, False)
+    self.test_loader  = load_data(self.radar_range, self.interval, "test", test_size, self.batch_size, False)
     
     self.label_list = []
-    self.prediction_list = []
+    self.pred_list = []
 
   def forward(self, x):
     return self.model(x)
