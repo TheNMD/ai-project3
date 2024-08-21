@@ -33,62 +33,7 @@ elif ENV == "colab":
   image_path = "image"
   result_path = "drive/MyDrive/Coding/result"
 
-class CustomRandAugment(v2.RandAugment):
-  def __init__(self, num_ops, magnitude, fill):
-      super().__init__(num_ops=num_ops, magnitude=magnitude, fill=fill)
-
-      try:
-        # del self._AUGMENTATION_SPACE['Brightness']
-        # del self._AUGMENTATION_SPACE['Color']
-        # del self._AUGMENTATION_SPACE['Contrast']
-        # del self._AUGMENTATION_SPACE['Sharpness']
-        # del self._AUGMENTATION_SPACE['Posterize']
-        # del self._AUGMENTATION_SPACE['Solarize']
-        # del self._AUGMENTATION_SPACE['Equalize']
-        del self._AUGMENTATION_SPACE['AutoContrast']
-      except Exception as e:
-        pass
-
-class CustomImageDataset(Dataset):
-    def __init__(self, img_labels, img_dir, transform=None, past_image_num=6):
-        self.img_labels = img_labels
-        self.img_dir = img_dir
-        self.transform = transform
-        self.past_image_num = past_image_num
-
-    def __len__(self):
-        return len(self.img_labels)
-
-    def __getitem__(self, idx):
-        label = self.img_labels.iloc[idx, 2]
-        
-        img_name = self.img_labels.iloc[idx, 0]
-        img_path = os.path.join(self.img_dir, img_name)
-        image = read_image(img_path)
-        transformed_image = self.transform(image)
-        
-        past_img_names = self.load_past_images(img_name, self.past_image_num)
-        past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
-        past_images = [read_image(path) for path in past_img_paths]
-        transformed_past_images = [self.transform(img) for img in past_images]
-        
-        # for img in transformed_past_images:
-        #     transformed_image += img
-            
-        return transformed_image, label
-    
-    def load_past_images(self, image_name, past_image_num=6):
-        df = pd.read_csv("image/labels.csv")
-        image_type = df[df['image_name'] == image_name]['type'].tolist()[0]
-        filtered_df = df[df['type'] == image_type].reset_index()
-        index_of_value = filtered_df[filtered_df['image_name'] == image_name].index[-1]
-        if index_of_value >= past_image_num:
-            past_images = filtered_df['image_name'].iloc[index_of_value - past_image_num : index_of_value].tolist()
-        else:
-            past_images = filtered_df['image_name'].iloc[:index_of_value].tolist()
-        return past_images
-
-def load_model(interval, model_name, model_option, num_classes, stochastic_depth):
+def load_model(radar_range, interval, model_name, model_option, num_classes, stochastic_depth, save_path):
   def add_stochastic_depth(model_name, model, drop_prob):
     if drop_prob == 0: return model
     if model_name == "convnext":
@@ -161,7 +106,7 @@ def load_model(interval, model_name, model_option, num_classes, stochastic_depth
     model.head.fc.weight.data.mul_(0.001)
     model = add_stochastic_depth(name, model, stochastic_depth)
     
-  with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/architecture.txt', 'w') as f:
+  with open(f'{save_path}/architecture.txt', 'w') as f:
     f.write("### Summary ###\n")
     f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
     f.write("### Full ###\n")
@@ -169,7 +114,58 @@ def load_model(interval, model_name, model_option, num_classes, stochastic_depth
 
   return model, train_size, test_size
 
-def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4):
+class CustomRandAugment(v2.RandAugment):
+  def __init__(self, num_ops, magnitude, fill):
+      super().__init__(num_ops=num_ops, magnitude=magnitude, fill=fill)
+
+      try:
+        # del self._AUGMENTATION_SPACE['Brightness']
+        # del self._AUGMENTATION_SPACE['Color']
+        # del self._AUGMENTATION_SPACE['Contrast']
+        # del self._AUGMENTATION_SPACE['Sharpness']
+        # del self._AUGMENTATION_SPACE['Posterize']
+        # del self._AUGMENTATION_SPACE['Solarize']
+        # del self._AUGMENTATION_SPACE['Equalize']
+        del self._AUGMENTATION_SPACE['AutoContrast']
+      except Exception as e:
+        pass
+
+class CustomImageDataset(Dataset):
+    def __init__(self, img_labels, img_dir, transform=None, past_image_num=6):
+        self.img_labels = img_labels
+        self.img_dir = img_dir
+        self.transform = transform
+        self.past_image_num = past_image_num
+
+    def __len__(self):
+        return len(self.img_labels)
+
+    def __getitem__(self, idx):
+        label = self.img_labels.iloc[idx, 2]
+        
+        img_name = self.img_labels.iloc[idx, 0]
+        img_path = os.path.join(self.img_dir, img_name)
+        image = read_image(img_path)
+        transformed_image = self.transform(image)
+        
+        past_img_names = self.load_past_images(img_name, self.past_image_num)
+        past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
+        past_images = [read_image(path) for path in past_img_paths]
+        transformed_past_images = [self.transform(img) for img in past_images]
+        
+        # for img in transformed_past_images:
+        #     transformed_image += img
+            
+        return transformed_image, label
+    
+    def load_past_images(self, idx, past_images_num=6):
+        if idx >= past_images_num:
+            past_images = self.img_labels['image_name'].iloc[idx - past_images_num : idx].tolist()
+        else:
+            past_images = self.img_labels['image_name'].iloc[: idx].tolist()
+        return past_images
+
+def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, num_workers=4):
   def median_blur(image, kernel_size=5):
       pil_image = v2.functional.to_pil_image(image)
       blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
@@ -202,7 +198,7 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
                                           std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                             ])
   
-  label_file = pd.read_csv(f"image/{interval}_{set_name}.csv")
+  label_file = pd.read_csv(f"image/{radar_range}_{interval}_{set_name}.csv")
   dataset = CustomImageDataset(img_labels=label_file, 
                                 img_dir="image/combined", 
                                 transform=transforms)
@@ -215,19 +211,22 @@ def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4
   return dataloader
 
 class FinetuneModule(pl.LightningModule):
-  def __init__(self, model_settings, optimizer_settings, loop_settings):
+  def __init__(self, model_settings, optimizer_settings, loop_settings, save_path):
     super().__init__()
 
+    self.radar_range = model_settings['radar_range']
     self.interval = model_settings['interval']
     self.model_name = model_settings['model_name']
     self.model_option = model_settings['model_option']
     self.num_classes = model_settings['num_classes']
     self.stochastic_depth = model_settings['stochastic_depth']
-    self.model, train_size, test_size = load_model(self.interval, 
+    self.model, train_size, test_size = load_model(self.radar_range,
+                                                   self.interval, 
                                                    self.model_name, 
                                                    self.model_option, 
                                                    self.num_classes, 
-                                                   self.stochastic_depth)
+                                                   self.stochastic_depth,
+                                                   save_path)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
@@ -238,7 +237,7 @@ class FinetuneModule(pl.LightningModule):
     self.epochs = loop_settings['epochs']
     self.label_smoothing = loop_settings['label_smoothing']
 
-    self.train_loader = load_data(self.interval, "train", train_size, self.batch_size, True)
+    self.train_loader = load_data(self.interval, "train", train_size, self.batch_size, False)
     self.val_loader   = load_data(self.interval, "val", test_size, self.batch_size, False)
     self.test_loader  = load_data(self.interval, "test", test_size, self.batch_size, False)
     
