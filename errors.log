@@ -1,0 +1,677 @@
+2024-08-21 11:37:52,984 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 11:37:53,041 - INFO - GPU available: True (cuda), used: True
+2024-08-21 11:37:53,228 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 11:37:53,229 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 11:37:53,229 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 11:37:53,257 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 11:37:54,241 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 11:37:54,253 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 11:37:55,365 - ERROR - Caught ValueError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(self.img_labels.iloc[idx, 0], self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 82, in load_past_images
+    image_type = df[df['image_name'] == image_name]['type'].item()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pandas/core/base.py", line 418, in item
+    raise ValueError("can only convert an array of size 1 to a Python scalar")
+ValueError: can only convert an array of size 1 to a Python scalar
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 228, in <module>
+    trainer.fit(module)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 544, in fit
+    call._call_and_handle_interrupt(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 580, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
+    results = self._run_stage()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1031, in _run_stage
+    self._run_sanity_check()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1060, in _run_sanity_check
+    val_loop.run()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 128, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 133, in __next__
+    batch = super().__next__()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 60, in __next__
+    batch = next(self.iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
+    return self._process_data(data)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
+    data.reraise()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/_utils.py", line 722, in reraise
+    raise exception
+ValueError: Caught ValueError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(self.img_labels.iloc[idx, 0], self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 82, in load_past_images
+    image_type = df[df['image_name'] == image_name]['type'].item()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pandas/core/base.py", line 418, in item
+    raise ValueError("can only convert an array of size 1 to a Python scalar")
+ValueError: can only convert an array of size 1 to a Python scalar
+
+2024-08-21 11:42:21,819 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 11:42:21,884 - INFO - GPU available: True (cuda), used: True
+2024-08-21 11:42:22,110 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 11:42:22,110 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 11:42:22,110 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 11:42:22,145 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 11:42:23,060 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 11:42:23,072 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 11:42:24,174 - ERROR - Caught IndexError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(self.img_labels.iloc[idx, 0], self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 82, in load_past_images
+    image_type = df[df['image_name'] == image_name]['type'].tolist()[0]
+IndexError: list index out of range
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 228, in <module>
+    trainer.fit(module)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 544, in fit
+    call._call_and_handle_interrupt(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 580, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
+    results = self._run_stage()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1031, in _run_stage
+    self._run_sanity_check()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1060, in _run_sanity_check
+    val_loop.run()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 128, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 133, in __next__
+    batch = super().__next__()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 60, in __next__
+    batch = next(self.iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
+    return self._process_data(data)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
+    data.reraise()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/_utils.py", line 722, in reraise
+    raise exception
+IndexError: Caught IndexError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(self.img_labels.iloc[idx, 0], self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 82, in load_past_images
+    image_type = df[df['image_name'] == image_name]['type'].tolist()[0]
+IndexError: list index out of range
+
+2024-08-21 11:44:21,920 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 11:44:21,983 - INFO - GPU available: True (cuda), used: True
+2024-08-21 11:44:22,208 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 11:44:22,208 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 11:44:22,209 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 11:44:22,243 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 11:44:23,102 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 11:44:23,113 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 11:44:24,008 - ERROR - Caught UnboundLocalError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(self.img_labels.iloc[idx, 0], self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 86, in load_past_images
+    filtered_df = df[df['type'] == image_type].reset_index()
+UnboundLocalError: local variable 'image_type' referenced before assignment
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 228, in <module>
+    trainer.fit(module)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 544, in fit
+    call._call_and_handle_interrupt(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 580, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
+    results = self._run_stage()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1031, in _run_stage
+    self._run_sanity_check()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1060, in _run_sanity_check
+    val_loop.run()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 128, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 133, in __next__
+    batch = super().__next__()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 60, in __next__
+    batch = next(self.iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
+    return self._process_data(data)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
+    data.reraise()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/_utils.py", line 722, in reraise
+    raise exception
+UnboundLocalError: Caught UnboundLocalError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(self.img_labels.iloc[idx, 0], self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 86, in load_past_images
+    filtered_df = df[df['type'] == image_type].reset_index()
+UnboundLocalError: local variable 'image_type' referenced before assignment
+
+2024-08-21 11:46:02,177 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 11:46:02,239 - INFO - GPU available: True (cuda), used: True
+2024-08-21 11:46:02,466 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 11:46:02,466 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 11:46:02,466 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 11:46:02,502 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 11:46:03,362 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 11:46:03,373 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 11:46:04,263 - ERROR - Caught UnboundLocalError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(img_name, self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 86, in load_past_images
+    filtered_df = df[df['type'] == image_type].reset_index()
+UnboundLocalError: local variable 'image_type' referenced before assignment
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 228, in <module>
+    trainer.fit(module)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 544, in fit
+    call._call_and_handle_interrupt(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 580, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
+    results = self._run_stage()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1031, in _run_stage
+    self._run_sanity_check()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1060, in _run_sanity_check
+    val_loop.run()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 128, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 133, in __next__
+    batch = super().__next__()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 60, in __next__
+    batch = next(self.iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
+    return self._process_data(data)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
+    data.reraise()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/_utils.py", line 722, in reraise
+    raise exception
+UnboundLocalError: Caught UnboundLocalError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(img_name, self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 86, in load_past_images
+    filtered_df = df[df['type'] == image_type].reset_index()
+UnboundLocalError: local variable 'image_type' referenced before assignment
+
+2024-08-21 11:48:20,754 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 11:48:20,838 - INFO - GPU available: True (cuda), used: True
+2024-08-21 11:48:21,181 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 11:48:21,182 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 11:48:21,182 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 11:48:21,227 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 11:48:22,134 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 11:48:22,145 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 11:48:23,199 - ERROR - Caught UnboundLocalError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(img_name, self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 86, in load_past_images
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+UnboundLocalError: local variable 'image_type' referenced before assignment
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 228, in <module>
+    trainer.fit(module)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 544, in fit
+    call._call_and_handle_interrupt(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 580, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
+    results = self._run_stage()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1031, in _run_stage
+    self._run_sanity_check()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1060, in _run_sanity_check
+    val_loop.run()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 128, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 133, in __next__
+    batch = super().__next__()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 60, in __next__
+    batch = next(self.iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
+    return self._process_data(data)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
+    data.reraise()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/_utils.py", line 722, in reraise
+    raise exception
+UnboundLocalError: Caught UnboundLocalError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(img_name, self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 86, in load_past_images
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+UnboundLocalError: local variable 'image_type' referenced before assignment
+
+2024-08-21 11:49:11,466 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 11:49:11,527 - INFO - GPU available: True (cuda), used: True
+2024-08-21 11:49:11,755 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 11:49:11,755 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 11:49:11,756 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 11:49:11,790 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 11:49:12,647 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 11:49:12,658 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 11:49:13,586 - ERROR - Caught UnboundLocalError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(img_name, self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 87, in load_past_images
+    filtered_df = df[df['type'] == image_type].reset_index()
+UnboundLocalError: local variable 'image_type' referenced before assignment
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 228, in <module>
+    trainer.fit(module)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 544, in fit
+    call._call_and_handle_interrupt(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 580, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
+    results = self._run_stage()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1031, in _run_stage
+    self._run_sanity_check()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1060, in _run_sanity_check
+    val_loop.run()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 128, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 133, in __next__
+    batch = super().__next__()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 60, in __next__
+    batch = next(self.iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
+    return self._process_data(data)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
+    data.reraise()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/_utils.py", line 722, in reraise
+    raise exception
+UnboundLocalError: Caught UnboundLocalError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 70, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(img_name, self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 87, in load_past_images
+    filtered_df = df[df['type'] == image_type].reset_index()
+UnboundLocalError: local variable 'image_type' referenced before assignment
+
+2024-08-21 11:50:50,888 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 11:50:50,952 - INFO - GPU available: True (cuda), used: True
+2024-08-21 11:50:51,180 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 11:50:51,180 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 11:50:51,181 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 11:50:51,213 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 11:50:52,066 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 11:50:52,077 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 11:50:53,002 - ERROR - Caught UnboundLocalError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 71, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(img_name, self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 88, in load_past_images
+    filtered_df = df[df['type'] == image_type].reset_index()
+UnboundLocalError: local variable 'image_type' referenced before assignment
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 228, in <module>
+    trainer.fit(module)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 544, in fit
+    call._call_and_handle_interrupt(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 580, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
+    results = self._run_stage()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1031, in _run_stage
+    self._run_sanity_check()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1060, in _run_sanity_check
+    val_loop.run()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 128, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 133, in __next__
+    batch = super().__next__()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 60, in __next__
+    batch = next(self.iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
+    return self._process_data(data)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
+    data.reraise()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/_utils.py", line 722, in reraise
+    raise exception
+UnboundLocalError: Caught UnboundLocalError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 71, in __getitem__
+    past_img_names = CustomImageDataset.load_past_images(img_name, self.past_image_num)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 88, in load_past_images
+    filtered_df = df[df['type'] == image_type].reset_index()
+UnboundLocalError: local variable 'image_type' referenced before assignment
+
+2024-08-21 11:54:13,828 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 11:54:13,891 - INFO - GPU available: True (cuda), used: True
+2024-08-21 11:54:14,110 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 11:54:14,110 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 11:54:14,110 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 11:54:14,143 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 11:54:15,199 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 11:54:15,212 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 11:54:27,112 - ERROR - [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/7200/convnext-b-pretrained/version_6/best_model.ckpt'
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 233, in <module>
+    module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/best_model.ckpt",
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/model_helpers.py", line 125, in wrapper
+    return self.method(cls, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/module.py", line 1581, in load_from_checkpoint
+    loaded = _load_from_checkpoint(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/saving.py", line 63, in _load_from_checkpoint
+    checkpoint = pl_load(checkpoint_path, map_location=map_location)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/lightning_fabric/utilities/cloud_io.py", line 56, in _load
+    with fs.open(path_or_url, "rb") as f:
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/spec.py", line 1293, in open
+    f = self._open(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 197, in _open
+    return LocalFileOpener(path, mode, fs=self, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 322, in __init__
+    self._open()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 327, in _open
+    self.f = open(self.path, mode=self.mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/7200/convnext-b-pretrained/version_6/best_model.ckpt'
+2024-08-21 11:56:56,094 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 11:56:56,160 - INFO - GPU available: True (cuda), used: True
+2024-08-21 11:56:56,394 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 11:56:56,394 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 11:56:56,394 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 11:56:56,430 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 11:56:57,304 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 11:56:57,315 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 11:57:14,079 - ERROR - cross_entropy_loss(): argument 'target' (position 2) must be Tensor, not tuple
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 228, in <module>
+    trainer.fit(module)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 544, in fit
+    call._call_and_handle_interrupt(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 580, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
+    results = self._run_stage()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1031, in _run_stage
+    self._run_sanity_check()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1060, in _run_sanity_check
+    val_loop.run()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 135, in run
+    self._evaluation_step(batch, batch_idx, dataloader_idx, dataloader_iter)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 396, in _evaluation_step
+    output = call._call_strategy_hook(trainer, hook_name, *step_args)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 309, in _call_strategy_hook
+    output = fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 412, in validation_step
+    return self.lightning_module.validation_step(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 274, in validation_step
+    val_loss = criterion(logits, y)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/nn/modules/loss.py", line 1179, in forward
+    return F.cross_entropy(input, target, weight=self.weight,
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/nn/functional.py", line 3059, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(input, target, weight, _Reduction.get_enum(reduction), ignore_index, label_smoothing)
+TypeError: cross_entropy_loss(): argument 'target' (position 2) must be Tensor, not tuple
+2024-08-21 12:09:38,250 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 12:09:38,314 - INFO - GPU available: True (cuda), used: True
+2024-08-21 12:09:38,542 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 12:09:38,543 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 12:09:38,543 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 12:09:38,576 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 12:09:39,633 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 12:09:39,644 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 12:10:40,711 - ERROR - [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/7200/convnext-b-pretrained/version_0/best_model.ckpt'
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 233, in <module>
+    module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/best_model.ckpt",
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/model_helpers.py", line 125, in wrapper
+    return self.method(cls, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/module.py", line 1581, in load_from_checkpoint
+    loaded = _load_from_checkpoint(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/saving.py", line 63, in _load_from_checkpoint
+    checkpoint = pl_load(checkpoint_path, map_location=map_location)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/lightning_fabric/utilities/cloud_io.py", line 56, in _load
+    with fs.open(path_or_url, "rb") as f:
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/spec.py", line 1293, in open
+    f = self._open(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 197, in _open
+    return LocalFileOpener(path, mode, fs=self, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 322, in __init__
+    self._open()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 327, in _open
+    self.f = open(self.path, mode=self.mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/7200/convnext-b-pretrained/version_0/best_model.ckpt'
