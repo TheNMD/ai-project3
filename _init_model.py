@@ -223,8 +223,11 @@ class FinetuneModule(pl.LightningModule):
     self.model_option = model_settings['model_option']
     self.num_classes = model_settings['num_classes']
     self.stochastic_depth = model_settings['stochastic_depth']
-    self.model, train_size, test_size = load_model(self.interval, self.model_name, self.model_option, 
-                                                   self.num_classes, self.stochastic_depth)
+    self.model, train_size, test_size = load_model(self.interval, 
+                                                   self.model_name, 
+                                                   self.model_option, 
+                                                   self.num_classes, 
+                                                   self.stochastic_depth)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
