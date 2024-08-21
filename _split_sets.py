@@ -23,12 +23,12 @@ elif ENV == "colab":
 def map_label_to_num(value):
     if value == 'clear':
         return 0
+    elif value == 'heavy_rain':
+        return 1
     elif value == 'light_rain':
         return 2
     elif value == 'moderate_rain':
         return 3
-    elif value == 'heavy_rain':
-        return 1
     elif value == 'very_heavy_rain':
         return 4
 
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     print("Ubuntu version: ", platform.release())
     
     # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-    interval = 7200 
+    interval = 10800 
     split_df("100km", interval)
     split_df("250km", interval)
         

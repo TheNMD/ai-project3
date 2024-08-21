@@ -252,7 +252,7 @@ if __name__ == '__main__':
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
-      if os.path.exists(f'{save_path}'):
-        shutil.rmtree(f'{save_path}')
+      # if os.path.exists(f'{save_path}'):
+      #   shutil.rmtree(f'{save_path}')
 
   

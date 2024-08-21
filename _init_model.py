@@ -284,7 +284,7 @@ class FinetuneModule(pl.LightningModule):
     test_acc = correct / x.shape[0]
 
     self.label_list += y.tolist()
-    self.prediction_list += predictions.tolist()
+    self.pred_list += predictions.tolist()
     
     self.log("test_loss", test_loss, on_epoch=True)
     self.log("test_acc", test_acc, on_epoch=True)
@@ -442,7 +442,10 @@ def plot_confusion_matrix(labels, predictions, save_path, draw=True):
   
   if draw:
     _, ax = plt.subplots(figsize=(10.5, 8))
-    display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain', 'very_heavy_rain']
+    if "very_heavy_rain" in labels or "very_heavy_rain" in predictions:
+      display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain', 'very_heavy_rain']
+    else:
+      display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain']
     ConfusionMatrixDisplay.from_predictions(labels,
                                             predictions,
                                             display_labels=display_labels,

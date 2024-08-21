@@ -32,3 +32,119 @@ Traceback (most recent call last):
   File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/saving.py", line 158, in _load_state
     obj = cls(**_cls_kwargs)
 TypeError: FinetuneModule.__init__() missing 1 required positional argument: 'save_path'
+2024-08-21 16:02:39,055 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 16:02:39,122 - INFO - GPU available: True (cuda), used: True
+2024-08-21 16:02:39,370 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 16:02:39,370 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 16:02:39,371 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 16:02:39,407 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 16:02:40,539 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 16:02:40,974 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 16:12:30,383 - INFO - Metric val_acc improved. New best score: 0.563
+2024-08-21 16:12:30,389 - INFO - Epoch 0, global step 1605: 'val_acc' reached 0.56318 (best 0.56318), saving model to '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt' as top 1
+2024-08-21 16:22:20,726 - INFO - Metric val_acc improved by 0.021 >= min_delta = 0.0001. New best score: 0.585
+2024-08-21 16:22:20,732 - INFO - Epoch 0, global step 3210: 'val_acc' reached 0.58461 (best 0.58461), saving model to '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt' as top 1
+2024-08-21 16:22:26,242 - INFO - `Trainer.fit` stopped: `max_epochs=1` reached.
+2024-08-21 16:22:34,459 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 16:22:35,457 - ERROR - 'FinetuneModule' object has no attribute 'prediction_list'
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 227, in <module>
+    trainer.test(module_test)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 754, in test
+    return call._call_and_handle_interrupt(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 794, in _test_impl
+    results = self._run(model, ckpt_path=ckpt_path)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
+    results = self._run_stage()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1026, in _run_stage
+    return self._evaluation_loop.run()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 135, in run
+    self._evaluation_step(batch, batch_idx, dataloader_idx, dataloader_iter)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 396, in _evaluation_step
+    output = call._call_strategy_hook(trainer, hook_name, *step_args)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 309, in _call_strategy_hook
+    output = fn(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 425, in test_step
+    return self.lightning_module.test_step(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 287, in test_step
+    self.prediction_list += predictions.tolist()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1688, in __getattr__
+    raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+AttributeError: 'FinetuneModule' object has no attribute 'prediction_list'
+2024-08-21 16:28:16,699 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 16:28:16,766 - INFO - GPU available: True (cuda), used: True
+2024-08-21 16:28:17,010 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 16:28:17,011 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 16:28:17,011 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 16:28:17,045 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 16:28:18,262 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 16:28:18,827 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 16:38:04,590 - INFO - Metric val_acc improved. New best score: 0.565
+2024-08-21 16:38:04,595 - INFO - Epoch 0, global step 1605: 'val_acc' reached 0.56521 (best 0.56521), saving model to '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt' as top 1
+2024-08-21 16:47:39,439 - INFO - Metric val_acc improved by 0.017 >= min_delta = 0.0001. New best score: 0.582
+2024-08-21 16:47:39,444 - INFO - Epoch 0, global step 3210: 'val_acc' reached 0.58188 (best 0.58188), saving model to '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt' as top 1
+2024-08-21 16:47:45,885 - INFO - `Trainer.fit` stopped: `max_epochs=1` reached.
+2024-08-21 16:47:54,368 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 16:48:36,194 - ERROR - The number of FixedLocator locations (4), usually from a call to set_ticks, does not match the number of labels (5).
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 236, in <module>
+    precision, recall, f1 = plot_confusion_matrix(module_test.label_list, module_test.pred_list, save_path, draw=True)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 446, in plot_confusion_matrix
+    ConfusionMatrixDisplay.from_predictions(labels,
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/sklearn/metrics/_plot/confusion_matrix.py", line 473, in from_predictions
+    return disp.plot(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/sklearn/metrics/_plot/confusion_matrix.py", line 181, in plot
+    ax.set(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/matplotlib/artist.py", line 147, in <lambda>
+    cls.set = lambda self, **kwargs: Artist.set(self, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/matplotlib/artist.py", line 1227, in set
+    return self._internal_update(cbook.normalize_kwargs(kwargs, self))
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/matplotlib/artist.py", line 1219, in _internal_update
+    return self._update_props(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/matplotlib/artist.py", line 1195, in _update_props
+    ret.append(func(v))
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 73, in wrapper
+    return get_method(self)(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/matplotlib/_api/deprecation.py", line 297, in wrapper
+    return func(*args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/matplotlib/axis.py", line 2025, in set_ticklabels
+    raise ValueError(
+ValueError: The number of FixedLocator locations (4), usually from a call to set_ticks, does not match the number of labels (5).
+2024-08-21 17:07:51,464 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-21 17:07:51,540 - INFO - GPU available: True (cuda), used: True
+2024-08-21 17:07:51,793 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-21 17:07:51,793 - INFO - IPU available: False, using: 0 IPUs
+2024-08-21 17:07:51,793 - INFO - HPU available: False, using: 0 HPUs
+2024-08-21 17:07:51,829 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-21 17:07:53,175 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-21 17:07:53,599 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-21 17:17:26,429 - INFO - Metric val_acc improved. New best score: 0.562
+2024-08-21 17:17:26,441 - INFO - Epoch 0, global step 1605: 'val_acc' reached 0.56170 (best 0.56170), saving model to '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt' as top 1
