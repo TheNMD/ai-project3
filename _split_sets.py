@@ -32,12 +32,12 @@ def map_label_to_num(value):
     elif value == 'very_heavy_rain':
         return 4
 
-def split_df(interval, seed=42):
+def split_df(interval, radar_range, seed=42):
     metadata = pd.read_csv("image/labels.csv")
-    
-    big_df = metadata[['image_name', 'type', f'label_{interval}']]
+    big_df = metadata[['image_name', 'range', f'label_{interval}']]
+    big_df = big_df[metadata['range'] == radar_range].reset_index()
     big_df = big_df[big_df[f'label_{interval}'] != 'NotAvail']
-    big_df = big_df.sample(frac=1, random_state=seed).reset_index(drop=True)
+    # big_df = big_df.sample(frac=1, random_state=seed).reset_index(drop=True)
     big_df[f'label_{interval}'] = big_df[f'label_{interval}'].apply(map_label_to_num)
     
     split_idx1 = int(len(big_df) * 0.8)
@@ -75,5 +75,6 @@ if __name__ == '__main__':
     
     # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
     interval = 7200 
-    split_df(interval)
+    split_df(interval, "100km")
+    split_df(interval, "250km")
         

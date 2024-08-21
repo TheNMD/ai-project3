@@ -72,8 +72,8 @@ class CustomImageDataset(Dataset):
         past_images = [read_image(path) for path in past_img_paths]
         transformed_past_images = [self.transform(img) for img in past_images]
         
-        for img in transformed_past_images:
-            transformed_image += img
+        # for img in transformed_past_images:
+        #     transformed_image += img
             
         return transformed_image, label
     
