@@ -50,27 +50,43 @@ class CustomRandAugment(v2.RandAugment):
         pass
 
 class CustomImageDataset(Dataset):
-    def __init__(self, img_labels, img_dir, transform=None, target_transform=None):
+    def __init__(self, img_labels, img_dir, transform=None, past_image_num=6):
         self.img_labels = img_labels
         self.img_dir = img_dir
         self.transform = transform
-        self.target_transform = target_transform
+        self.past_image_num = past_image_num
 
     def __len__(self):
         return len(self.img_labels)
 
     def __getitem__(self, idx):
-        img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
-        image = read_image(img_path)
         label = self.img_labels.iloc[idx, 2]
-        if self.transform:
-            image = self.transform(image)
-        if self.target_transform:
-            label = self.target_transform(label)
-        return image, label
+        
+        img_name = self.img_labels.iloc[idx, 0]
+        img_path = os.path.join(self.img_dir, img_name)
+        image = read_image(img_path)
+        transformed_image = self.transform(image)
+        
+        past_img_names = CustomImageDataset.load_past_images(self.img_labels.iloc[idx, 0], self.past_image_num)
+        past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
+        past_images = [read_image(path) for path in past_img_paths]
+        transformed_past_images = [self.transform(img) for img in past_images]
+        
+        for img in transformed_past_images:
+            transformed_image += img
+            
+        return transformed_image, label
     
-    def __getname__(self, idx):
-        return os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
+    def load_past_images(self, image_name, num_past_images=6):
+        df = pd.read_csv("image/labels.csv")
+        image_type = df[df['image_name'] == image_name]['type'].item()
+        filtered_df = df[df['type'] == image_type].reset_index()
+        index_of_value = filtered_df[filtered_df['image_name'] == image_name].index[-1]
+        if index_of_value >= num_past_images:
+            past_images = filtered_df['image_name'].iloc[index_of_value - num_past_images:index_of_value].tolist()
+        else:
+            past_images = filtered_df['image_name'].iloc[:index_of_value].tolist()
+        return past_images
 
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):
@@ -204,7 +220,7 @@ class FinetuneModule(pl.LightningModule):
                                v2.Resize((image_size, image_size)),
                               #  v2.RandomErasing(p=0.25, value=255),
                               #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
-                               CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
+                              #  CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                                v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                                v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                                v2.ToDtype(torch.float32, scale=True),
@@ -227,9 +243,6 @@ class FinetuneModule(pl.LightningModule):
     dataset = CustomImageDataset(img_labels=label_file, 
                                  img_dir="image/combined", 
                                  transform=transforms)
-
-    # dataset = torchvision.datasets.ImageFolder(root=f"{image_path}/labeled/{self.interval}/{set_name}",
-    #                                            transform=transforms)
     
     dataloader = torch.utils.data.DataLoader(dataset, 
                                              batch_size=self.batch_size, 
