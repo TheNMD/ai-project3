@@ -74,7 +74,7 @@ if __name__ == '__main__':
     print("Ubuntu version: ", platform.release())
     
     # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-    interval = 10800 
+    interval = 3600 
     split_df("100km", interval)
     split_df("250km", interval)
         
