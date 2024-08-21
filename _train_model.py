@@ -57,20 +57,14 @@ if __name__ == '__main__':
   model_option = "pretrained" # pretrained | custom
   num_classes = 5
   stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
-  freeze = False
   checkpoint = False
   ckpt_version = "version_0"
-  train_from_checkpoint = False
-  continue_training = False
   
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_option}")
   print(f"Stochastic depth: {stochastic_depth}")
-  print(f"Freeze: {freeze}")
   if not checkpoint: print(f"Load from checkpoint: {checkpoint}")
   else: print(f"Load from checkpoint: {checkpoint} [{ckpt_version}]")
-  print(f"Train from checkpoint: {train_from_checkpoint}")
-  print(f"Continue training: {continue_training}\n")
   
   if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{interval}")
@@ -81,13 +75,11 @@ if __name__ == '__main__':
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
   learning_rate = 5e-5      # 1e-3 | 1e-4  | 5e-5
-  lr_decay = 0.0            # 0.0  | 0.8 
   weight_decay = 1e-8       # 0    | 1e-8 
   scheduler_name = "cd"     # none | cd    | cdwr  
   
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
-  print(f"Layer-wise learning rate decay: {lr_decay}")
   print(f"Weight decay: {weight_decay}")
   print(f"Scheduler: {scheduler_name}\n")
 
@@ -95,11 +87,11 @@ if __name__ == '__main__':
   monitor_value = "val_acc" # val_acc | val_loss
   patience = 22
   min_delta = 1e-4 # 1e-4 | 5e-4
-  min_epochs = 21 # 21 | 41 | 61
+  min_epochs = 21 # 0 | 21 | 41 | 61
 
   ## For training loop
   batch_size = 128 # 32 | 64 | 128 | 256
-  epochs = 200    # 100 | 200
+  epochs = 30    # 100 | 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
@@ -112,12 +104,10 @@ if __name__ == '__main__':
                     'model_name': model_name, 
                     'model_option': model_option,
                     'num_classes': num_classes,
-                    'stochastic_depth': stochastic_depth, 
-                    'freeze': freeze}
+                    'stochastic_depth': stochastic_depth,}
   
   optimizer_settings = {'optimizer_name': optimizer_name, 
                         'learning_rate': learning_rate,
-                        'lr_decay': lr_decay, 
                         'weight_decay': weight_decay, 
                         'scheduler_name': scheduler_name}
   

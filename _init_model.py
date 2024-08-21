@@ -88,6 +88,132 @@ class CustomImageDataset(Dataset):
             past_images = filtered_df['image_name'].iloc[:index_of_value].tolist()
         return past_images
 
+def load_model(interval, model_name, model_option, num_classes, stochastic_depth):
+  def add_stochastic_depth(model_name, model, drop_prob):
+    if drop_prob == 0: return model
+    if model_name == "convnext":
+        for layer in model.modules():
+            if isinstance(layer, timm.models.convnext.ConvNeXtBlock):
+                layer.drop_path = timm.layers.DropPath(drop_prob)
+    return model
+  
+  name_and_size = model_name.split('-')
+  name, size = name_and_size[0], name_and_size[1]
+  
+  if model_option == "custom":
+    is_pretrained = False
+  elif model_option == "pretrained":
+    is_pretrained = True
+    
+  if name == "vit":
+    if size == "s":
+      model = timm.create_model('vit_small_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
+    elif size == "b":
+      model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
+    elif size == "l":
+      model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
+    num_feature = model.head.in_features
+    model.head = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
+    model.head.weight.data.mul_(0.001)
+    # model = add_stochastic_depth(name, model, stochastic_depth)
+  
+  elif name == "swin":
+    if size == "s":
+      model = timm.create_model('swin_small_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
+    elif size == "b":
+      model = timm.create_model('swin_base_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
+    num_feature = model.head.fc.in_features
+    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
+    model.head.fc.weight.data.mul_(0.001)
+    # model = add_stochastic_depth(name, model, stochastic_depth)
+  
+  elif name == "effnetv2":
+    if size == "s":
+      model = timm.create_model('tf_efficientnetv2_s.in21k', pretrained=is_pretrained)
+      train_size, test_size = 300, 384
+    elif size == "m":
+      model = timm.create_model('tf_efficientnetv2_m.in21k', pretrained=is_pretrained)
+      train_size, test_size = 384, 480
+    num_feature = model.classifier.in_features
+    model.classifier = torch.nn.Linear(in_features=num_feature, out_features=5)
+    model.classifier.weight.data.mul_(0.001)
+    # model = add_stochastic_depth(name, model, stochastic_depth)
+  
+  elif name == "convnext":
+    if size == "s":
+      model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
+    elif size == "b":
+      model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
+      train_size, test_size = 224, 224
+    elif size == "l":
+      model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
+      # with open('result/convnext-l.pickle', 'rb') as f:
+      #   model = pickle.load(f)
+      train_size, test_size = 224, 224
+    num_feature = model.head.fc.in_features
+    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
+    model.head.fc.weight.data.mul_(0.001)
+    model = add_stochastic_depth(name, model, stochastic_depth)
+    
+  with open(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/architecture.txt', 'w') as f:
+    f.write("### Summary ###\n")
+    f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
+    f.write("### Full ###\n")
+    f.write(str(model))
+
+  return model, train_size, test_size
+
+def load_data(interval, set_name, image_size, batch_size, shuffle, num_workers=4):
+  def median_blur(image, kernel_size=5):
+      pil_image = v2.functional.to_pil_image(image)
+      blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
+      return v2.functional.to_image(blurred_img)
+  
+  # Preprocessing data
+  # TODO Add more preprocessing methods
+  if set_name == "train":
+    transforms = v2.Compose([
+                              v2.ToImage(), 
+                              v2.Resize((image_size, image_size)),
+                            #  v2.RandomErasing(p=0.25, value=255),
+                            #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
+                            #  CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
+                              v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
+                              v2.Lambda(lambda image: v2.functional.autocontrast(image)),
+                              v2.ToDtype(torch.float32, scale=True),
+                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
+                                          std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
+                            ])
+    
+  elif set_name == "val" or set_name == "test":
+    transforms = v2.Compose([
+                              v2.ToImage(), 
+                              v2.Resize((image_size, image_size)),
+                              v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
+                              v2.Lambda(lambda image: v2.functional.autocontrast(image)),
+                              v2.ToDtype(torch.float32, scale=True),
+                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
+                                          std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
+                            ])
+  
+  label_file = pd.read_csv(f"image/{interval}_{set_name}.csv")
+  dataset = CustomImageDataset(img_labels=label_file, 
+                                img_dir="image/combined", 
+                                transform=transforms)
+  
+  dataloader = torch.utils.data.DataLoader(dataset, 
+                                            batch_size=batch_size, 
+                                            shuffle=shuffle, 
+                                            num_workers=num_workers)
+  
+  return dataloader
+
 class FinetuneModule(pl.LightningModule):
   def __init__(self, model_settings, optimizer_settings, loop_settings):
     super().__init__()
@@ -97,12 +223,14 @@ class FinetuneModule(pl.LightningModule):
     self.model_option = model_settings['model_option']
     self.num_classes = model_settings['num_classes']
     self.stochastic_depth = model_settings['stochastic_depth']
-    self.freeze = model_settings['freeze']
-    self.model, train_size, test_size = self.load_model()
+    self.model, train_size, test_size = load_model(self.interval, 
+                                                   self.model_name, 
+                                                   self.model_option, 
+                                                   self.num_classes, 
+                                                   self.stochastic_depth)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
-    self.lr_decay = optimizer_settings['lr_decay']
     self.weight_decay = optimizer_settings['weight_decay']
     self.scheduler_name = optimizer_settings['scheduler_name']
 
@@ -110,146 +238,12 @@ class FinetuneModule(pl.LightningModule):
     self.epochs = loop_settings['epochs']
     self.label_smoothing = loop_settings['label_smoothing']
 
-    self.train_loader = self.load_data("train", train_size, True)
-    self.val_loader   = self.load_data("val", test_size, False)
-    self.test_loader  = self.load_data("test", test_size, False)
+    self.train_loader = load_data(self.interval, "train", train_size, self.batch_size, True)
+    self.val_loader   = load_data(self.interval, "val", test_size, self.batch_size, False)
+    self.test_loader  = load_data(self.interval, "test", test_size, self.batch_size, False)
     
     self.label_list = []
     self.prediction_list = []
-
-  def load_model(self):
-    def add_stochastic_depth(model_name, model, drop_prob):
-      if drop_prob == 0: return model
-      if model_name == "convnext":
-          for layer in model.modules():
-              if isinstance(layer, timm.models.convnext.ConvNeXtBlock):
-                  layer.drop_path = timm.layers.DropPath(drop_prob)
-      return model
-    
-    name_and_size = self.model_name.split('-')
-    name, size = name_and_size[0], name_and_size[1]
-    
-    if self.model_option == "custom":
-      is_pretrained = False
-    elif self.model_option == "pretrained":
-      is_pretrained = True
-      
-    if name == "vit":
-      if size == "s":
-        model = timm.create_model('vit_small_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
-        train_size, test_size = 224, 224
-      elif size == "b":
-        model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
-        train_size, test_size = 224, 224
-      elif size == "l":
-        model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
-        train_size, test_size = 224, 224
-      if self.freeze:
-        for param in model.parameters(): param.requires_grad = False
-      num_feature = model.head.in_features
-      model.head = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
-      model.head.weight.data.mul_(0.001)
-      # model = add_stochastic_depth(name, model, self.stochastic_depth)
-    
-    elif name == "swin":
-      if size == "s":
-        model = timm.create_model('swin_small_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
-        train_size, test_size = 224, 224
-      elif size == "b":
-        model = timm.create_model('swin_base_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
-        train_size, test_size = 224, 224
-      if self.freeze:
-        for param in model.parameters(): param.requires_grad = False
-      num_feature = model.head.fc.in_features
-      model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
-      model.head.fc.weight.data.mul_(0.001)
-      # model = add_stochastic_depth(name, model, self.stochastic_depth)
-    
-    elif name == "effnetv2":
-      if size == "s":
-        model = timm.create_model('tf_efficientnetv2_s.in21k', pretrained=is_pretrained)
-        train_size, test_size = 300, 384
-      elif size == "m":
-        model = timm.create_model('tf_efficientnetv2_m.in21k', pretrained=is_pretrained)
-        train_size, test_size = 384, 480
-      if self.freeze:
-        for param in model.parameters(): param.requires_grad = False
-      num_feature = model.classifier.in_features
-      model.classifier = torch.nn.Linear(in_features=num_feature, out_features=5)
-      model.classifier.weight.data.mul_(0.001)
-      # model = add_stochastic_depth(name, model, self.stochastic_depth)
-    
-    elif name == "convnext":
-      if size == "s":
-        model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
-        train_size, test_size = 224, 224
-      elif size == "b":
-        model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
-        train_size, test_size = 224, 224
-      elif size == "l":
-        model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
-        # with open('result/convnext-l.pickle', 'rb') as f:
-        #   model = pickle.load(f)
-        train_size, test_size = 224, 224
-      if self.freeze:
-        for param in model.parameters(): param.requires_grad = False
-      num_feature = model.head.fc.in_features
-      model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=self.num_classes)
-      model.head.fc.weight.data.mul_(0.001)
-      model = add_stochastic_depth(name, model, self.stochastic_depth)
-      
-    with open(f'{result_path}/checkpoint/{self.interval}/{self.model_name}-{self.model_option}/architecture.txt', 'w') as f:
-      f.write("### Summary ###\n")
-      f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
-      f.write("### Full ###\n")
-      f.write(str(model))
-
-    return model, train_size, test_size
-
-  def load_data(self, set_name, image_size, shuffle, num_workers=4):
-    def median_blur(image, kernel_size=5):
-        pil_image = v2.functional.to_pil_image(image)
-        blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
-        return v2.functional.to_image(blurred_img)
-    
-    # Preprocessing data
-    # TODO Add more preprocessing methods
-    if set_name == "train":
-      transforms = v2.Compose([
-                               v2.ToImage(), 
-                               v2.Resize((image_size, image_size)),
-                              #  v2.RandomErasing(p=0.25, value=255),
-                              #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
-                              #  CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
-                               v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
-                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
-                               v2.ToDtype(torch.float32, scale=True),
-                               v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
-                                            std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
-                              ])
-      
-    elif set_name == "val" or set_name == "test":
-      transforms = v2.Compose([
-                               v2.ToImage(), 
-                               v2.Resize((image_size, image_size)),
-                               v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
-                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
-                               v2.ToDtype(torch.float32, scale=True),
-                               v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
-                                            std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
-                              ])
-    
-    label_file = pd.read_csv(f"image/{self.interval}_{set_name}.csv")
-    dataset = CustomImageDataset(img_labels=label_file, 
-                                 img_dir="image/combined", 
-                                 transform=transforms)
-    
-    dataloader = torch.utils.data.DataLoader(dataset, 
-                                             batch_size=self.batch_size, 
-                                             shuffle=shuffle, 
-                                             num_workers=num_workers)
-    
-    return dataloader
 
   def forward(self, x):
     return self.model(x)
@@ -300,70 +294,16 @@ class FinetuneModule(pl.LightningModule):
   def configure_optimizers(self):
     def get_optimizer_settings():
       if self.optimizer_name == "adam" or self.optimizer_name == "adamw":
-        if self.lr_decay == 0:
-          optimizer_settings = [{'params': self.model.parameters(), 
-                                 'lr': self.learning_rate, 
-                                 'betas' : (0.9, 0.999), 
-                                 'weight_decay' : self.weight_decay}]
-        else:
-          # layer-wise lr decay
-          optimizer_settings = []
-          learning_rate = self.learning_rate
-          
-          layer_names = [n for n, _ in self.model.named_parameters()]
-          layer_names.reverse()
-          
-          previous_group_name = layer_names[0].split('.')[0]
-
-          for name in layer_names:
-            current_group_name = name.split('.')[0]
-            
-            if current_group_name == "stages":
-                current_block_num = int(name.split('.')[3])
-                if current_block_num % 3 == 1: current_block_num += 1 
-                elif current_block_num % 3 == 0: current_block_num += 2
-                current_group_name = f"{name.split('.')[0]}{name.split('.')[1]}{name.split('.')[2]}{current_block_num}"
-            
-            if current_group_name != previous_group_name:
-                learning_rate *= self.lr_decay
-                
-            previous_group_name = current_group_name
-
-            optimizer_settings += [{'params': [p for n, p in self.model.named_parameters() 
-                                               if n == name and p.requires_grad], 
-                                    'lr': learning_rate, 
-                                    'betas' : (0.9, 0.999), 
-                                    'weight_decay' : self.weight_decay}]
+        optimizer_settings = [{'params': self.model.parameters(), 
+                                'lr': self.learning_rate, 
+                                'betas' : (0.9, 0.999), 
+                                'weight_decay' : self.weight_decay}]
           
       elif self.optimizer_name == "sgd":
-        if self.lr_decay == 0:
-          optimizer_settings = [{'params': self.model.parameters(), 
-                                'lr': self.learning_rate, 
-                                'momentum' : 0.9, 
-                                'weight_decay' : 0}]
-        else:
-          # layer-wise lr decay
-          optimizer_settings = []
-          learning_rate = self.learning_rate
-          
-          layer_names = [name for name, _ in self.model.named_parameters()]
-          layer_names.reverse()
-          
-          previous_group_name = layer_names[0].split('.')[0]
-
-          for name in layer_names:
-            current_group_name = name.split('.')[0]
-            
-            if current_group_name != previous_group_name:
-                learning_rate *= self.lr_decay
-                
-            previous_group_name = current_group_name
-          
-            optimizer_settings += [{'params': [p for n, p in self.model.named_parameters() 
-                                               if n == name and p.requires_grad], 
-                                    'lr': learning_rate, 
-                                    'momentum' : 0.9, 
-                                    'weight_decay' : 0}]
+        optimizer_settings = [{'params': self.model.parameters(), 
+                              'lr': self.learning_rate, 
+                              'momentum' : 0.9, 
+                              'weight_decay' : 0}]
     
       return optimizer_settings
       
