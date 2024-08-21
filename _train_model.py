@@ -47,6 +47,8 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
+  # 100km | 250km
+  radar_range = "250km"
   # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
   interval = 7200
   # convnext-s | convnext-b | convnext-l 
@@ -65,12 +67,13 @@ if __name__ == '__main__':
   print(f"Stochastic depth: {stochastic_depth}")
   if not checkpoint: print(f"Load from checkpoint: {checkpoint}")
   else: print(f"Load from checkpoint: {checkpoint} [{ckpt_version}]")
-  
-  if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
-    os.makedirs(f"{result_path}/checkpoint/{interval}")
-  if not os.path.exists(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}"):
-    os.makedirs(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}")
-  model_path = f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}"
+
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/")    
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}")
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_option}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
@@ -91,7 +94,7 @@ if __name__ == '__main__':
 
   ## For training loop
   batch_size = 32 # 32 | 64 | 128 | 256
-  epochs = 30    # 100 | 200
+  epochs = 1    # 100 | 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
@@ -100,7 +103,8 @@ if __name__ == '__main__':
   print(f"Label smoothing: {label_smoothing}\n")
 
   # Combine all settings
-  model_settings = {'interval': interval,
+  model_settings = {'radar_range': radar_range,
+                    'interval': interval,
                     'model_name': model_name, 
                     'model_option': model_option,
                     'num_classes': num_classes,
@@ -128,18 +132,21 @@ if __name__ == '__main__':
     devices = 'auto'
     strategy = 'auto'
   
-  versions = [folder for folder in 
-              os.listdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}') 
-              if os.path.isdir(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{folder}')]
+  model_path = f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_option}"
+  versions = [folder for folder in os.listdir(model_path) if os.path.isdir(f'{model_path}/{folder}')]
   if len(versions) == 0:
     new_version = "version_0"
   else:
     latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
     new_version = f"version_{latest_version + 1}"
+  save_path = f"{model_path}/{new_version}"
+  if not os.path.exists(f"{save_path}"):
+    os.makedirs(f"{save_path}")
   
   # Logger
-  logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{interval}', 
-                                name=f'{model_name}-{model_option}')
+  logger = pl.loggers.CSVLogger(save_dir=f"{result_path}/checkpoint/{radar_range}/{interval}",
+                                name=f"{model_name}-{model_option}",
+                                version=new_version,)
 
   # Callbacks
   if monitor_value == "val_acc": monitor_mode = "max"
@@ -155,21 +162,23 @@ if __name__ == '__main__':
                                                      mode=monitor_mode,
                                                      save_top_k=1,
                                                      filename='best_model',
-                                                     dirpath=f'{model_path}/{new_version}',
+                                                     dirpath=save_path,
                                                      verbose=True,)
   
   if checkpoint:
     module = FinetuneModule.load_from_checkpoint(f"{model_path}/{ckpt_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
-                                                 loop_settings=loop_settings)
+                                                 loop_settings=loop_settings,
+                                                 save_path=save_path)
 
     trainer = pl.Trainer(accelerator=accelerator, 
                           devices=devices, 
                           strategy=strategy,
                           logger=False,
                           enable_checkpointing=False)
-      
+    
+    save_path = f"{model_path}/{ckpt_version}"
     try:
       # Evaluation
       start_time = time.time()
@@ -177,21 +186,11 @@ if __name__ == '__main__':
       end_time = time.time()
       print(f"Evaluation time: {end_time - start_time} seconds")
       
-      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
-                                                      min_delta, 
-                                                      f"{model_path}/{ckpt_version}",
-                                                      draw=True)
+      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, save_path, draw=True)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
-      precision, recall, f1 = plot_confusion_matrix(module.label_list,
-                                                    module.prediction_list,
-                                                    f"{model_path}/{ckpt_version}",
-                                                    draw=True)
+      precision, recall, f1 = plot_confusion_matrix(module.label_list, module.pred_list, save_path, draw=True)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
-      
-      # Move architecture file to the corresponding version
-      if os.path.exists(f"{model_path}/architecture.txt"):
-        shutil.move(f"{model_path}/architecture.txt", f"{model_path}/{ckpt_version}/architecture.txt")
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
@@ -220,7 +219,7 @@ if __name__ == '__main__':
       print(f"Training time: {train_end_time} seconds")
       
       # Evaluation
-      module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{new_version}/best_model.ckpt", 
+      module_test = FinetuneModule.load_from_checkpoint(f"{save_path}/best_model.ckpt", 
                                                         model_settings=model_settings,
                                                         optimizer_settings=optimizer_settings, 
                                                         loop_settings=loop_settings)
@@ -230,21 +229,15 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
 
       # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
-                                                      min_delta, 
-                                                      f"{model_path}/{new_version}",
-                                                      draw=True)
+      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, save_path, draw=True)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Plot testing accuracy by class
-      precision, recall, f1 = plot_confusion_matrix(module_test.label_list,
-                                                    module_test.prediction_list,
-                                                    f"{model_path}/{ckpt_version}",
-                                                    draw=True)
+      precision, recall, f1 = plot_confusion_matrix(module_test.label_list, module_test.pred_list, save_path, draw=True)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
       
       # Write down hyperparameters and results
-      with open(f"{model_path}/{new_version}/notes.txt", 'w') as file:
+      with open(f"{save_path}/notes.txt", 'w') as file:
         file.write('### Hyperparameters ###\n')
         file.write(f'model_settings = {model_settings}\n')
         file.write(f'optimizer_settings = {optimizer_settings}\n')
@@ -256,14 +249,10 @@ if __name__ == '__main__':
         file.write(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}\n")
         file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
-      
-      # Move architecture file to the corresponding version
-      if os.path.exists(f"{model_path}/architecture.txt"):
-        shutil.move(f"{model_path}/architecture.txt", f"{model_path}/{new_version}/architecture.txt")
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
-      # if os.path.exists(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}'):
-      #   shutil.rmtree(f'{result_path}/checkpoint/{interval}/{model_name}-{model_option}/{new_version}')
+      # if os.path.exists(f'{save_path}'):
+      #   shutil.rmtree(f'{save_path}')
 
   

@@ -23,21 +23,21 @@ elif ENV == "colab":
 def map_label_to_num(value):
     if value == 'clear':
         return 0
+    elif value == 'heavy_rain':
+        return 1
     elif value == 'light_rain':
         return 2
     elif value == 'moderate_rain':
         return 3
-    elif value == 'heavy_rain':
-        return 1
     elif value == 'very_heavy_rain':
         return 4
 
-def split_df(interval, seed=42):
+def split_df(radar_range, interval, seed=42):
     metadata = pd.read_csv("image/labels.csv")
-    
-    big_df = metadata[['image_name', 'type', f'label_{interval}']]
+    big_df = metadata[['image_name', 'range', f'label_{interval}']]
+    big_df = big_df[big_df['range'] == radar_range]
     big_df = big_df[big_df[f'label_{interval}'] != 'NotAvail']
-    big_df = big_df.sample(frac=1, random_state=seed).reset_index(drop=True)
+    # big_df = big_df.sample(frac=1, random_state=seed).reset_index(drop=True)
     big_df[f'label_{interval}'] = big_df[f'label_{interval}'].apply(map_label_to_num)
     
     split_idx1 = int(len(big_df) * 0.8)
@@ -52,7 +52,7 @@ def split_df(interval, seed=42):
     val_set.reset_index(drop=True, inplace=True)
     test_set.reset_index(drop=True, inplace=True)
     
-    with open(f'image/{interval}_summary.txt', 'w') as file:
+    with open(f'image/{radar_range}_{interval}_summary.txt', 'w') as file:
         file.write("### Train set ###\n")
         frequency_train = train_set[f'label_{interval}'].value_counts()
         file.write(f"{frequency_train}\n\n")
@@ -65,15 +65,16 @@ def split_df(interval, seed=42):
         frequency_test = test_set[f'label_{interval}'].value_counts()
         file.write(f"{frequency_test}\n\n")
     
-    train_set.to_csv(f"image/{interval}_train.csv", index=False)
-    val_set.to_csv(f"image/{interval}_val.csv", index=False)
-    test_set.to_csv(f"image/{interval}_test.csv", index=False)
+    train_set.to_csv(f"image/{radar_range}_{interval}_train.csv", index=False)
+    val_set.to_csv(f"image/{radar_range}_{interval}_val.csv", index=False)
+    test_set.to_csv(f"image/{radar_range}_{interval}_test.csv", index=False)
 
 if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
     
     # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-    interval = 7200 
-    split_df(interval)
+    interval = 10800 
+    split_df("100km", interval)
+    split_df("250km", interval)
         
