@@ -67,11 +67,13 @@ if __name__ == '__main__':
   print(f"Stochastic depth: {stochastic_depth}")
   if not checkpoint: print(f"Load from checkpoint: {checkpoint}")
   else: print(f"Load from checkpoint: {checkpoint} [{ckpt_version}]")
-  
-  if not os.path.exists(f"{result_path}/checkpoint/{interval}"):
-    os.makedirs(f"{result_path}/checkpoint/{interval}")
-  if not os.path.exists(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}"):
-    os.makedirs(f"{result_path}/checkpoint/{interval}/{model_name}-{model_option}")
+
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/")    
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}")
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_option}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_option}")
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
@@ -92,7 +94,7 @@ if __name__ == '__main__':
 
   ## For training loop
   batch_size = 32 # 32 | 64 | 128 | 256
-  epochs = 30    # 100 | 200
+  epochs = 1    # 100 | 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
@@ -138,10 +140,13 @@ if __name__ == '__main__':
     latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
     new_version = f"version_{latest_version + 1}"
   save_path = f"{model_path}/{new_version}"
+  if not os.path.exists(f"{save_path}"):
+    os.makedirs(f"{save_path}")
   
   # Logger
-  logger = pl.loggers.CSVLogger(save_dir=f'{result_path}/checkpoint/{radar_range}/{interval}', 
-                                name=f'{model_name}-{model_option}')
+  logger = pl.loggers.CSVLogger(save_dir=f"{result_path}/checkpoint/{radar_range}/{interval}",
+                                name=f"{model_name}-{model_option}",
+                                version=new_version,)
 
   # Callbacks
   if monitor_value == "val_acc": monitor_mode = "max"
@@ -181,16 +186,10 @@ if __name__ == '__main__':
       end_time = time.time()
       print(f"Evaluation time: {end_time - start_time} seconds")
       
-      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
-                                                      min_delta, 
-                                                      save_path,
-                                                      draw=True)
+      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, save_path, draw=True)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
-      precision, recall, f1 = plot_confusion_matrix(module.label_list,
-                                                    module.prediction_list,
-                                                    save_path,
-                                                    draw=True)
+      precision, recall, f1 = plot_confusion_matrix(module.label_list, module.pred_list, save_path, draw=True)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
     except Exception as e:
       print(e)
@@ -199,8 +198,7 @@ if __name__ == '__main__':
   else:    
     module = FinetuneModule(model_settings=model_settings, 
                             optimizer_settings=optimizer_settings, 
-                            loop_settings=loop_settings,
-                            save_path=save_path)
+                            loop_settings=loop_settings)
 
     trainer = pl.Trainer(accelerator=accelerator, 
                          devices=devices, 
@@ -231,17 +229,11 @@ if __name__ == '__main__':
       print(f"Evaluation time: {test_end_time} seconds")
 
       # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, 
-                                                      min_delta, 
-                                                      save_path,
-                                                      draw=True)
+      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, save_path, draw=True)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
       # Plot testing accuracy by class
-      precision, recall, f1 = plot_confusion_matrix(module_test.label_list,
-                                                    module_test.prediction_list,
-                                                    save_path,
-                                                    draw=True)
+      precision, recall, f1 = plot_confusion_matrix(module_test.label_list, module_test.pred_list, save_path, draw=True)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
       
       # Write down hyperparameters and results
