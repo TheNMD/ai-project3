@@ -1,8 +1,6 @@
-import os, shutil
-import zipfile
-import warnings
+import os, shutil, random, zipfile
+import warnings, logging
 warnings.filterwarnings('ignore')
-import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -183,7 +181,7 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
                               v2.Resize((image_size, image_size)),
                             #  v2.RandomErasing(p=0.25, value=255),
                             #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
-                            #  CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
+                              CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                               v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                               v2.ToDtype(torch.float32, scale=True),
