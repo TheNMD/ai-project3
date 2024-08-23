@@ -1,11 +1,11 @@
-2024-08-23 09:53:46,912 - INFO - Using 16bit Automatic Mixed Precision (AMP)
-2024-08-23 09:53:46,976 - INFO - GPU available: True (cuda), used: True
-2024-08-23 09:53:47,187 - INFO - TPU available: False, using: 0 TPU cores
-2024-08-23 09:53:47,187 - INFO - IPU available: False, using: 0 IPUs
-2024-08-23 09:53:47,187 - INFO - HPU available: False, using: 0 HPUs
-2024-08-23 09:53:47,217 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-2024-08-23 09:53:48,200 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
-2024-08-23 09:53:48,603 - INFO - 
+2024-08-23 11:43:12,017 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-23 11:43:12,091 - INFO - GPU available: True (cuda), used: True
+2024-08-23 11:43:12,351 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-23 11:43:12,351 - INFO - IPU available: False, using: 0 IPUs
+2024-08-23 11:43:12,352 - INFO - HPU available: False, using: 0 HPUs
+2024-08-23 11:43:12,388 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-23 11:43:13,336 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-23 11:43:13,349 - INFO - 
   | Name  | Type     | Params
 -----------------------------------
 0 | model | ConvNeXt | 87.6 M
@@ -14,176 +14,18 @@
 0         Non-trainable params
 87.6 M    Total params
 350.286   Total estimated model params size (MB)
-2024-08-23 09:54:18,161 - ERROR - [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_1/best_model.ckpt'
+2024-08-23 11:55:32,837 - INFO - Metric val_acc improved. New best score: 0.557
+2024-08-23 11:55:32,854 - INFO - Epoch 0, global step 1605: 'val_acc' reached 0.55718 (best 0.55718), saving model to '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt' as top 1
+2024-08-23 11:58:59,713 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-23 11:59:02,292 - ERROR - zero-size array to reduction operation maximum which has no identity
 Traceback (most recent call last):
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 222, in <module>
-    module_test = FinetuneModule.load_from_checkpoint(f"{save_path}/best_model.ckpt",
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/model_helpers.py", line 125, in wrapper
-    return self.method(cls, *args, **kwargs)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/module.py", line 1581, in load_from_checkpoint
-    loaded = _load_from_checkpoint(
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/saving.py", line 63, in _load_from_checkpoint
-    checkpoint = pl_load(checkpoint_path, map_location=map_location)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/lightning_fabric/utilities/cloud_io.py", line 56, in _load
-    with fs.open(path_or_url, "rb") as f:
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/spec.py", line 1293, in open
-    f = self._open(
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 197, in _open
-    return LocalFileOpener(path, mode, fs=self, **kwargs)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 322, in __init__
-    self._open()
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 327, in _open
-    self.f = open(self.path, mode=self.mode)
-FileNotFoundError: [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_1/best_model.ckpt'
-2024-08-23 09:55:11,544 - INFO - Using 16bit Automatic Mixed Precision (AMP)
-2024-08-23 09:55:11,606 - INFO - GPU available: True (cuda), used: True
-2024-08-23 09:55:11,817 - INFO - TPU available: False, using: 0 TPU cores
-2024-08-23 09:55:11,817 - INFO - IPU available: False, using: 0 IPUs
-2024-08-23 09:55:11,817 - INFO - HPU available: False, using: 0 HPUs
-2024-08-23 09:55:11,848 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-2024-08-23 09:55:12,702 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
-2024-08-23 09:55:13,037 - INFO - 
-  | Name  | Type     | Params
------------------------------------
-0 | model | ConvNeXt | 87.6 M
------------------------------------
-87.6 M    Trainable params
-0         Non-trainable params
-87.6 M    Total params
-350.286   Total estimated model params size (MB)
-2024-08-23 09:55:13,449 - ERROR - Caught AttributeError in DataLoader worker process 0.
-Original Traceback (most recent call last):
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
-    data = fetcher.fetch(index)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
-    data = [self.dataset[idx] for idx in possibly_batched_index]
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
-    data = [self.dataset[idx] for idx in possibly_batched_index]
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 152, in __getitem__
-    past_img_names = self.load_past_images(idx)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 163, in load_past_images
-    if idx >= self.past_images_num:
-AttributeError: 'CustomImageDataset' object has no attribute 'past_images_num'
-Traceback (most recent call last):
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 217, in <module>
-    trainer.fit(module)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 544, in fit
-    call._call_and_handle_interrupt(
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
-    return trainer_fn(*args, **kwargs)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 580, in _fit_impl
-    self._run(model, ckpt_path=ckpt_path)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
-    results = self._run_stage()
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1031, in _run_stage
-    self._run_sanity_check()
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1060, in _run_sanity_check
-    val_loop.run()
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
-    return loop_run(self, *args, **kwargs)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 128, in run
-    batch, batch_idx, dataloader_idx = next(data_fetcher)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 133, in __next__
-    batch = super().__next__()
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 60, in __next__
-    batch = next(self.iterator)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 341, in __next__
-    out = next(self._iterator)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 142, in __next__
-    out = next(self.iterators[0])
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
-    data = self._next_data()
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
-    return self._process_data(data)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
-    data.reraise()
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/_utils.py", line 722, in reraise
-    raise exception
-AttributeError: Caught AttributeError in DataLoader worker process 0.
-Original Traceback (most recent call last):
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
-    data = fetcher.fetch(index)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
-    data = [self.dataset[idx] for idx in possibly_batched_index]
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
-    data = [self.dataset[idx] for idx in possibly_batched_index]
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 152, in __getitem__
-    past_img_names = self.load_past_images(idx)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 163, in load_past_images
-    if idx >= self.past_images_num:
-AttributeError: 'CustomImageDataset' object has no attribute 'past_images_num'
-
-2024-08-23 09:56:29,339 - INFO - Using 16bit Automatic Mixed Precision (AMP)
-2024-08-23 09:56:29,404 - INFO - GPU available: True (cuda), used: True
-2024-08-23 09:56:29,623 - INFO - TPU available: False, using: 0 TPU cores
-2024-08-23 09:56:29,623 - INFO - IPU available: False, using: 0 IPUs
-2024-08-23 09:56:29,623 - INFO - HPU available: False, using: 0 HPUs
-2024-08-23 09:56:29,655 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-2024-08-23 09:56:30,456 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
-2024-08-23 09:56:30,707 - INFO - 
-  | Name  | Type     | Params
------------------------------------
-0 | model | ConvNeXt | 87.6 M
------------------------------------
-87.6 M    Trainable params
-0         Non-trainable params
-87.6 M    Total params
-350.286   Total estimated model params size (MB)
-2024-08-23 09:56:59,664 - ERROR - [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_3/best_model.ckpt'
-Traceback (most recent call last):
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 222, in <module>
-    module_test = FinetuneModule.load_from_checkpoint(f"{save_path}/best_model.ckpt",
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/model_helpers.py", line 125, in wrapper
-    return self.method(cls, *args, **kwargs)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/module.py", line 1581, in load_from_checkpoint
-    loaded = _load_from_checkpoint(
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/saving.py", line 63, in _load_from_checkpoint
-    checkpoint = pl_load(checkpoint_path, map_location=map_location)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/lightning_fabric/utilities/cloud_io.py", line 56, in _load
-    with fs.open(path_or_url, "rb") as f:
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/spec.py", line 1293, in open
-    f = self._open(
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 197, in _open
-    return LocalFileOpener(path, mode, fs=self, **kwargs)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 322, in __init__
-    self._open()
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 327, in _open
-    self.f = open(self.path, mode=self.mode)
-FileNotFoundError: [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_3/best_model.ckpt'
-2024-08-23 10:07:02,247 - INFO - Using 16bit Automatic Mixed Precision (AMP)
-2024-08-23 10:07:02,317 - INFO - GPU available: True (cuda), used: True
-2024-08-23 10:07:02,568 - INFO - TPU available: False, using: 0 TPU cores
-2024-08-23 10:07:02,568 - INFO - IPU available: False, using: 0 IPUs
-2024-08-23 10:07:02,568 - INFO - HPU available: False, using: 0 HPUs
-2024-08-23 10:07:02,600 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-2024-08-23 10:07:03,497 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
-2024-08-23 10:07:03,849 - INFO - 
-  | Name  | Type     | Params
------------------------------------
-0 | model | ConvNeXt | 87.6 M
------------------------------------
-87.6 M    Trainable params
-0         Non-trainable params
-87.6 M    Total params
-350.286   Total estimated model params size (MB)
-2024-08-23 10:07:32,306 - ERROR - [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_4/best_model.ckpt'
-Traceback (most recent call last):
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 222, in <module>
-    module_test = FinetuneModule.load_from_checkpoint(f"{save_path}/best_model.ckpt",
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/model_helpers.py", line 125, in wrapper
-    return self.method(cls, *args, **kwargs)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/module.py", line 1581, in load_from_checkpoint
-    loaded = _load_from_checkpoint(
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/saving.py", line 63, in _load_from_checkpoint
-    checkpoint = pl_load(checkpoint_path, map_location=map_location)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/lightning_fabric/utilities/cloud_io.py", line 56, in _load
-    with fs.open(path_or_url, "rb") as f:
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/spec.py", line 1293, in open
-    f = self._open(
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 197, in _open
-    return LocalFileOpener(path, mode, fs=self, **kwargs)
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 322, in __init__
-    self._open()
-  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 327, in _open
-    self.f = open(self.path, mode=self.mode)
-FileNotFoundError: [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_4/best_model.ckpt'
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 236, in <module>
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 447, in plot_confusion_matrix
+    display_labels=display_labels,
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/sklearn/metrics/_plot/confusion_matrix.py", line 473, in from_predictions
+    return disp.plot(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/sklearn/metrics/_plot/confusion_matrix.py", line 156, in plot
+    thresh = (cm.max() + cm.min()) / 2.0
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/core/_methods.py", line 41, in _amax
+    return umr_maximum(a, axis, None, out, keepdims, initial, where)
+ValueError: zero-size array to reduction operation maximum which has no identity
