@@ -33,8 +33,8 @@ elif ENV == "colab":
   image_path = "image"
   result_path = "drive/MyDrive/Coding/result"
 
-def load_model(model_name, model_option, num_classes, stochastic_depth, save_path):
-  def add_stochastic_depth(model_name, model, drop_prob):
+def load_model(model_name, model_opt, classes, sdepth, save_path):
+  def add_sdepth(model_name, model, drop_prob):
     if drop_prob == 0: return model
     if model_name == "convnext":
         for layer in model.modules():
@@ -45,9 +45,9 @@ def load_model(model_name, model_option, num_classes, stochastic_depth, save_pat
   name_and_size = model_name.split('-')
   name, size = name_and_size[0], name_and_size[1]
   
-  if model_option == "custom":
+  if model_opt == "custom":
     is_pretrained = False
-  elif model_option == "pretrained":
+  elif model_opt == "pretrained":
     is_pretrained = True
     
   if name == "vit":
@@ -61,9 +61,9 @@ def load_model(model_name, model_option, num_classes, stochastic_depth, save_pat
       model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
       train_size, test_size = 224, 224
     num_feature = model.head.in_features
-    model.head = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
+    model.head = torch.nn.Linear(in_features=num_feature, out_features=classes)
     model.head.weight.data.mul_(0.001)
-    # model = add_stochastic_depth(name, model, stochastic_depth)
+    # model = add_sdepth(name, model, sdepth)
   
   elif name == "swin":
     if size == "s":
@@ -75,7 +75,7 @@ def load_model(model_name, model_option, num_classes, stochastic_depth, save_pat
     num_feature = model.head.fc.in_features
     model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
     model.head.fc.weight.data.mul_(0.001)
-    # model = add_stochastic_depth(name, model, stochastic_depth)
+    # model = add_sdepth(name, model, sdepth)
   
   elif name == "effnetv2":
     if size == "s":
@@ -87,7 +87,7 @@ def load_model(model_name, model_option, num_classes, stochastic_depth, save_pat
     num_feature = model.classifier.in_features
     model.classifier = torch.nn.Linear(in_features=num_feature, out_features=5)
     model.classifier.weight.data.mul_(0.001)
-    # model = add_stochastic_depth(name, model, stochastic_depth)
+    # model = add_sdepth(name, model, sdepth)
   
   elif name == "convnext":
     if size == "s":
@@ -102,9 +102,9 @@ def load_model(model_name, model_option, num_classes, stochastic_depth, save_pat
       #   model = pickle.load(f)
       train_size, test_size = 224, 224
     num_feature = model.head.fc.in_features
-    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=num_classes)
+    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=classes)
     model.head.fc.weight.data.mul_(0.001)
-    model = add_stochastic_depth(name, model, stochastic_depth)
+    model = add_sdepth(name, model, sdepth)
   
   model_summary = torchsummary.summary(model, (3, train_size, train_size))
   if save_path:
@@ -219,14 +219,10 @@ class FinetuneModule(pl.LightningModule):
     self.radar_range = model_settings['radar_range']
     self.interval = model_settings['interval']
     self.model_name = model_settings['model_name']
-    self.model_option = model_settings['model_option']
-    self.num_classes = model_settings['num_classes']
-    self.stochastic_depth = model_settings['stochastic_depth']
-    self.model, train_size, test_size = load_model(self.model_name, 
-                                                   self.model_option, 
-                                                   self.num_classes, 
-                                                   self.stochastic_depth,
-                                                   save_path)
+    self.model_opt = model_settings['model_opt']
+    self.classes = model_settings['classes']
+    self.sdepth = model_settings['sdepth']
+    self.model, train_size, test_size = load_model(self.model_name, self.model_opt, self.classes, self.sdepth, save_path)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
@@ -400,12 +396,12 @@ def plot_loss_acc(monitor_value, min_delta, save_path, draw=True):
 
 def plot_confusion_matrix(labels, predictions, save_path, draw=True):
   def calculate_metrics(confusion_matrix):
-      num_classes = confusion_matrix.shape[0]
-      precision = np.zeros(num_classes)
-      recall = np.zeros(num_classes)
-      f1 = np.zeros(num_classes)
+      classes = confusion_matrix.shape[0]
+      precision = np.zeros(classes)
+      recall = np.zeros(classes)
+      f1 = np.zeros(classes)
       
-      for i in range(num_classes):
+      for i in range(classes):
           tp = confusion_matrix[i, i]
           fp = np.sum(confusion_matrix[:, i]) - tp
           fn = np.sum(confusion_matrix[i, :]) - tp
