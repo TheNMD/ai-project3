@@ -346,7 +346,7 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
     return self.test_loader
 
-def plot_loss_acc(monitor_value, min_delta, save_path, draw=True):
+def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
   if not os.path.exists(f"{save_path}/metrics.csv"):
     return None, None, None
   
@@ -377,7 +377,7 @@ def plot_loss_acc(monitor_value, min_delta, save_path, draw=True):
     plt.legend()
     plt.xlabel('epoch')
     plt.ylabel('value')
-    plt.title('Loss Graph')
+    plt.title(f'{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}')
     plt.legend()
     plt.savefig(f'{save_path}/graph_loss.png')
 
@@ -389,7 +389,7 @@ def plot_loss_acc(monitor_value, min_delta, save_path, draw=True):
     plt.legend()
     plt.xlabel('epoch')
     plt.ylabel('value')
-    plt.title('Accuracy Graph')
+    plt.title(f'{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}')
     plt.legend()
     plt.savefig(f'{save_path}/graph_acc.png')
 
@@ -403,22 +403,22 @@ def plot_loss_acc(monitor_value, min_delta, save_path, draw=True):
     
   return test_loss, test_acc, best_epoch
 
-def plot_confusion_matrix(labels, predictions, save_path, draw=True):
+def plot_cmatrix(labels, predictions, plot_name, save_path, draw=True):
   def calculate_metrics(confusion_matrix):
-      classes = confusion_matrix.shape[0]
-      precision = np.zeros(classes)
-      recall = np.zeros(classes)
-      f1 = np.zeros(classes)
-      
-      for i in range(classes):
-          tp = confusion_matrix[i, i]
-          fp = np.sum(confusion_matrix[:, i]) - tp
-          fn = np.sum(confusion_matrix[i, :]) - tp
-          tn = np.sum(confusion_matrix) - tp - fp - fn
-          precision[i] = tp / (tp + fp) if tp + fp != 0 else 0
-          recall[i] = tp / (tp + fn) if tp + fn != 0 else 0
-          f1[i] = 2 * precision[i] * recall[i] / (precision[i] + recall[i]) if precision[i] + recall[i] != 0 else 0
-      return precision, recall, f1
+    classes = confusion_matrix.shape[0]
+    precision = np.zeros(classes)
+    recall = np.zeros(classes)
+    f1 = np.zeros(classes)
+    
+    for i in range(classes):
+        tp = confusion_matrix[i, i]
+        fp = np.sum(confusion_matrix[:, i]) - tp
+        fn = np.sum(confusion_matrix[i, :]) - tp
+        tn = np.sum(confusion_matrix) - tp - fp - fn
+        precision[i] = tp / (tp + fp) if tp + fp != 0 else 0
+        recall[i] = tp / (tp + fn) if tp + fn != 0 else 0
+        f1[i] = 2 * precision[i] * recall[i] / (precision[i] + recall[i]) if precision[i] + recall[i] != 0 else 0
+    return precision, recall, f1
 
   for i in range(len(labels)):
     if str(labels[i]) == "0":
@@ -450,16 +450,12 @@ def plot_confusion_matrix(labels, predictions, save_path, draw=True):
       display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain', 'very_heavy_rain']
     else:
       display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain']
-    ConfusionMatrixDisplay.from_predictions(labels,
-                                            predictions,
-                                            display_labels=display_labels,
-                                            normalize='true', 
-                                            ax=ax)
-    plt.title('Confusion Matrix')
-    plt.savefig(f'{save_path}/confusion_matrix.png')
+    ConfusionMatrixDisplay.from_predictions(labels, predictions, display_labels=display_labels, normalize='true', ax=ax)
+    plt.title(f'{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}')
+    plt.savefig(f'{save_path}/cmatrix.png')
 
-  cm = confusion_matrix(labels, predictions)
-  return calculate_metrics(cm)
+  cmatrix = confusion_matrix(labels, predictions)
+  return calculate_metrics(cmatrix)
     
 
   
