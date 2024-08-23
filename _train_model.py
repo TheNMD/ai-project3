@@ -56,15 +56,15 @@ if __name__ == '__main__':
   # swin-s     | swin-b 
   # effnetv2-s | effnetv2-m
   model_name = "convnext-b"
-  model_option = "pretrained" # pretrained | custom
-  num_classes = 5
-  stochastic_depth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
+  model_opt = "pretrained" # pretrained | custom
+  classes = 5
+  sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
   checkpoint = False
   ckpt_version = "version_0"
   
   print(f"Interval: {interval}")
-  print(f"Model: {model_name}-{model_option}")
-  print(f"Stochastic depth: {stochastic_depth}")
+  print(f"Model: {model_name}-{model_opt}")
+  print(f"Stochastic depth: {sdepth}")
   if not checkpoint: print(f"Load from checkpoint: {checkpoint}")
   else: print(f"Load from checkpoint: {checkpoint} [{ckpt_version}]")
 
@@ -72,8 +72,8 @@ if __name__ == '__main__':
     os.makedirs(f"{result_path}/checkpoint/{radar_range}/")    
   if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}")
-  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_option}"):
-    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_option}")
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}")
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
@@ -106,9 +106,9 @@ if __name__ == '__main__':
   model_settings = {'radar_range': radar_range,
                     'interval': interval,
                     'model_name': model_name, 
-                    'model_option': model_option,
-                    'num_classes': num_classes,
-                    'stochastic_depth': stochastic_depth,}
+                    'model_opt': model_opt,
+                    'classes': classes,
+                    'sdepth': sdepth,}
   
   optimizer_settings = {'optimizer_name': optimizer_name, 
                         'learning_rate': learning_rate,
@@ -132,7 +132,7 @@ if __name__ == '__main__':
     devices = 'auto'
     strategy = 'auto'
   
-  model_path = f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_option}"
+  model_path = f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"
   versions = [folder for folder in os.listdir(model_path) if os.path.isdir(f'{model_path}/{folder}')]
   if len(versions) == 0:
     new_version = "version_0"
@@ -145,7 +145,7 @@ if __name__ == '__main__':
   
   # Logger
   logger = pl.loggers.CSVLogger(save_dir=f"{result_path}/checkpoint/{radar_range}/{interval}",
-                                name=f"{model_name}-{model_option}",
+                                name=f"{model_name}-{model_opt}",
                                 version=new_version,)
 
   # Callbacks
@@ -169,8 +169,7 @@ if __name__ == '__main__':
     module = FinetuneModule.load_from_checkpoint(f"{model_path}/{ckpt_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
-                                                 loop_settings=loop_settings,
-                                                 save_path=save_path)
+                                                 loop_settings=loop_settings)
 
     trainer = pl.Trainer(accelerator=accelerator, 
                           devices=devices, 
@@ -222,7 +221,8 @@ if __name__ == '__main__':
       module_test = FinetuneModule.load_from_checkpoint(f"{save_path}/best_model.ckpt", 
                                                         model_settings=model_settings,
                                                         optimizer_settings=optimizer_settings, 
-                                                        loop_settings=loop_settings)
+                                                        loop_settings=loop_settings,
+                                                        save_path=save_path)
       test_start_time = time.time()
       trainer.test(module_test)
       test_end_time = time.time() - test_start_time
