@@ -104,11 +104,10 @@ def load_model(model_name, model_opt, classes, sdepth, save_path):
     model.head.fc.weight.data.mul_(0.001)
     model = add_sdepth(name, model, sdepth)
   
-  model_summary = torchsummary.summary(model, (3, train_size, train_size))
   if save_path:
     with open(f'{save_path}/architecture.txt', 'w') as f:
       f.write("### Summary ###\n")
-      f.write(f"{model_summary}\n\n")
+      f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
       f.write("### Full ###\n")
       f.write(str(model))
 

@@ -16,3 +16,16 @@
 350.286   Total estimated model params size (MB)
 2024-08-23 11:55:32,837 - INFO - Metric val_acc improved. New best score: 0.557
 2024-08-23 11:55:32,854 - INFO - Epoch 0, global step 1605: 'val_acc' reached 0.55718 (best 0.55718), saving model to '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt' as top 1
+2024-08-23 11:58:59,713 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-23 11:59:02,292 - ERROR - zero-size array to reduction operation maximum which has no identity
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 236, in <module>
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_init_model.py", line 447, in plot_confusion_matrix
+    display_labels=display_labels,
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/sklearn/metrics/_plot/confusion_matrix.py", line 473, in from_predictions
+    return disp.plot(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/sklearn/metrics/_plot/confusion_matrix.py", line 156, in plot
+    thresh = (cm.max() + cm.min()) / 2.0
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/core/_methods.py", line 41, in _amax
+    return umr_maximum(a, axis, None, out, keepdims, initial, where)
+ValueError: zero-size array to reduction operation maximum which has no identity
