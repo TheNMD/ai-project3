@@ -91,7 +91,7 @@ if __name__ == '__main__':
   min_epochs = 21 # 0 | 21 | 41 | 61
 
   ## For training loop
-  batch_size = 32 # 32 | 64 | 128 | 256
+  batch_size = 64 # 32 | 64 | 128 | 256
   epochs = 1    # 150 | 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
