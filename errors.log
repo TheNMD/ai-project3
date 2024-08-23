@@ -29,3 +29,77 @@ Traceback (most recent call last):
   File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/numpy/core/_methods.py", line 41, in _amax
     return umr_maximum(a, axis, None, out, keepdims, initial, where)
 ValueError: zero-size array to reduction operation maximum which has no identity
+2024-08-23 18:11:06,896 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-23 18:11:06,955 - INFO - GPU available: True (cuda), used: True
+2024-08-23 18:11:07,163 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-23 18:11:07,163 - INFO - IPU available: False, using: 0 IPUs
+2024-08-23 18:11:07,164 - INFO - HPU available: False, using: 0 HPUs
+2024-08-23 18:11:07,195 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-23 18:11:08,203 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-23 18:11:08,214 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-23 18:11:20,784 - ERROR - [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt'
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 220, in <module>
+    module_test = FinetuneModule.load_from_checkpoint(f"{save_path}/best_model.ckpt",
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/model_helpers.py", line 125, in wrapper
+    return self.method(cls, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/module.py", line 1581, in load_from_checkpoint
+    loaded = _load_from_checkpoint(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/saving.py", line 63, in _load_from_checkpoint
+    checkpoint = pl_load(checkpoint_path, map_location=map_location)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/lightning_fabric/utilities/cloud_io.py", line 56, in _load
+    with fs.open(path_or_url, "rb") as f:
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/spec.py", line 1293, in open
+    f = self._open(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 197, in _open
+    return LocalFileOpener(path, mode, fs=self, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 322, in __init__
+    self._open()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 327, in _open
+    self.f = open(self.path, mode=self.mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt'
+2024-08-23 18:12:14,558 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-23 18:12:14,620 - INFO - GPU available: True (cuda), used: True
+2024-08-23 18:12:14,824 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-23 18:12:14,824 - INFO - IPU available: False, using: 0 IPUs
+2024-08-23 18:12:14,824 - INFO - HPU available: False, using: 0 HPUs
+2024-08-23 18:12:14,857 - INFO - You are using a CUDA device ('NVIDIA GeForce RTX 4060 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-23 18:12:15,707 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-23 18:12:15,718 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.286   Total estimated model params size (MB)
+2024-08-23 18:12:47,988 - ERROR - [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt'
+Traceback (most recent call last):
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/_train_model.py", line 220, in <module>
+    module_test = FinetuneModule.load_from_checkpoint(f"{save_path}/best_model.ckpt",
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/utilities/model_helpers.py", line 125, in wrapper
+    return self.method(cls, *args, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/module.py", line 1581, in load_from_checkpoint
+    loaded = _load_from_checkpoint(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/pytorch_lightning/core/saving.py", line 63, in _load_from_checkpoint
+    checkpoint = pl_load(checkpoint_path, map_location=map_location)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/lightning_fabric/utilities/cloud_io.py", line 56, in _load
+    with fs.open(path_or_url, "rb") as f:
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/spec.py", line 1293, in open
+    f = self._open(
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 197, in _open
+    return LocalFileOpener(path, mode, fs=self, **kwargs)
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 322, in __init__
+    self._open()
+  File "/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/venv/lib/python3.10/site-packages/fsspec/implementations/local.py", line 327, in _open
+    self.f = open(self.path, mode=self.mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/c/Users/ASUS/Downloads/Coding/ai-project3/result/checkpoint/250km/7200/convnext-b-pretrained/version_0/best_model.ckpt'
