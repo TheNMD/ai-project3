@@ -155,9 +155,12 @@ class CustomImageDataset(Dataset):
         past_images = [read_image(path) for path in past_img_paths]
         transformed_past_images = [self.transform(img) for img in past_images]
         
-        transformed_image += np.sum(transformed_past_images)
+        combined_images = np.sum(transformed_past_images) + transformed_image
+        mean = np.mean(combined_images)
+        std = np.std(combined_images)
+        combined_images = (combined_images - mean) / std
             
-        return transformed_image, label
+        return combined_images, label
     
     def load_past_images(self, idx):
         if idx >= self.past_image_num:
@@ -166,7 +169,7 @@ class CustomImageDataset(Dataset):
             past_images = self.img_labels['image_name'].iloc[: idx].tolist()
         return past_images
 
-def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, num_workers=4):
+def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, num_workers=8):
   def median_blur(image, kernel_size=5):
       pil_image = v2.functional.to_pil_image(image)
       blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
