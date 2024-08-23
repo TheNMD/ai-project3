@@ -169,8 +169,7 @@ if __name__ == '__main__':
     module = FinetuneModule.load_from_checkpoint(f"{model_path}/{ckpt_version}/best_model.ckpt", 
                                                  model_settings=model_settings,
                                                  optimizer_settings=optimizer_settings, 
-                                                 loop_settings=loop_settings,
-                                                 save_path=save_path)
+                                                 loop_settings=loop_settings)
 
     trainer = pl.Trainer(accelerator=accelerator, 
                           devices=devices, 
@@ -222,7 +221,8 @@ if __name__ == '__main__':
       module_test = FinetuneModule.load_from_checkpoint(f"{save_path}/best_model.ckpt", 
                                                         model_settings=model_settings,
                                                         optimizer_settings=optimizer_settings, 
-                                                        loop_settings=loop_settings)
+                                                        loop_settings=loop_settings,
+                                                        save_path=save_path)
       test_start_time = time.time()
       trainer.test(module_test)
       test_end_time = time.time() - test_start_time

@@ -33,7 +33,7 @@ elif ENV == "colab":
   image_path = "image"
   result_path = "drive/MyDrive/Coding/result"
 
-def load_model(radar_range, interval, model_name, model_option, num_classes, stochastic_depth, save_path):
+def load_model(model_name, model_option, num_classes, stochastic_depth, save_path):
   def add_stochastic_depth(model_name, model, drop_prob):
     if drop_prob == 0: return model
     if model_name == "convnext":
@@ -106,10 +106,11 @@ def load_model(radar_range, interval, model_name, model_option, num_classes, sto
     model.head.fc.weight.data.mul_(0.001)
     model = add_stochastic_depth(name, model, stochastic_depth)
   
+  model_summary = torchsummary.summary(model, (3, train_size, train_size))
   if save_path:
     with open(f'{save_path}/architecture.txt', 'w') as f:
       f.write("### Summary ###\n")
-      f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
+      f.write(f"{model_summary}\n\n")
       f.write("### Full ###\n")
       f.write(str(model))
 
@@ -221,9 +222,7 @@ class FinetuneModule(pl.LightningModule):
     self.model_option = model_settings['model_option']
     self.num_classes = model_settings['num_classes']
     self.stochastic_depth = model_settings['stochastic_depth']
-    self.model, train_size, test_size = load_model(self.radar_range,
-                                                   self.interval, 
-                                                   self.model_name, 
+    self.model, train_size, test_size = load_model(self.model_name, 
                                                    self.model_option, 
                                                    self.num_classes, 
                                                    self.stochastic_depth,
