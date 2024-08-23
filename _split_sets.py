@@ -67,7 +67,7 @@ def split_df(radar_range, interval, seed=42):
     
     train_set.to_csv(f"image/sets/{radar_range}_{interval}_train.csv", index=False)
     val_set.to_csv(f"image/sets/{radar_range}_{interval}_val.csv", index=False)
-    test_set.to_csv(f"image//sets{radar_range}_{interval}_test.csv", index=False)
+    test_set.to_csv(f"image/sets{radar_range}_{interval}_test.csv", index=False)
 
 if __name__ == '__main__':
     print("Python version: ", sys.version)
