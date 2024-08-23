@@ -149,19 +149,18 @@ class CustomImageDataset(Dataset):
         image = read_image(img_path)
         transformed_image = self.transform(image)
         
-        # past_img_names = self.load_past_images(img_name, self.past_image_num)
-        # past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
-        # past_images = [read_image(path) for path in past_img_paths]
-        # transformed_past_images = [self.transform(img) for img in past_images]
+        past_img_names = self.load_past_images(idx)
+        past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
+        past_images = [read_image(path) for path in past_img_paths]
+        transformed_past_images = [self.transform(img) for img in past_images]
         
-        # for img in transformed_past_images:
-        #     transformed_image += img
+        transformed_image += np.sum(transformed_past_images)
             
         return transformed_image, label
     
-    def load_past_images(self, idx, past_images_num=6):
-        if idx >= past_images_num:
-            past_images = self.img_labels['image_name'].iloc[idx - past_images_num : idx].tolist()
+    def load_past_images(self, idx):
+        if idx >= self.past_image_num:
+            past_images = self.img_labels['image_name'].iloc[idx - self.past_image_num : idx].tolist()
         else:
             past_images = self.img_labels['image_name'].iloc[: idx].tolist()
         return past_images
@@ -185,7 +184,7 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                               v2.ToDtype(torch.float32, scale=True),
                               v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
-                                          std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
+                                           std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                             ])
     
   elif set_name == "val" or set_name == "test":
@@ -196,13 +195,14 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                               v2.ToDtype(torch.float32, scale=True),
                               v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
-                                          std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
+                                           std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                             ])
   
   label_file = pd.read_csv(f"image/{radar_range}_{interval}_{set_name}.csv")
   dataset = CustomImageDataset(img_labels=label_file, 
-                                img_dir="image/combined", 
-                                transform=transforms)
+                               img_dir="image/combined", 
+                               transform=transforms,
+                               past_image_num=6)
   
   dataloader = torch.utils.data.DataLoader(dataset, 
                                             batch_size=batch_size, 
