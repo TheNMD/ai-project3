@@ -4,7 +4,9 @@ venv/
 data/
 metadata/
 sample_data/
-image/
+image/combined
+image/unlabeled_100km
+image/unlabeled_250km
 result/
 server/
 testing/
