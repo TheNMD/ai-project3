@@ -198,7 +198,7 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
                                            std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                             ])
   
-  label_file = pd.read_csv(f"image/{radar_range}_{interval}_{set_name}.csv")
+  label_file = pd.read_csv(f"image/sets/{radar_range}_{interval}_{set_name}.csv")
   dataset = CustomImageDataset(img_labels=label_file, 
                                img_dir="image/combined", 
                                transform=transforms,
