@@ -157,12 +157,12 @@ class CustomImageDataset(Dataset):
         past_images = [read_image(path) for path in past_img_paths]
         transformed_past_images = [self.transform(img) for img in past_images]
         
-        combined_images = np.sum(transformed_past_images) + transformed_image
-        mean = torch.mean(combined_images)
-        std = torch.std(combined_images)
-        combined_images = (combined_images - mean) / std
+        transformed_image += np.sum(transformed_past_images)
+        mean = torch.mean(transformed_image)
+        std = torch.std(transformed_image)
+        transformed_image = (transformed_image - mean) / std
             
-        return combined_images, label
+        return transformed_image, label
     
     def load_past_images(self, img_name):
         idx = self.full_image_list.index[self.full_image_list == img_name][0]
