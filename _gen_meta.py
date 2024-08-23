@@ -1,8 +1,7 @@
 import os, sys, platform, shutil, time
 import multiprocessing as mp
-import warnings
+import warnings, logging
 warnings.filterwarnings('ignore')
-import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 

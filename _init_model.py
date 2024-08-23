@@ -1,8 +1,6 @@
-import os, shutil
-import zipfile
-import warnings
+import os, shutil, random, zipfile
+import warnings, logging
 warnings.filterwarnings('ignore')
-import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -106,11 +104,10 @@ def load_model(model_name, model_opt, classes, sdepth, save_path):
     model.head.fc.weight.data.mul_(0.001)
     model = add_sdepth(name, model, sdepth)
   
-  model_summary = torchsummary.summary(model, (3, train_size, train_size))
   if save_path:
     with open(f'{save_path}/architecture.txt', 'w') as f:
       f.write("### Summary ###\n")
-      f.write(f"{model_summary}\n\n")
+      f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
       f.write("### Full ###\n")
       f.write(str(model))
 
@@ -155,9 +152,12 @@ class CustomImageDataset(Dataset):
         past_images = [read_image(path) for path in past_img_paths]
         transformed_past_images = [self.transform(img) for img in past_images]
         
-        transformed_image += np.sum(transformed_past_images)
+        combined_images = np.sum(transformed_past_images) + transformed_image
+        mean = torch.mean(combined_images)
+        std = torch.std(combined_images)
+        combined_images = (combined_images - mean) / std
             
-        return transformed_image, label
+        return combined_images, label
     
     def load_past_images(self, idx):
         if idx >= self.past_image_num:
@@ -166,7 +166,7 @@ class CustomImageDataset(Dataset):
             past_images = self.img_labels['image_name'].iloc[: idx].tolist()
         return past_images
 
-def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, num_workers=4):
+def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, num_workers=8):
   def median_blur(image, kernel_size=5):
       pil_image = v2.functional.to_pil_image(image)
       blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
@@ -180,7 +180,7 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
                               v2.Resize((image_size, image_size)),
                             #  v2.RandomErasing(p=0.25, value=255),
                             #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
-                            #  CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
+                              CustomRandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
                               v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                               v2.ToDtype(torch.float32, scale=True),

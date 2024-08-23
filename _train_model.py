@@ -1,8 +1,6 @@
-import os, sys, platform, shutil, time
-import zipfile
-import warnings
+import os, sys, platform, shutil, time, zipfile
+import warnings, logging
 warnings.filterwarnings('ignore')
-import logging
 logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -93,8 +91,8 @@ if __name__ == '__main__':
   min_epochs = 21 # 0 | 21 | 41 | 61
 
   ## For training loop
-  batch_size = 128 # 32 | 64 | 128 | 256
-  epochs = 150    # 150 | 200
+  batch_size = 64 # 32 | 64 | 128 | 256
+  epochs = 1    # 150 | 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
@@ -166,29 +164,29 @@ if __name__ == '__main__':
                                                      verbose=True,)
   
   if checkpoint:
-    module = FinetuneModule.load_from_checkpoint(f"{model_path}/{ckpt_version}/best_model.ckpt", 
-                                                 model_settings=model_settings,
-                                                 optimizer_settings=optimizer_settings, 
-                                                 loop_settings=loop_settings)
+    module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{ckpt_version}/best_model.ckpt", 
+                                                      model_settings=model_settings,
+                                                      optimizer_settings=optimizer_settings, 
+                                                      loop_settings=loop_settings)
 
     trainer = pl.Trainer(accelerator=accelerator, 
-                          devices=devices, 
-                          strategy=strategy,
-                          logger=False,
-                          enable_checkpointing=False)
+                         devices=devices, 
+                         strategy=strategy,
+                         logger=False,
+                         enable_checkpointing=False)
     
     save_path = f"{model_path}/{ckpt_version}"
     try:
       # Evaluation
       start_time = time.time()
-      trainer.test(module)
+      trainer.test(module_test)
       end_time = time.time()
       print(f"Evaluation time: {end_time - start_time} seconds")
       
       test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, save_path, draw=True)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
-      precision, recall, f1 = plot_confusion_matrix(module.label_list, module.pred_list, save_path, draw=True)
+      precision, recall, f1 = plot_confusion_matrix(module_test.label_list, module_test.pred_list, save_path, draw=True)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
     except Exception as e:
       print(e)
@@ -197,7 +195,8 @@ if __name__ == '__main__':
   else:    
     module = FinetuneModule(model_settings=model_settings, 
                             optimizer_settings=optimizer_settings, 
-                            loop_settings=loop_settings)
+                            loop_settings=loop_settings,
+                            save_path=save_path)
 
     trainer = pl.Trainer(accelerator=accelerator, 
                          devices=devices, 
@@ -208,7 +207,7 @@ if __name__ == '__main__':
                          callbacks=[early_stopping_callback, checkpoint_callback],
                          val_check_interval=epoch_ratio,
                          log_every_n_steps=50,    # log train_loss and train_acc every n batches
-                         precision=16)             # use mixed precision to speed up training
+                         precision=16)            # use mixed precision to speed up training
     
     try:
       # Training loop
@@ -221,8 +220,7 @@ if __name__ == '__main__':
       module_test = FinetuneModule.load_from_checkpoint(f"{save_path}/best_model.ckpt", 
                                                         model_settings=model_settings,
                                                         optimizer_settings=optimizer_settings, 
-                                                        loop_settings=loop_settings,
-                                                        save_path=save_path)
+                                                        loop_settings=loop_settings)
       test_start_time = time.time()
       trainer.test(module_test)
       test_end_time = time.time() - test_start_time
@@ -252,7 +250,7 @@ if __name__ == '__main__':
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
-      # if os.path.exists(f'{save_path}'):
-      #   shutil.rmtree(f'{save_path}')
+      if os.path.exists(f'{save_path}'):
+        shutil.rmtree(f'{save_path}')
 
   
