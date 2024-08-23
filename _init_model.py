@@ -134,11 +134,12 @@ class CustomRandAugment(v2.RandAugment):
         pass
 
 class CustomImageDataset(Dataset):
-    def __init__(self, img_labels, img_dir, transform=None, past_image_num=6):
+    def __init__(self, img_labels, img_dir, transform=None, past_image_num=6, full_image_list=None):
         self.img_labels = img_labels
         self.img_dir = img_dir
         self.transform = transform
         self.past_image_num = past_image_num
+        self.full_image_list = full_image_list
 
     def __len__(self):
         return len(self.img_labels)
@@ -151,7 +152,7 @@ class CustomImageDataset(Dataset):
         image = read_image(img_path)
         transformed_image = self.transform(image)
         
-        past_img_names = self.load_past_images(idx)
+        past_img_names = self.load_past_images(img_name)
         past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
         past_images = [read_image(path) for path in past_img_paths]
         transformed_past_images = [self.transform(img) for img in past_images]
@@ -163,7 +164,8 @@ class CustomImageDataset(Dataset):
             
         return combined_images, label
     
-    def load_past_images(self, idx):
+    def load_past_images(self, img_name):
+        idx = self.full_image_list.index[self.full_image_list == img_name][0]
         if idx >= self.past_image_num:
             past_images = self.img_labels['image_name'].iloc[idx - self.past_image_num : idx].tolist()
         else:
@@ -204,15 +206,18 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
                             ])
   
   label_file = pd.read_csv(f"image/sets/{radar_range}_{interval}_{set_name}.csv")
+  full_image_list = pd.read_csv("image/labels.csv")
+  full_image_list = full_image_list[full_image_list['range'] == radar_range]['image_name']
   dataset = CustomImageDataset(img_labels=label_file, 
                                img_dir="image/combined", 
                                transform=transforms,
-                               past_image_num=6)
+                               past_image_num=6,
+                               full_image_list=full_image_list)
   
   dataloader = torch.utils.data.DataLoader(dataset, 
-                                            batch_size=batch_size, 
-                                            shuffle=shuffle, 
-                                            num_workers=num_workers)
+                                           batch_size=batch_size, 
+                                           shuffle=shuffle, 
+                                           num_workers=num_workers)
   
   return dataloader
 
@@ -237,7 +242,7 @@ class FinetuneModule(pl.LightningModule):
     self.epochs = loop_settings['epochs']
     self.label_smoothing = loop_settings['label_smoothing']
 
-    self.train_loader = load_data(self.radar_range, self.interval, "train", train_size, self.batch_size, False)
+    self.train_loader = load_data(self.radar_range, self.interval, "train", train_size, self.batch_size, True)
     self.val_loader   = load_data(self.radar_range, self.interval, "val", test_size, self.batch_size, False)
     self.test_loader  = load_data(self.radar_range, self.interval, "test", test_size, self.batch_size, False)
     
