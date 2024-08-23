@@ -156,8 +156,8 @@ class CustomImageDataset(Dataset):
         transformed_past_images = [self.transform(img) for img in past_images]
         
         combined_images = np.sum(transformed_past_images) + transformed_image
-        mean = np.mean(combined_images)
-        std = np.std(combined_images)
+        mean = torch.mean(combined_images)
+        std = torch.std(combined_images)
         combined_images = (combined_images - mean) / std
             
         return combined_images, label
