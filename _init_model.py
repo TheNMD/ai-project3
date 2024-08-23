@@ -89,15 +89,19 @@ def load_model(model_name, model_opt, classes, sdepth, save_path):
   
   elif name == "convnext":
     if size == "s":
-      model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
+      # model = timm.create_model('convnext_small.fb_in22k', pretrained=is_pretrained)
+      # with open('result/pretrained/convnext_small.pkl', 'wb') as f: pickle.dump(model, f)
+      with open('result/pretrained/convnext_small.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
     elif size == "b":
-      model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
+      # model = timm.create_model('convnext_base.fb_in22k', pretrained=is_pretrained)
+      # with open('result/pretrained/convnext_base.pkl', 'wb') as f: pickle.dump(model, f)
+      with open('result/pretrained/convnext_base.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
     elif size == "l":
-      model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
-      # with open('result/convnext-l.pickle', 'rb') as f:
-      #   model = pickle.load(f)
+      # model = timm.create_model('convnext_large.fb_in22k', pretrained=is_pretrained)
+      # with open('result/pretrained/convnext_large.pkl', 'wb') as f: pickle.dump(model, f)
+      with open('result/pretrained/convnext_large.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
     num_feature = model.head.fc.in_features
     model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=classes)
