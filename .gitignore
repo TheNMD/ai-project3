@@ -5,6 +5,8 @@ data/
 metadata/
 sample_data/
 image/combined
+image/sample_100km
+image/sample_250km
 image/unlabeled_100km
 image/unlabeled_250km
 result/
