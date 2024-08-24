@@ -377,7 +377,7 @@ def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
     plt.legend()
     plt.xlabel('epoch')
     plt.ylabel('value')
-    plt.title(f'{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}')
+    plt.title(f"{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}")
     plt.legend()
     plt.savefig(f'{save_path}/graph_loss.png')
 
@@ -389,7 +389,7 @@ def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
     plt.legend()
     plt.xlabel('epoch')
     plt.ylabel('value')
-    plt.title(f'{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}')
+    plt.title(f"{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}")
     plt.legend()
     plt.savefig(f'{save_path}/graph_acc.png')
 
@@ -451,7 +451,7 @@ def plot_cmatrix(labels, predictions, plot_name, save_path, draw=True):
     else:
       display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain']
     ConfusionMatrixDisplay.from_predictions(labels, predictions, display_labels=display_labels, normalize='true', ax=ax)
-    plt.title(f'{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}')
+    plt.title(f"{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}")
     plt.savefig(f'{save_path}/cmatrix.png')
 
   cmatrix = confusion_matrix(labels, predictions)
