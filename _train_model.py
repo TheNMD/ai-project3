@@ -48,7 +48,7 @@ if __name__ == '__main__':
   # 100km | 250km
   radar_range = "250km"
   # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 0
+  interval = 3600
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
