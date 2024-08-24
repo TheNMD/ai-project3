@@ -6,7 +6,7 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 
 import torch
 import pytorch_lightning as pl
-from _init_model import FinetuneModule, plot_loss_acc, plot_confusion_matrix
+from _init_model import FinetuneModule, plot_loss_acc, plot_cmatrix
 
 # Set ENV to be 'local', 'server' or 'colab'
 ENV = "server".lower()
@@ -183,10 +183,11 @@ if __name__ == '__main__':
       end_time = time.time()
       print(f"Evaluation time: {end_time - start_time} seconds")
       
-      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, save_path, draw=True)
+      plot_name = {"range": radar_range, "interval": interval, "model": model_name}
+      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, plot_name, save_path)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
-      precision, recall, f1 = plot_confusion_matrix(module_test.label_list, module_test.pred_list, save_path, draw=True)
+      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list, plot_name, save_path)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
     except Exception as e:
       print(e)
@@ -226,12 +227,11 @@ if __name__ == '__main__':
       test_end_time = time.time() - test_start_time
       print(f"Evaluation time: {test_end_time} seconds")
 
-      # Plot loss and accuracy
-      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, save_path, draw=True)
+      plot_name = {"range": radar_range, "interval": interval, "model": model_name}
+      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, plot_name, save_path)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
-      # Plot testing accuracy by class
-      precision, recall, f1 = plot_confusion_matrix(module_test.label_list, module_test.pred_list, save_path, draw=True)
+      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list, plot_name, save_path)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
       
       # Write down hyperparameters and results
