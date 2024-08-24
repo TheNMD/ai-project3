@@ -67,7 +67,7 @@ if __name__ == '__main__':
         os.makedirs("image/sets")
     
     # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-    interval = 7200 
+    interval = 10800 
     # split_df("100km", interval)
     split_df("250km", interval)
         
