@@ -160,8 +160,8 @@ class CustomImageDataset(Dataset):
         std = torch.std(images)
         images = (images - mean) / std
         
-        # # TODO Change Model input to accept n-channel images
-        # # TODO Remove past images
+        # TODO Change Model input to accept n-channel images
+        # TODO Remove past images
         # images = torch.cat(tuple(img_list), dim=0)
             
         return images, label
