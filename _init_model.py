@@ -205,8 +205,8 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
                             ])
   
   label_file = pd.read_csv(f"image/sets/{radar_range}_{interval}_{set_name}.csv")
-  full_image_list = pd.read_csv("image/labels.csv")
-  full_image_list = (full_image_list[full_image_list['range'] == radar_range]['image_name']).reset_index(drop=True)
+  full_image_list = pd.read_csv(f"image/labels_{radar_range}.csv")
+  full_image_list = full_image_list['image_name'].reset_index(drop=True)
   dataset = CustomImageDataset(img_labels=label_file, 
                                img_dir="image/combined", 
                                transform=transforms,
