@@ -24,9 +24,8 @@ elif ENV == "colab":
 # very_heavy_rain = 4
 
 def split_df(radar_range, interval, past_image_num, seed=42):
-    metadata = pd.read_csv("image/labels.csv")
+    metadata = pd.read_csv(f"image/labels_{radar_range}.csv")
     full_set = metadata[['image_name', 'range', f'label_{interval}']]
-    full_set = full_set[full_set['range'] == radar_range]
     full_set = full_set[past_image_num:]
     full_set = full_set[full_set[f'label_{interval}'] != 'NotAvail']
     full_set = full_set.sample(frac=1, random_state=seed).reset_index(drop=True)
