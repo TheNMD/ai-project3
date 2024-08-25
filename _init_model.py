@@ -151,25 +151,24 @@ class CustomImageDataset(Dataset):
         img_names = self.load_past_images(img_name) + [img_name]
         
         img_paths = [os.path.join(self.img_dir, img) for img in img_names]
-        images = [read_image(path) for path in img_paths]
-        images = [self.transform(img) for img in images]
+        ima_list = [read_image(path) for path in img_paths]
+        img_list = [self.transform(img) for img in ima_list]
         
-        # images = torch.stack(images, dim=0)
+        # images = torch.stack(img_list, dim=0)
         # images = torch.sum(images, dim=0)
         # mean = torch.mean(images)
         # std = torch.std(images)
         # images = (images - mean) / std
         
-        images = torch.cat(images, dim=0)
+        # TODO Change Model input to accept n-channel images
+        # TODO Remove past images
+        images = torch.cat(tuple(img_list), dim=0)
             
         return images, label
     
     def load_past_images(self, img_name):
         idx = self.full_image_list.index[self.full_image_list == img_name][0]
-        if idx >= self.past_image_num:
-            past_images = self.img_labels['image_name'].iloc[idx - self.past_image_num : idx].tolist()
-        else:
-            past_images = self.img_labels['image_name'].iloc[: idx].tolist()
+        past_images = self.full_image_list[idx - self.past_image_num : idx].tolist()
         return past_images
 
 def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, num_workers=8):
@@ -207,7 +206,7 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
   
   label_file = pd.read_csv(f"image/sets/{radar_range}_{interval}_{set_name}.csv")
   full_image_list = pd.read_csv("image/labels.csv")
-  full_image_list = full_image_list[full_image_list['range'] == radar_range]['image_name']
+  full_image_list = (full_image_list[full_image_list['range'] == radar_range]['image_name']).reset_index(drop=True)
   dataset = CustomImageDataset(img_labels=label_file, 
                                img_dir="image/combined", 
                                transform=transforms,
