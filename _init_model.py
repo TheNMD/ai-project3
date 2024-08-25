@@ -148,28 +148,27 @@ class CustomImageDataset(Dataset):
         label = self.img_labels.iloc[idx, 2]
         
         img_name = self.img_labels.iloc[idx, 0]
-        img_path = os.path.join(self.img_dir, img_name)
-        image = read_image(img_path)
-        transformed_image = self.transform(image)
+        img_names = self.load_past_images(img_name) + [img_name]
         
-        past_img_names = self.load_past_images(img_name)
-        past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
-        past_images = [read_image(path) for path in past_img_paths]
-        transformed_past_images = [self.transform(img) for img in past_images]
+        img_paths = [os.path.join(self.img_dir, img) for img in img_names]
+        ima_list = [read_image(path) for path in img_paths]
+        img_list = [self.transform(img) for img in ima_list]
         
-        transformed_image += np.sum(transformed_past_images)
-        mean = torch.mean(transformed_image)
-        std = torch.std(transformed_image)
-        transformed_image = (transformed_image - mean) / std
+        images = torch.stack(img_list, dim=0)
+        images = torch.sum(images, dim=0)
+        mean = torch.mean(images)
+        std = torch.std(images)
+        images = (images - mean) / std
+        
+        # TODO Change Model input to accept n-channel images
+        # TODO Remove past images
+        # images = torch.cat(tuple(img_list), dim=0)
             
-        return transformed_image, label
+        return images, label
     
     def load_past_images(self, img_name):
         idx = self.full_image_list.index[self.full_image_list == img_name][0]
-        if idx >= self.past_image_num:
-            past_images = self.img_labels['image_name'].iloc[idx - self.past_image_num : idx].tolist()
-        else:
-            past_images = self.img_labels['image_name'].iloc[: idx].tolist()
+        past_images = self.full_image_list[idx - self.past_image_num : idx].tolist()
         return past_images
 
 def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, num_workers=8):
@@ -206,8 +205,8 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
                             ])
   
   label_file = pd.read_csv(f"image/sets/{radar_range}_{interval}_{set_name}.csv")
-  full_image_list = pd.read_csv("image/labels.csv")
-  full_image_list = full_image_list[full_image_list['range'] == radar_range]['image_name']
+  full_image_list = pd.read_csv(f"image/labels_{radar_range}.csv")
+  full_image_list = full_image_list['image_name'].reset_index(drop=True)
   dataset = CustomImageDataset(img_labels=label_file, 
                                img_dir="image/combined", 
                                transform=transforms,
