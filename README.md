@@ -8,10 +8,14 @@
 
 # Docker
 ## Create image
-- **Create base image**: docker build -t dht-image-base -f Dockerfile_base .
-- **Create image**: docker build -t dht-image -f Dockerfile .
+- **Create base image**: 
+docker build -t dht-image-base -f Dockerfile_base .
 
-                    docker build -t dht-image1 -f Dockerfile .
+- **Create image**: 
+docker build -t dht-image -f Dockerfile .
+
+docker build -t dht-image1 -f Dockerfile .
+
 ## Run image
 docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/result:/app/result -d --shm-size=16g --name dht-cont dht-image
 
