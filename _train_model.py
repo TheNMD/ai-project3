@@ -48,7 +48,7 @@ if __name__ == '__main__':
   # 100km | 250km
   radar_range = "250km"
   # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 10800
+  interval = 7200
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -91,7 +91,7 @@ if __name__ == '__main__':
   min_epochs = 21 # 0 | 21 | 41 | 61
 
   ## For training loop
-  batch_size = 128 # 32 | 64 | 128 | 256
+  batch_size = 4 # 32 | 64 | 128 | 256
   epochs = 150    # 150 | 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1

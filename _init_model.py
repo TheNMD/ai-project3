@@ -148,21 +148,21 @@ class CustomImageDataset(Dataset):
         label = self.img_labels.iloc[idx, 2]
         
         img_name = self.img_labels.iloc[idx, 0]
-        img_path = os.path.join(self.img_dir, img_name)
-        image = read_image(img_path)
-        transformed_image = self.transform(image)
+        img_names = self.load_past_images(img_name) + [img_name]
         
-        past_img_names = self.load_past_images(img_name)
-        past_img_paths = [os.path.join(self.img_dir, past_image) for past_image in past_img_names]
-        past_images = [read_image(path) for path in past_img_paths]
-        transformed_past_images = [self.transform(img) for img in past_images]
+        img_paths = [os.path.join(self.img_dir, img) for img in img_names]
+        images = [read_image(path) for path in img_paths]
+        images = [self.transform(img) for img in images]
         
-        transformed_image += np.sum(transformed_past_images)
-        mean = torch.mean(transformed_image)
-        std = torch.std(transformed_image)
-        transformed_image = (transformed_image - mean) / std
+        # images = torch.stack(images, dim=0)
+        # images = torch.sum(images, dim=0)
+        # mean = torch.mean(images)
+        # std = torch.std(images)
+        # images = (images - mean) / std
+        
+        images = torch.cat(images, dim=0)
             
-        return transformed_image, label
+        return images, label
     
     def load_past_images(self, img_name):
         idx = self.full_image_list.index[self.full_image_list == img_name][0]
