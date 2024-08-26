@@ -8,20 +8,17 @@
 
 # Docker
 ## Create image
-- **Create base image**: 
-docker build -t dht-image-base -f Dockerfile_base .
-
-- **Create image**: 
-docker build -t dht-image -f Dockerfile .
-
-docker build -t dht-image1 -f Dockerfile .
+- **Create base image**: docker build -t dht-image-base -f Dockerfile_base .
+- **Create image**: docker build -t dht-image -f Dockerfile .
+- **Create image1**: docker build -t dht-image1 -f Dockerfile .
+- **Create image2**: docker build -t dht-image2 -f Dockerfile .
 
 ## Run image
-docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/result:/app/result -d --shm-size=16g --name dht-cont dht-image
+- docker run -v /data/data_WF/NhaBe:/app/data -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/result:/app/result -d --shm-size=16g --name dht-cont dht-image
+- docker run -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/result:/app/result -d --shm-size=16g --gpus '"device=6"' --name dht-cont dht-image
+- docker run -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/result:/app/result -d --shm-size=16g --gpus '"device=4"' --name dht-cont1 dht-image1
+- docker run -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/result:/app/result -d --shm-size=16g --gpus '"device=2"' --name dht-cont2 dht-image2
 
-docker run -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/result:/app/result -d --shm-size=16g --gpus '"device=6"' --name dht-cont dht-image
-
-docker run -v /data/DanHoangThu/image:/app/image -v /data/DanHoangThu/result:/app/result -d --shm-size=16g --gpus '"device=4"' --name dht-cont1 dht-image1
 ## Remove image
 - docker rmi -f dht-image
 ## Start container

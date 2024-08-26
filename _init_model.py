@@ -215,12 +215,12 @@ class CustomImageDataset(Dataset):
         if self.combined_method == "sum":        
           images = torch.stack(images, dim=0)
           if self.past_image_num > 0:
-              images = torch.sum(images, dim=0)
-              mean = torch.mean(images)
-              std = torch.std(images)
-              images = (images - mean) / std
+            images = torch.sum(images, dim=0)
+            mean = torch.mean(images)
+            std = torch.std(images)
+            images = (images - mean) / std
           else:
-              images = torch.squeeze(images, dim=0)
+            images = torch.squeeze(images, dim=0)
         # Concat
         elif self.combined_method == "concat": 
           images = torch.cat(tuple(img_list), dim=0)
