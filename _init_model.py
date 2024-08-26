@@ -31,7 +31,7 @@ elif ENV == "colab":
   image_path = "image"
   result_path = "drive/MyDrive/Coding/result"
 
-def load_model(model_name, model_opt, classes, sdepth, save_path):
+def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path):
   def add_sdepth(model_name, model, drop_prob):
     if drop_prob == 0: return model
     if model_name == "convnext":
@@ -51,41 +51,79 @@ def load_model(model_name, model_opt, classes, sdepth, save_path):
   if name == "vit":
     if size == "s":
       model = timm.create_model('vit_small_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
+      # with open('result/pretrained/vit_small.pkl', 'wb') as f: pickle.dump(model, f)
+      # with open('result/pretrained/vit_small.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
     elif size == "b":
-      model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
+      # model = timm.create_model('vit_base_patch16_224.augreg2_in21k_ft_in1k', pretrained=is_pretrained)
+      # with open('result/pretrained/vit_base.pkl', 'wb') as f: pickle.dump(model, f)
+      with open('result/pretrained/vit_base.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
     elif size == "l":
       model = timm.create_model('vit_large_patch16_224.augreg_in21k_ft_in1k', pretrained=is_pretrained)
+      # with open('result/pretrained/vit_large.pkl', 'wb') as f: pickle.dump(model, f)
+      # with open('result/pretrained/vit_large.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
+    # Change output to 5 weather classes
     num_feature = model.head.in_features
     model.head = torch.nn.Linear(in_features=num_feature, out_features=classes)
     model.head.weight.data.mul_(0.001)
     # model = add_sdepth(name, model, sdepth)
+    # Change input to accept n-channel images
+    old_conv = model.patch_embed.proj
+    new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
+                               out_channels=old_conv.out_channels, 
+                               kernel_size=old_conv.kernel_size, 
+                               stride=old_conv.stride)
+    model.patch_embed.proj = new_conv
   
   elif name == "swin":
     if size == "s":
       model = timm.create_model('swin_small_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
+      # with open('result/pretrained/swin_small.pkl', 'wb') as f: pickle.dump(model, f)
+      # with open('result/pretrained/swin_small.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
     elif size == "b":
-      model = timm.create_model('swin_base_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
-      train_size, test_size = 224, 224
+      # model = timm.create_model('swin_base_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
+      # with open('result/pretrained/swin_base.pkl', 'wb') as f: pickle.dump(model, f)
+      with open('result/pretrained/swin_base.pkl', 'rb') as f: model = pickle.load(f)
+    # Change output to 5 weather classes
     num_feature = model.head.fc.in_features
     model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
     model.head.fc.weight.data.mul_(0.001)
     # model = add_sdepth(name, model, sdepth)
+    # Change input to accept n-channel images
+    old_conv = model.patch_embed.proj
+    new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
+                               out_channels=old_conv.out_channels, 
+                               kernel_size=old_conv.kernel_size, 
+                               stride=old_conv.stride)
+    model.patch_embed.proj = new_conv
   
   elif name == "effnetv2":
     if size == "s":
       model = timm.create_model('tf_efficientnetv2_s.in21k', pretrained=is_pretrained)
+      # with open('result/pretrained/effnetv2_small.pkl', 'wb') as f: pickle.dump(model, f)
+      # with open('result/pretrained/effnetv2_small.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 300, 384
     elif size == "m":
-      model = timm.create_model('tf_efficientnetv2_m.in21k', pretrained=is_pretrained)
-      train_size, test_size = 384, 480
+      # model = timm.create_model('tf_efficientnetv2_m.in21k', pretrained=is_pretrained)
+      # with open('result/pretrained/effnetv2_medium.pkl', 'wb') as f: pickle.dump(model, f)
+      with open('result/pretrained/effnetv2_medium.pkl', 'rb') as f: model = pickle.load(f)
+    # Change output to 5 weather classes
     num_feature = model.classifier.in_features
     model.classifier = torch.nn.Linear(in_features=num_feature, out_features=5)
     model.classifier.weight.data.mul_(0.001)
     # model = add_sdepth(name, model, sdepth)
+    # Change input to accept n-channel images
+    old_conv = model.conv_stem
+    from timm.layers.conv2d_same import Conv2dSame
+    new_conv = Conv2dSame(in_channels=(past_image_num + 1) * 3, 
+                          out_channels=old_conv.out_channels, 
+                          kernel_size=old_conv.kernel_size, 
+                          stride=old_conv.stride,
+                          bias=old_conv.bias)
+    model.conv_stem = new_conv
   
   elif name == "convnext":
     if size == "s":
@@ -103,19 +141,29 @@ def load_model(model_name, model_opt, classes, sdepth, save_path):
       # with open('result/pretrained/convnext_large.pkl', 'wb') as f: pickle.dump(model, f)
       with open('result/pretrained/convnext_large.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
+    # Change output to 5 weather classes
     num_feature = model.head.fc.in_features
     model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=classes)
     model.head.fc.weight.data.mul_(0.001)
     model = add_sdepth(name, model, sdepth)
+    # Change input to accept n-channel images
+    old_conv = model.stem._modules['0']
+    new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
+                               out_channels=old_conv.out_channels, 
+                               kernel_size=old_conv.kernel_size, 
+                               stride=old_conv.stride)
+    model.stem._modules['0'] = new_conv
   
   if save_path:
     with open(f'{save_path}/architecture.txt', 'w') as f:
       f.write("### Summary ###\n")
-      f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
+      f.write(f"{torchsummary.summary(model, ((past_image_num + 1) * 3, train_size, train_size))}\n\n")
       f.write("### Full ###\n")
       f.write(str(model))
 
-  return model, train_size, test_size
+  image_size = {"train_size": train_size, "test_size": test_size}
+  
+  return model, image_size
 
 class CustomRandAugment(v2.RandAugment):
   def __init__(self, num_ops, magnitude, fill):
@@ -134,7 +182,7 @@ class CustomRandAugment(v2.RandAugment):
         pass
 
 class CustomImageDataset(Dataset):
-    def __init__(self, img_labels, img_dir, transform=None, past_image_num=6, full_image_list=None):
+    def __init__(self, img_labels, img_dir, transform, past_image_num, full_image_list):
         self.img_labels = img_labels
         self.img_dir = img_dir
         self.transform = transform
@@ -154,15 +202,14 @@ class CustomImageDataset(Dataset):
         ima_list = [read_image(path) for path in img_paths]
         img_list = [self.transform(img) for img in ima_list]
         
-        images = torch.stack(img_list, dim=0)
-        images = torch.sum(images, dim=0)
-        mean = torch.mean(images)
-        std = torch.std(images)
-        images = (images - mean) / std
+        # images = torch.stack(img_list, dim=0)
+        # images = torch.sum(images, dim=0)
+        # mean = torch.mean(images)
+        # std = torch.std(images)
+        # images = (images - mean) / std
         
-        # TODO Change Model input to accept n-channel images
-        # TODO Remove past images
-        # images = torch.cat(tuple(img_list), dim=0)
+        # TODO Remove non-continuous past images
+        images = torch.cat(tuple(img_list), dim=0)
             
         return images, label
     
@@ -171,7 +218,7 @@ class CustomImageDataset(Dataset):
         past_images = self.full_image_list[idx - self.past_image_num : idx].tolist()
         return past_images
 
-def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, num_workers=8):
+def load_data(radar_range, interval, set_name, image_size, past_image_num, batch_size, shuffle, num_workers=8):
   def median_blur(image, kernel_size=5):
       pil_image = v2.functional.to_pil_image(image)
       blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
@@ -210,7 +257,7 @@ def load_data(radar_range, interval, set_name, image_size, batch_size, shuffle, 
   dataset = CustomImageDataset(img_labels=label_file, 
                                img_dir="image/combined", 
                                transform=transforms,
-                               past_image_num=6,
+                               past_image_num=past_image_num,
                                full_image_list=full_image_list)
   
   dataloader = torch.utils.data.DataLoader(dataset, 
@@ -230,7 +277,10 @@ class FinetuneModule(pl.LightningModule):
     self.model_opt = model_settings['model_opt']
     self.classes = model_settings['classes']
     self.sdepth = model_settings['sdepth']
-    self.model, train_size, test_size = load_model(self.model_name, self.model_opt, self.classes, self.sdepth, save_path)
+    self.past_image_num = model_settings['past_image_num']
+    self.model, image_size = load_model(self.model_name, self.model_opt, 
+                                        self.classes, self.sdepth, self.past_image_num, 
+                                        save_path)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
@@ -241,9 +291,15 @@ class FinetuneModule(pl.LightningModule):
     self.epochs = loop_settings['epochs']
     self.label_smoothing = loop_settings['label_smoothing']
 
-    self.train_loader = load_data(self.radar_range, self.interval, "train", train_size, self.batch_size, True)
-    self.val_loader   = load_data(self.radar_range, self.interval, "val", test_size, self.batch_size, False)
-    self.test_loader  = load_data(self.radar_range, self.interval, "test", test_size, self.batch_size, False)
+    self.train_loader = load_data(self.radar_range, self.interval, 
+                                  "train", image_size['train_size'], 
+                                  self.past_image_num, self.batch_size, True)
+    self.val_loader   = load_data(self.radar_range, self.interval, 
+                                  "val", image_size['test_size'], 
+                                  self.past_image_num, self.batch_size, False)
+    self.test_loader  = load_data(self.radar_range, self.interval, 
+                                  "test", image_size['test_size'], 
+                                  self.past_image_num, self.batch_size, False)
     
     self.label_list = []
     self.pred_list = []

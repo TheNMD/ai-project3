@@ -48,7 +48,7 @@ if __name__ == '__main__':
   # 100km | 250km
   radar_range = "250km"
   # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 0
+  interval = 7200
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -56,7 +56,8 @@ if __name__ == '__main__':
   model_name = "convnext-b"
   model_opt = "pretrained" # pretrained | custom
   classes = 5
-  sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
+  sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
+  past_image_num = 6 # 6 | 12 | 18
   checkpoint = False
   ckpt_version = "version_0"
   
@@ -91,7 +92,7 @@ if __name__ == '__main__':
   min_epochs = 21 # 0 | 21 | 41 | 61
 
   ## For training loop
-  batch_size = 128 # 32 | 64 | 128 | 256
+  batch_size = 64 # 32 | 64 | 128 | 256
   epochs = 150     # 150 | 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
@@ -106,7 +107,8 @@ if __name__ == '__main__':
                     'model_name': model_name, 
                     'model_opt': model_opt,
                     'classes': classes,
-                    'sdepth': sdepth,}
+                    'sdepth': sdepth,
+                    'past_image_num': past_image_num}
   
   optimizer_settings = {'optimizer_name': optimizer_name, 
                         'learning_rate': learning_rate,
@@ -250,7 +252,7 @@ if __name__ == '__main__':
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
-      if os.path.exists(f'{save_path}'):
-        shutil.rmtree(f'{save_path}')
+      # if os.path.exists(f'{save_path}'):
+      #   shutil.rmtree(f'{save_path}')
 
   
