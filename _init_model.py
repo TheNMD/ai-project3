@@ -182,11 +182,12 @@ class CustomRandAugment(v2.RandAugment):
         pass
 
 class CustomImageDataset(Dataset):
-    def __init__(self, img_labels, img_dir, transform, past_image_num, full_image_list):
+    def __init__(self, img_labels, img_dir, transform, past_image_num, combined_method, full_image_list):
         self.img_labels = img_labels
         self.img_dir = img_dir
         self.transform = transform
         self.past_image_num = past_image_num
+        self.combined_method = combined_method
         self.full_image_list = full_image_list
 
     def __len__(self):
@@ -203,17 +204,18 @@ class CustomImageDataset(Dataset):
         img_list = [self.transform(img) for img in ima_list]
         
         # Sum
-        # images = torch.stack(images, dim=0)
-        # if self.past_image_num > 0:
-        #     images = torch.sum(images, dim=0)
-        #     mean = torch.mean(images)
-        #     std = torch.std(images)
-        #     images = (images - mean) / std
-        # else:
-        #     images = torch.squeeze(images, dim=0)
-        
+        if self.combined_method == "sum":        
+          images = torch.stack(images, dim=0)
+          if self.past_image_num > 0:
+              images = torch.sum(images, dim=0)
+              mean = torch.mean(images)
+              std = torch.std(images)
+              images = (images - mean) / std
+          else:
+              images = torch.squeeze(images, dim=0)
         # Concat
-        images = torch.cat(tuple(img_list), dim=0)
+        elif self.combined_method == "concat": 
+          images = torch.cat(tuple(img_list), dim=0)
             
         return images, label
     
@@ -222,7 +224,9 @@ class CustomImageDataset(Dataset):
         past_images = self.full_image_list[idx - self.past_image_num : idx].tolist()
         return past_images
 
-def load_data(radar_range, interval, set_name, image_size, past_image_num, batch_size, shuffle, num_workers=8):
+def load_data(radar_range, interval, set_name, image_size, 
+              past_image_num, combined_method, 
+              batch_size, shuffle, num_workers=8):
   def median_blur(image, kernel_size=5):
       pil_image = v2.functional.to_pil_image(image)
       blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
@@ -262,6 +266,7 @@ def load_data(radar_range, interval, set_name, image_size, past_image_num, batch
                                img_dir="image/combined", 
                                transform=transforms,
                                past_image_num=past_image_num,
+                               combined_method=combined_method,
                                full_image_list=full_image_list)
   
   dataloader = torch.utils.data.DataLoader(dataset, 
@@ -282,6 +287,7 @@ class FinetuneModule(pl.LightningModule):
     self.classes = model_settings['classes']
     self.sdepth = model_settings['sdepth']
     self.past_image_num = model_settings['past_image_num']
+    self.combined_method = model_settings['combined_method']
     self.model, image_size = load_model(self.model_name, self.model_opt, 
                                         self.classes, self.sdepth, self.past_image_num, 
                                         save_path)
@@ -297,13 +303,16 @@ class FinetuneModule(pl.LightningModule):
 
     self.train_loader = load_data(self.radar_range, self.interval, 
                                   "train", image_size['train_size'], 
-                                  self.past_image_num, self.batch_size, True)
+                                  self.past_image_num, self.combined_method,
+                                  self.batch_size, True)
     self.val_loader   = load_data(self.radar_range, self.interval, 
                                   "val", image_size['test_size'], 
-                                  self.past_image_num, self.batch_size, False)
+                                  self.past_image_num, self.combined_method,
+                                  self.batch_size, False)
     self.test_loader  = load_data(self.radar_range, self.interval, 
                                   "test", image_size['test_size'], 
-                                  self.past_image_num, self.batch_size, False)
+                                  self.past_image_num, self.combined_method,
+                                  self.batch_size, False)
     
     self.label_list = []
     self.pred_list = []
