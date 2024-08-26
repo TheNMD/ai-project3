@@ -202,15 +202,14 @@ class CustomImageDataset(Dataset):
         ima_list = [read_image(path) for path in img_paths]
         img_list = [self.transform(img) for img in ima_list]
         
-        images = torch.stack(img_list, dim=0)
-        images = torch.sum(images, dim=0)
-        mean = torch.mean(images)
-        std = torch.std(images)
-        images = (images - mean) / std
+        # images = torch.stack(img_list, dim=0)
+        # images = torch.sum(images, dim=0)
+        # mean = torch.mean(images)
+        # std = torch.std(images)
+        # images = (images - mean) / std
         
-        # TODO Change Model input to accept n-channel images
-        # TODO Remove past images
-        # images = torch.cat(tuple(img_list), dim=0)
+        # TODO Remove non-continuous past images
+        images = torch.cat(tuple(img_list), dim=0)
             
         return images, label
     
