@@ -279,11 +279,8 @@ class FinetuneModule(pl.LightningModule):
     self.classes = model_settings['classes']
     self.sdepth = model_settings['sdepth']
     self.past_image_num = model_settings['past_image_num']
-    self.model, image_size = load_model(self.model_name, 
-                                        self.model_opt, 
-                                        self.classes, 
-                                        self.sdepth, 
-                                        self.past_image_num, 
+    self.model, image_size = load_model(self.model_name, self.model_opt, 
+                                        self.classes, self.sdepth, self.past_image_num, 
                                         save_path)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
@@ -295,9 +292,15 @@ class FinetuneModule(pl.LightningModule):
     self.epochs = loop_settings['epochs']
     self.label_smoothing = loop_settings['label_smoothing']
 
-    self.train_loader = load_data(self.radar_range, self.interval, "train", image_size['train_size'], 6, self.batch_size, True)
-    self.val_loader   = load_data(self.radar_range, self.interval, "val", image_size['test_size'], 6, self.batch_size, False)
-    self.test_loader  = load_data(self.radar_range, self.interval, "test", image_size['test_size'], 6, self.batch_size, False)
+    self.train_loader = load_data(self.radar_range, self.interval, 
+                                  "train", image_size['train_size'], 
+                                  self.past_image_num, self.batch_size, True)
+    self.val_loader   = load_data(self.radar_range, self.interval, 
+                                  "val", image_size['test_size'], 
+                                  self.past_image_num, self.batch_size, False)
+    self.test_loader  = load_data(self.radar_range, self.interval, 
+                                  "test", image_size['test_size'], 
+                                  self.past_image_num, self.batch_size, False)
     
     self.label_list = []
     self.pred_list = []
