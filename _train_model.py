@@ -56,7 +56,8 @@ if __name__ == '__main__':
   model_name = "convnext-b"
   model_opt = "pretrained" # pretrained | custom
   classes = 5
-  sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3 
+  sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
+  past_image_num = 6 # 6 | 12 | 18
   checkpoint = False
   ckpt_version = "version_0"
   
@@ -106,7 +107,8 @@ if __name__ == '__main__':
                     'model_name': model_name, 
                     'model_opt': model_opt,
                     'classes': classes,
-                    'sdepth': sdepth,}
+                    'sdepth': sdepth,
+                    'past_image_num': past_image_num}
   
   optimizer_settings = {'optimizer_name': optimizer_name, 
                         'learning_rate': learning_rate,
