@@ -45,10 +45,8 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  # 100km | 250km
-  radar_range = "250km"
-  # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-  interval = 7200
+  radar_range = "250km" # 100km | 250km
+  interval = 3600 # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -57,7 +55,8 @@ if __name__ == '__main__':
   model_opt = "pretrained" # pretrained | custom
   classes = 5
   sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
-  past_image_num = 6 # 6 | 12 | 18
+  past_image_num = 6 # 0 | 6 | 12 | 18
+  combined_method = "concat" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
   
@@ -108,7 +107,8 @@ if __name__ == '__main__':
                     'model_opt': model_opt,
                     'classes': classes,
                     'sdepth': sdepth,
-                    'past_image_num': past_image_num}
+                    'past_image_num': past_image_num,
+                    'combined_method': combined_method}
   
   optimizer_settings = {'optimizer_name': optimizer_name, 
                         'learning_rate': learning_rate,
