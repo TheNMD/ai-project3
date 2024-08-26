@@ -64,11 +64,7 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       # with open('result/pretrained/vit_large.pkl', 'wb') as f: pickle.dump(model, f)
       # with open('result/pretrained/vit_large.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
-    # Change output to 5 weather classes
-    num_feature = model.head.in_features
-    model.head = torch.nn.Linear(in_features=num_feature, out_features=classes)
-    model.head.weight.data.mul_(0.001)
-    # model = add_sdepth(name, model, sdepth)
+    
     # Change input to accept n-channel images
     old_conv = model.patch_embed.proj
     new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
@@ -76,6 +72,12 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
                                kernel_size=old_conv.kernel_size, 
                                stride=old_conv.stride)
     model.patch_embed.proj = new_conv
+    # Change output to 5 weather classes
+    num_feature = model.head.in_features
+    model.head = torch.nn.Linear(in_features=num_feature, out_features=classes)
+    model.head.weight.data.mul_(0.001)
+    # Add stochastic depth
+    # model = add_sdepth(name, model, sdepth)
   
   elif name == "swin":
     if size == "s":
@@ -87,11 +89,7 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       # model = timm.create_model('swin_base_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
       # with open('result/pretrained/swin_base.pkl', 'wb') as f: pickle.dump(model, f)
       with open('result/pretrained/swin_base.pkl', 'rb') as f: model = pickle.load(f)
-    # Change output to 5 weather classes
-    num_feature = model.head.fc.in_features
-    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
-    model.head.fc.weight.data.mul_(0.001)
-    # model = add_sdepth(name, model, sdepth)
+    
     # Change input to accept n-channel images
     old_conv = model.patch_embed.proj
     new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
@@ -99,6 +97,12 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
                                kernel_size=old_conv.kernel_size, 
                                stride=old_conv.stride)
     model.patch_embed.proj = new_conv
+    # Change output to 5 weather classes
+    num_feature = model.head.fc.in_features
+    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
+    model.head.fc.weight.data.mul_(0.001)
+    # Add stochastic depth
+    # model = add_sdepth(name, model, sdepth)
   
   elif name == "effnetv2":
     if size == "s":
@@ -110,11 +114,6 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       # model = timm.create_model('tf_efficientnetv2_m.in21k', pretrained=is_pretrained)
       # with open('result/pretrained/effnetv2_medium.pkl', 'wb') as f: pickle.dump(model, f)
       with open('result/pretrained/effnetv2_medium.pkl', 'rb') as f: model = pickle.load(f)
-    # Change output to 5 weather classes
-    num_feature = model.classifier.in_features
-    model.classifier = torch.nn.Linear(in_features=num_feature, out_features=5)
-    model.classifier.weight.data.mul_(0.001)
-    # model = add_sdepth(name, model, sdepth)
     # Change input to accept n-channel images
     old_conv = model.conv_stem
     from timm.layers.conv2d_same import Conv2dSame
@@ -124,6 +123,12 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
                           stride=old_conv.stride,
                           bias=old_conv.bias)
     model.conv_stem = new_conv
+    # Change output to 5 weather classes
+    num_feature = model.classifier.in_features
+    model.classifier = torch.nn.Linear(in_features=num_feature, out_features=5)
+    model.classifier.weight.data.mul_(0.001)
+    # Add stochastic depth
+    # model = add_sdepth(name, model, sdepth)
   
   elif name == "convnext":
     if size == "s":
@@ -141,11 +146,7 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       # with open('result/pretrained/convnext_large.pkl', 'wb') as f: pickle.dump(model, f)
       with open('result/pretrained/convnext_large.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
-    # Change output to 5 weather classes
-    num_feature = model.head.fc.in_features
-    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=classes)
-    model.head.fc.weight.data.mul_(0.001)
-    model = add_sdepth(name, model, sdepth)
+    
     # Change input to accept n-channel images
     old_conv = model.stem._modules['0']
     new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
@@ -153,6 +154,13 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
                                kernel_size=old_conv.kernel_size, 
                                stride=old_conv.stride)
     model.stem._modules['0'] = new_conv
+    # TODO Change output to multi-label
+    # Change output to 5 weather classes
+    num_feature = model.head.fc.in_features
+    model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=classes)
+    model.head.fc.weight.data.mul_(0.001)
+    # Add stochastic depth
+    model = add_sdepth(name, model, sdepth)
   
   if save_path:
     with open(f'{save_path}/architecture.txt', 'w') as f:
