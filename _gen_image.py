@@ -30,9 +30,16 @@ def generate_image(metadata_chunk):
             data = pyart.io.read_sigmet(f"{data_path}/{row['path']}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
             
+            if row['range'] == "120km":
+                radar_range = 100000
+            else:
+                radar_range = 300000
+            
             grid_data = pyart.map.grid_from_radars(data,
                                                    grid_shape=(1, 500, 500),
-                                                   grid_limits=((0, 1), (-250000, 250000), (-250000, 250000)),)
+                                                   grid_limits=((0, 1), 
+                                                                (-radar_range, radar_range), 
+                                                                (-radar_range, radar_range)),)
 
             display = pyart.graph.GridMapDisplay(grid_data)
             display.plot_grid('reflectivity', cmap='pyart_HomeyerRainbow', colorbar_flag=False)
@@ -56,7 +63,7 @@ def update_metadata():
     old_metadata = pd.read_csv("metadata.csv")
     old_metadata = old_metadata[['path', 'timestamp_0']]
     
-    files = [file for file in os.listdir("image/combined")]
+    files = [file for file in os.listdir("image/all")]
     timestamps = [file[:-4] for file in files]
     generated = ["True" if file.endswith('.jpg') else "Error" for file in files]
     new_metadata = pd.DataFrame({'timestamp_0': timestamps, 'generated': generated})
