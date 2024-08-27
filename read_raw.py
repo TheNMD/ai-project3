@@ -9,7 +9,7 @@ metadata = pd.read_csv("metadata.csv")
 path = metadata['path'][3]
 print(path)
 
-data = pyart.io.read_sigmet(path)
+data = pyart.io.read_sigmet(f"data/{path}")
 data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
 
 # display = pyart.graph.RadarDisplay(data)
