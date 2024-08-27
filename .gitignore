@@ -12,6 +12,7 @@ image/unlabeled_250km
 result/
 server/
 testing/
+__pycache__
 
 data.zip
 image.zip
