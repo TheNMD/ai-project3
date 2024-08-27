@@ -31,7 +31,7 @@ elif ENV == "colab":
   image_path = "image"
   result_path = "drive/MyDrive/Coding/result"
 
-def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path):
+def load_model(model_name, model_opt, classes, sdepth, past_image_num, combined_method, save_path):
   def add_sdepth(model_name, model, drop_prob):
     if drop_prob == 0: return model
     if model_name == "convnext":
@@ -66,12 +66,13 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       train_size, test_size = 224, 224
     
     # Change input to accept n-channel images
-    old_conv = model.patch_embed.proj
-    new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
-                               out_channels=old_conv.out_channels, 
-                               kernel_size=old_conv.kernel_size, 
-                               stride=old_conv.stride)
-    model.patch_embed.proj = new_conv
+    if combined_method == "concat":
+      old_conv = model.patch_embed.proj
+      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
+                                out_channels=old_conv.out_channels, 
+                                kernel_size=old_conv.kernel_size, 
+                                stride=old_conv.stride)
+      model.patch_embed.proj = new_conv
     # Change output to 5 weather classes
     num_feature = model.head.in_features
     model.head = torch.nn.Linear(in_features=num_feature, out_features=classes)
@@ -91,12 +92,13 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       with open('result/pretrained/swin_base.pkl', 'rb') as f: model = pickle.load(f)
     
     # Change input to accept n-channel images
-    old_conv = model.patch_embed.proj
-    new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
-                               out_channels=old_conv.out_channels, 
-                               kernel_size=old_conv.kernel_size, 
-                               stride=old_conv.stride)
-    model.patch_embed.proj = new_conv
+    if combined_method == "concat":
+      old_conv = model.patch_embed.proj
+      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
+                                out_channels=old_conv.out_channels, 
+                                kernel_size=old_conv.kernel_size, 
+                                stride=old_conv.stride)
+      model.patch_embed.proj = new_conv
     # Change output to 5 weather classes
     num_feature = model.head.fc.in_features
     model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
@@ -115,14 +117,15 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       # with open('result/pretrained/effnetv2_medium.pkl', 'wb') as f: pickle.dump(model, f)
       with open('result/pretrained/effnetv2_medium.pkl', 'rb') as f: model = pickle.load(f)
     # Change input to accept n-channel images
-    old_conv = model.conv_stem
-    from timm.layers.conv2d_same import Conv2dSame
-    new_conv = Conv2dSame(in_channels=(past_image_num + 1) * 3, 
-                          out_channels=old_conv.out_channels, 
-                          kernel_size=old_conv.kernel_size, 
-                          stride=old_conv.stride,
-                          bias=old_conv.bias)
-    model.conv_stem = new_conv
+    if combined_method == "concat":
+      old_conv = model.conv_stem
+      from timm.layers.conv2d_same import Conv2dSame
+      new_conv = Conv2dSame(in_channels=(past_image_num + 1) * 3, 
+                            out_channels=old_conv.out_channels, 
+                            kernel_size=old_conv.kernel_size, 
+                            stride=old_conv.stride,
+                            bias=old_conv.bias)
+      model.conv_stem = new_conv
     # Change output to 5 weather classes
     num_feature = model.classifier.in_features
     model.classifier = torch.nn.Linear(in_features=num_feature, out_features=5)
@@ -148,12 +151,13 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       train_size, test_size = 224, 224
     
     # Change input to accept n-channel images
-    old_conv = model.stem._modules['0']
-    new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
-                               out_channels=old_conv.out_channels, 
-                               kernel_size=old_conv.kernel_size, 
-                               stride=old_conv.stride)
-    model.stem._modules['0'] = new_conv
+    if combined_method == "concat":
+      old_conv = model.stem._modules['0']
+      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
+                                 out_channels=old_conv.out_channels, 
+                                 kernel_size=old_conv.kernel_size, 
+                                 stride=old_conv.stride)
+      model.stem._modules['0'] = new_conv
     # TODO Change output to multi-label
     # Change output to 5 weather classes
     num_feature = model.head.fc.in_features
@@ -215,12 +219,12 @@ class CustomImageDataset(Dataset):
         if self.combined_method == "sum":        
           images = torch.stack(images, dim=0)
           if self.past_image_num > 0:
-              images = torch.sum(images, dim=0)
-              mean = torch.mean(images)
-              std = torch.std(images)
-              images = (images - mean) / std
+            images = torch.sum(images, dim=0)
+            mean = torch.mean(images)
+            std = torch.std(images)
+            images = (images - mean) / std
           else:
-              images = torch.squeeze(images, dim=0)
+            images = torch.squeeze(images, dim=0)
         # Concat
         elif self.combined_method == "concat": 
           images = torch.cat(tuple(img_list), dim=0)

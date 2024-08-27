@@ -46,7 +46,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   radar_range = "250km" # 100km | 250km
-  interval = 0 # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
+  interval = 3600 # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -55,8 +55,8 @@ if __name__ == '__main__':
   model_opt = "pretrained" # pretrained | custom
   classes = 5
   sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
-  past_image_num = 0 # 0 | 6 | 12 | 18
-  combined_method = "concat" # sum | concat
+  past_image_num = 6 # 0 | 6 | 12 | 18
+  combined_method = "sum" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
   
@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
   ## For training loop
   batch_size = 128 # 32 | 64 | 128 | 256
-  epochs = 150     # 150 | 200
+  epochs = 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
