@@ -56,7 +56,7 @@ if __name__ == '__main__':
   classes = 5
   sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
   past_image_num = 6 # 0 | 6 | 12 | 18
-  combined_method = "concat" # sum | concat
+  combined_method = "sum" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
   
