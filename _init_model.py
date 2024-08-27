@@ -220,7 +220,7 @@ class CustomImageDataset(Dataset):
         
         # Sum
         if self.combined_method == "sum":        
-          images = torch.stack(images, dim=0)
+          images = torch.stack(img_list, dim=0)
           if self.past_image_num > 0:
             images = torch.sum(images, dim=0)
             mean = torch.mean(images)
