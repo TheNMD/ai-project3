@@ -21,3 +21,4 @@ metrics.csv
 graph_acc.png
 graph_loss.png
 best_model.ckpt
+notes.txt
