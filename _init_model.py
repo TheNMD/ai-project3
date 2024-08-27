@@ -301,7 +301,8 @@ class FinetuneModule(pl.LightningModule):
     self.past_image_num = model_settings['past_image_num']
     self.combined_method = model_settings['combined_method']
     self.model, image_size = load_model(self.model_name, self.model_opt, 
-                                        self.classes, self.sdepth, self.past_image_num, 
+                                        self.classes, self.sdepth, 
+                                        self.past_image_num, self.combined_method,
                                         save_path)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
