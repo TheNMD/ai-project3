@@ -70,6 +70,6 @@ if __name__ == '__main__':
     interval = 10800 
     # 6 | 12 | 18
     past_image_num = 6
-    split_df("100km", interval, past_image_num)
-    split_df("250km", interval, past_image_num)
+    split_df("120km", interval, past_image_num)
+    split_df("300km", interval, past_image_num)
         

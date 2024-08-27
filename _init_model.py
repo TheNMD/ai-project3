@@ -278,7 +278,7 @@ def load_data(radar_range, interval, set_name, image_size,
   full_image_list = pd.read_csv(f"image/labels_{radar_range}.csv")
   full_image_list = full_image_list['image_name'].reset_index(drop=True)
   dataset = CustomImageDataset(img_labels=label_file, 
-                               img_dir="image/combined", 
+                               img_dir="image/all", 
                                transform=transforms,
                                past_image_num=past_image_num,
                                combined_method=combined_method,
