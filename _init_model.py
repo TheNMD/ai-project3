@@ -169,7 +169,10 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, combined_
   if save_path:
     with open(f'{save_path}/architecture.txt', 'w') as f:
       f.write("### Summary ###\n")
-      f.write(f"{torchsummary.summary(model, ((past_image_num + 1) * 3, train_size, train_size))}\n\n")
+      if combined_method == "concat":
+        f.write(f"{torchsummary.summary(model, ((past_image_num + 1) * 3, train_size, train_size))}\n\n")
+      else:
+        f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
       f.write("### Full ###\n")
       f.write(str(model))
 
