@@ -1,3 +1,4 @@
+__pycache__
 .vscode/
 venv/
 
@@ -5,21 +6,19 @@ data/
 metadata/
 sample_data/
 image/combined
-image/sample_100km
-image/sample_250km
-image/unlabeled_100km
-image/unlabeled_250km
+image/combined1
+image/sample_120km
+image/sample_300km
 result/
 server/
 testing/
-__pycache__
 
 data.zip
 image.zip
 result.zip
 
 metrics.csv
+notes.txt
 graph_acc.png
 graph_loss.png
 best_model.ckpt
-notes.txt
