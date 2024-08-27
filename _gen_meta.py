@@ -28,18 +28,24 @@ def create_metadata(year):
     
     paths = []
     timestamps = []
+    radar_ranges = []
     for day in sorted(os.listdir(f"{data_path}/{year}/{month}")):
       for file in sorted(os.listdir(f"{data_path}/{year}/{month}/{day}")):
         path =  f"{year}/{month}/{day}/{file}"
         paths += [path]
         
         data = pyart.io.read_sigmet(f"{data_path}/{path}")
+        radar_range = data.range['data'][-1]
+        if radar_range > 120000:
+            radar_ranges += ["300km"]
+        else:
+            radar_ranges += ["120km"]
         timestamp = str(pyart.util.datetime_from_radar(data)).replace(':', '-')
         timestamps += [timestamp]
         
         print(f"{timestamp}")
 
-    metadata = pd.DataFrame(list(zip(paths, timestamps)), columns=['path', 'timestamp_0'])
+    metadata = pd.DataFrame(list(zip(paths, radar_ranges, timestamps)), columns=['path', 'range', 'timestamp_0'])
     metadata['generated'] = "False"
     metadata['label_0'] = np.nan
     metadata['avg_reflectivity_0'] = np.nan
