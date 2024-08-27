@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 _gen_meta.py
+python3 _gen_image.py
