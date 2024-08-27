@@ -46,7 +46,7 @@ def generate_image(metadata_chunk):
 
             plt.title('')
             plt.axis('off')
-            plt.savefig(f"image/combined/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+            plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
             
             print(f"{timestamp} - Done")
             
@@ -54,7 +54,7 @@ def generate_image(metadata_chunk):
             plt.close()
             del display, grid_data, data
         except Exception as e:
-            with open(f'image/combined/{timestamp}.txt', 'w') as f: 
+            with open(f'image/all/{timestamp}.txt', 'w') as f: 
                 f.write('error')
             logging.error(e, exc_info=True)
             continue
@@ -80,8 +80,8 @@ if __name__ == '__main__':
     num_processes = 16
     chunk_size = 100 * num_processes
     
-    if not os.path.exists("image/combined"):
-        os.makedirs("image/combined")
+    if not os.path.exists("image/all"):
+        os.makedirs("image/all")
     
     try:
         counter = 0
