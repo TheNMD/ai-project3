@@ -21,9 +21,10 @@ elif ENV == "colab":
     data_path = "data/NhaBe"     
 
 def find_future_images(interval):
+    sub_metadata = []
     for i in ["120km", "300km"]:
         metadata = pd.read_csv("metadata.csv")
-        metadata = metadata[metadata['range'] == i]
+        metadata = (metadata[metadata['range'] == i]).reset_index(drop=True)
         metadata['timestamp_0'] = pd.to_datetime(metadata['timestamp_0'], format="%Y-%m-%d %H-%M-%S")
         
         timestamp_col = f"timestamp_{interval}"
@@ -35,10 +36,12 @@ def find_future_images(interval):
         for idx, row in metadata.iterrows():
             if type(row[timestamp_col]) is str:
                 continue
-                    
+            
+            interval = int(interval[:-1]) * 3600
             current_time = row['timestamp_0']
-            future_metadata = metadata[(metadata['timestamp_0'] - current_time >= pd.Timedelta(interval - 60, "s")) &
-                                    (metadata['timestamp_0'] - current_time <= pd.Timedelta(interval + 600, "s"))].head(1)
+            time_difference = metadata['timestamp_0'] - current_time
+            future_metadata = metadata[(time_difference >= pd.Timedelta(interval - 60, "s")) &
+                                       (time_difference <= pd.Timedelta(interval + 600, "s"))].head(1)
             
             if future_metadata.empty:
                 metadata.loc[idx, [timestamp_col]] = "NotAvail"
@@ -48,16 +51,14 @@ def find_future_images(interval):
                 metadata.loc[idx, [timestamp_col]] = future_timestamp
                 metadata.loc[idx, [label_col]] = metadata.loc[metadata['timestamp_0'] == future_timestamp, 'label_0'].tolist()[0]
             
-            print(current_time)
+            # print(f"{current_time} - Done")
 
         metadata['timestamp_0'] = metadata['timestamp_0'].astype(str).str.replace(':', '-')
         metadata[timestamp_col] = metadata[timestamp_col].astype(str).str.replace(':', '-')
-        metadata.to_csv(f"metadata_{i}_{interval}.csv", index=False)
+        sub_metadata += [metadata]
         
-    df_120km = pd.read_csv(f"metadata_120km_{interval}.csv")
-    df_300km = pd.read_csv(f"metadata_300km_{interval}.csv")
-    merged_df = pd.concat([df_120km, df_300km], ignore_index=True)
-    merged_df = merged_df.sort_values(by='timestamp_0').reset_index(drop=True)
+    merged_df = pd.concat(sub_metadata, ignore_index=True)
+    merged_df = (merged_df.sort_values(by='timestamp_0')).reset_index(drop=True)
     merged_df.to_csv(f"metadata_{interval}.csv", index=False)
 
 def update_metadata(intervals):
@@ -75,13 +76,13 @@ if __name__ == '__main__':
     print("Ubuntu version: ", platform.release())
     
     # Label future images
-    timestamps = [3600, 7200, 10800, 14400, 18000, 21600, 43200, 86400, 172800]
-    num_processes = len(timestamps)
+    intervals = ["1h", "2h", "3h", "4h", "5h", "6h", "12h", "24h", "48h"]
+    num_processes = len(intervals)
     try:
         # Use multiprocessing to iterate over the metadata
         with mp.Pool(processes=num_processes) as pool:
             start_time = time.time()
-            pool.map(find_future_images, timestamps)
+            pool.map(find_future_images, intervals)
             end_time = time.time() - start_time
 
             print(f"Time: {end_time}")
@@ -90,7 +91,7 @@ if __name__ == '__main__':
         logging.error(e, exc_info=True)
         
     # Update metadata
-    update_metadata(timestamps)
+    update_metadata(intervals)
 
 
         

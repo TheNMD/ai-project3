@@ -46,7 +46,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   radar_range = "300km" # 120km | 300km
-  interval = 3600 # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
+  interval = "2h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h | 12h | 24h | 48h
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 

@@ -103,7 +103,7 @@ def calculate_avg_reflectivity(reflectivity):
 
 def label_image(metadata_chunk):    
     for idx, row in metadata_chunk.iterrows():   
-        if type(row['label_0']) is str:
+        if type(row['label_0h']) is str:
             continue
         try:
             img_path = row['path']
@@ -129,15 +129,15 @@ def label_image(metadata_chunk):
                 
             # print(f"{timestamp} - Done")
             
-            metadata_chunk.loc[idx, ['avg_reflectivity_0']] = avg_reflectivity
-            metadata_chunk.loc[idx, ['label_0']] = label
+            metadata_chunk.loc[idx, ['avg_reflectivity_0h']] = avg_reflectivity
+            metadata_chunk.loc[idx, ['label_0h']] = label
             
             # Close and delete to release memory
             del grid_data
             del data
         except Exception as e:
-            metadata_chunk.loc[idx, ['avg_reflectivity_0']] = "Error"
-            metadata_chunk.loc[idx, ['label_0']] = "Error"
+            metadata_chunk.loc[idx, ['avg_reflectivity_0h']] = "Error"
+            metadata_chunk.loc[idx, ['label_0h']] = "Error"
             logging.error(e, exc_info=True)
             continue
         
@@ -149,14 +149,14 @@ def update_metadata(new_metadata):
     else:
         updated_metadata = pd.read_csv("metadata_temp.csv")
     
-    updated_metadata.loc[new_metadata.index, 'avg_reflectivity_0'] = new_metadata['avg_reflectivity_0'].tolist()
-    updated_metadata.loc[new_metadata.index, 'label_0'] = new_metadata['label_0'].tolist()
+    updated_metadata.loc[new_metadata.index, 'avg_reflectivity_0h'] = new_metadata['avg_reflectivity_0h'].tolist()
+    updated_metadata.loc[new_metadata.index, 'label_0h'] = new_metadata['label_0h'].tolist()
     
     updated_metadata.to_csv("metadata_temp.csv", index=False)        
 
 def plot_distribution():
     metadata = pd.read_csv("metadata.csv")
-    frequency = metadata['label_0'].value_counts()
+    frequency = metadata['label_0h'].value_counts()
     
     with open('image/label_dist.txt', 'w') as file:
         file.write(f"{frequency}")
@@ -196,7 +196,7 @@ if __name__ == '__main__':
     
     # Update metadata
     metadata = pd.read_csv("metadata_temp.csv")
-    metadata = metadata[metadata['label_0'] != 'Error']
+    metadata = metadata[metadata['label_0h'] != 'Error']
     metadata.reset_index(drop=True, inplace=True)
     metadata.to_csv("metadata.csv", index=False)
     
