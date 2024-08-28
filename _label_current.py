@@ -154,8 +154,9 @@ def update_metadata(new_metadata):
     
     updated_metadata.to_csv("metadata_temp.csv", index=False)        
 
-def plot_distribution():
+def plot_distribution(radar_range):
     metadata = pd.read_csv("metadata.csv")
+    metadata = metadata[metadata['range'] == radar_range]
     avg_reflectivity_values = metadata['avg_reflectivity_0']
     label_frequency = metadata['label_0h'].value_counts()
     
@@ -163,19 +164,19 @@ def plot_distribution():
     plt.bar(label_frequency.index, label_frequency.values, color='skyblue', edgecolor='black')
     plt.xlabel('Label')
     plt.ylabel('Frequency')
-    plt.title('Label distribution')
-    plt.savefig('image/label_dist.png')
+    plt.title(f'Label distribution - {radar_range}')
+    plt.savefig(f'image/label_dist_{radar_range}.png')
     plt.clf()
     
-    with open('image/label_dist.txt', 'w') as file:
+    with open(f'image/label_dist_{radar_range}.txt', 'w') as file:
         file.write(f"{label_frequency}")
     
     # Plot avg reflectivity distribution
     _, _, _ = plt.hist(avg_reflectivity_values, color='skyblue', edgecolor='black')
     plt.xlabel('Average Reflectivity')
     plt.ylabel('Frequency')
-    plt.title('Average Reflectivity distribution')
-    plt.savefig('image/avg_reflectivity_dist.png')
+    plt.title(f'Average Reflectivity distribution - {radar_range}')
+    plt.savefig(f'image/avg_reflectivity_dist_{radar_range}.png')
     plt.clf()
     
 if __name__ == '__main__':
@@ -211,7 +212,8 @@ if __name__ == '__main__':
     metadata.to_csv("metadata.csv", index=False)
     
     # Plot label and avg reflectivity distribution
-    plot_distribution()
+    plot_distribution("120km")
+    plot_distribution("300km")
 
 
         
