@@ -22,8 +22,7 @@ elif ENV == "colab":
     data_path = "data/NhaBe"
 
 def calculate_avg_reflectivity(reflectivity):
-    # Calculate the percentage of each reflectivity value in each of 8 ranges
-    # Count the reflectivity value smaller than 30
+    # Calculate the percentage of each reflectivity value in each of 14 ranges
     reflectivity_smaller_than_0 = len([ele for ele in reflectivity if ele < 0]) / len(reflectivity)
     reflectivity_0_to_5         = len([ele for ele in reflectivity if 0 <= ele < 5]) / len(reflectivity)
     reflectivity_5_to_10        = len([ele for ele in reflectivity if 5 <= ele < 10]) / len(reflectivity)
@@ -184,8 +183,8 @@ if __name__ == '__main__':
     print("Ubuntu version: ", platform.release())
     
     # Label current images
-    num_processes = 16
-    chunk_size = 100 * num_processes 
+    num_processes = 32
+    chunk_size = 10 * num_processes 
     counter = 0
     try:
         # Use multiprocessing to iterate over the metadata 
