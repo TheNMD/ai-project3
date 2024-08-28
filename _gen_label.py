@@ -108,11 +108,12 @@ def label_image(metadata_chunk):
         try:
             img_path = row['path']
             timestamp = row['timestamp_0']
+            radar_range = row['range']
             
             data = pyart.io.read_sigmet(f"{data_path}/{img_path}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
             
-            if row['range'] == "120km":
+            if radar_range == "120km":
                 radar_range = 120000
             else:
                 radar_range = 300000
