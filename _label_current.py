@@ -170,11 +170,11 @@ def plot_distribution():
     with open('image/label_dist.txt', 'w') as file:
         file.write(f"{label_frequency}")
     
-    # Plot average reflectivity distribution
+    # Plot avg reflectivity distribution
     _, _, _ = plt.hist(avg_reflectivity_values, color='skyblue', edgecolor='black')
-    plt.xlabel('Avg Reflectivity')
+    plt.xlabel('Average Reflectivity')
     plt.ylabel('Frequency')
-    plt.title('Avg Reflectivity distribution')
+    plt.title('Average Reflectivity distribution')
     plt.savefig('image/avg_reflectivity_dist.png')
     plt.clf()
     
