@@ -60,7 +60,7 @@ def generate_image(metadata_chunk):
             with open(f'image/all/{timestamp}.txt', 'w') as f: 
                 f.write('error')
             logging.error(e, exc_info=True)
-            break
+            continue
 
 def update_metadata():
     old_metadata = pd.read_csv("metadata.csv")
