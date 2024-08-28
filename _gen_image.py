@@ -22,7 +22,7 @@ elif ENV == "colab":
     data_path = "data/NhaBe"
 
 def generate_image(metadata_chunk):    
-    for _, row in metadata_chunk.iterrows():
+    for idx, row in metadata_chunk.iterrows():
         if row['generated'] == "True" or row['generated'] == "Error":
             continue
         try:
@@ -54,29 +54,29 @@ def generate_image(metadata_chunk):
             
             # print(f"{timestamp} - Done")
             
+            metadata_chunk.loc[idx, ['generated']] = "True"
+            
             # Close and delete to release memory
             plt.close()
             del display, grid_data, data
         except Exception as e:
+            metadata_chunk.loc[idx, ['generated']] = "Error"
             with open(f'image/all/{timestamp}.txt', 'w') as f: 
                 f.write('error')
             logging.error(e, exc_info=True)
             continue
+        
+    return metadata_chunk
 
-def update_metadata():
+def update_metadata(new_metadata):
     if not os.path.exists("metadata_temp.csv"):
-        old_metadata = pd.read_csv("metadata.csv")
+        updated_metadata = pd.read_csv("metadata.csv")
     else:
-        old_metadata = pd.read_csv("metadata_temp.csv")
-    old_metadata = old_metadata[['path', 'range', 'timestamp_0', 'label_0', 'avg_reflectivity_0']]
+        updated_metadata = pd.read_csv("metadata_temp.csv")
     
-    files = [file for file in os.listdir("image/all")]
-    timestamps = [file[:-4] for file in files]
-    generated = ["True" if file.endswith('.jpg') else "Error" for file in files]
-    new_metadata = pd.DataFrame({'timestamp_0': timestamps, 'generated': generated})
+    updated_metadata.loc[new_metadata.index, 'generated'] = new_metadata['generated'].tolist()
     
-    updated_metadata = pd.merge(old_metadata, new_metadata, on='timestamp_0', how='outer')
-    updated_metadata.to_csv("metadata_temp.csv", index=False)
+    updated_metadata.to_csv("metadata_temp.csv", index=False)   
 
 if __name__ == '__main__':
     print("Python version: ", sys.version)
@@ -100,8 +100,8 @@ if __name__ == '__main__':
                 sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
                 start_time = time.time()
-                pool.map(generate_image, sub_metadata_chunks)
-                update_metadata()
+                results = pool.map(generate_image, sub_metadata_chunks)
+                update_metadata(pd.concat(results))
                 end_time = time.time() - start_time
                 
                 counter += 1
