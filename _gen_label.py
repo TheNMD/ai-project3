@@ -222,9 +222,6 @@ if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
     
-    if not os.path.exists("image/labeled"):
-        os.makedirs("image/labeled")
-    
     # Label images
     num_processes = 16
     chunk_size = 100 * num_processes 
@@ -244,34 +241,33 @@ if __name__ == '__main__':
 
                 counter += 1
                 print(f"### Chunk: {counter} | Time: {end_time} ###")
-                
-        metadata = pd.read_csv("metadata_temp.csv")
-        metadata = metadata[metadata['label_0'] != 'Error']
-        metadata.reset_index(drop=True, inplace=True)
-        metadata.to_csv("metadata.csv", index=False)
     except Exception as e:
         print(e)
         logging.error(e, exc_info=True)
     
+    metadata = pd.read_csv("metadata_temp.csv")
+    metadata = metadata[metadata['label_0'] != 'Error']
+    metadata.reset_index(drop=True, inplace=True)
+    metadata.to_csv("metadata.csv", index=False)
+    
+    # Plot label and avg reflectivity distribution
+    plot_distribution()
+    
     # # Label future images
     # try:
-    #     # Use multiprocessing to iterate over the metadata
     #     timestamps = [3600, 7200, 10800, 14400, 18000, 21600, 43200]
+    #     # Use multiprocessing to iterate over the metadata
     #     with mp.Pool(processes=len(timestamps)) as pool:
     #         start_time = time.time()
     #         pool.map(find_future_images, timestamps)
     #         end_time = time.time() - start_time
 
     #         print(f"Time: {end_time}")
-        
     #     # Combine all metadata
     #     combine_metadata(timestamps)
     # except Exception as e:
     #     print(e)
     #     logging.error(e, exc_info=True)
-    
-    # Plot label and avg reflectivity distribution
-    plot_distribution()
 
 
         
