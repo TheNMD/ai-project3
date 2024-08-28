@@ -92,7 +92,6 @@ if __name__ == '__main__':
     
     try:
         counter = 0
-        update_metadata()
         # Use multiprocessing to iterate over the metadata 
         with mp.Pool(processes=num_processes) as pool:
             metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
@@ -107,7 +106,6 @@ if __name__ == '__main__':
                 counter += 1
                 print(f"### Chunk: {counter} | Time: {end_time} ###")    
     except Exception as e:
-        update_metadata()
         print(e)
         logging.error(e, exc_info=True)
     
