@@ -63,7 +63,10 @@ def generate_image(metadata_chunk):
             continue
 
 def update_metadata():
-    old_metadata = pd.read_csv("metadata.csv")
+    if not os.path.exists("metadata_temp.csv"):
+        old_metadata = pd.read_csv("metadata.csv")
+    else:
+        old_metadata = pd.read_csv("metadata_temp.csv")
     old_metadata = old_metadata[['path', 'range', 'timestamp_0', 'label_0', 'avg_reflectivity_0']]
     
     files = [file for file in os.listdir("image/all")]
@@ -72,7 +75,7 @@ def update_metadata():
     new_metadata = pd.DataFrame({'timestamp_0': timestamps, 'generated': generated})
     
     updated_metadata = pd.merge(old_metadata, new_metadata, on='timestamp_0', how='outer')
-    updated_metadata.to_csv("metadata.csv", index=False)
+    updated_metadata.to_csv("metadata_temp.csv", index=False)
 
 if __name__ == '__main__':
     print("Python version: ", sys.version)
@@ -107,7 +110,7 @@ if __name__ == '__main__':
         print(e)
         logging.error(e, exc_info=True)
     
-    metadata = pd.read_csv("metadata.csv")
+    metadata = pd.read_csv("metadata_temp.csv")
     metadata = metadata[metadata['generated'] != 'Error']
     metadata.reset_index(drop=True, inplace=True)
     metadata.to_csv("metadata.csv", index=False)
