@@ -75,7 +75,7 @@ if __name__ == '__main__':
     print("Ubuntu version: ", platform.release())
     
     # Label future images
-    timestamps = [3600, 7200, 10800, 14400, 18000, 21600, 43200]
+    timestamps = [3600, 7200, 10800, 14400, 18000, 21600, 43200, 86400, 172800]
     num_processes = len(timestamps)
     try:
         # Use multiprocessing to iterate over the metadata

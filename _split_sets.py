@@ -66,7 +66,7 @@ if __name__ == '__main__':
     if not os.path.exists("image/sets"):
         os.makedirs("image/sets")
     
-    # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
+    # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200 | 86400 | 172800
     interval = 10800 
     # 6 | 12 | 18
     past_image_num = 6
