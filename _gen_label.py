@@ -106,11 +106,14 @@ def label_image(metadata_chunk):
         if type(row['label_0']) is str:
             continue
         try:
-            data = pyart.io.read_sigmet(f"{data_path}/{row['path']}")
+            img_path = row['path']
+            timestamp = row['timestamp_0']
+            
+            data = pyart.io.read_sigmet(f"{data_path}/{img_path}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
             
             if row['range'] == "120km":
-                radar_range = 100000
+                radar_range = 120000
             else:
                 radar_range = 300000
                 
@@ -123,7 +126,7 @@ def label_image(metadata_chunk):
             reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
             avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
                 
-            print(f"{row['timestamp_0']} | Average reflectivity: {avg_reflectivity} | Label: {label}")
+            # print(f"{timestamp} - Done")
             
             metadata_chunk.loc[idx, ['avg_reflectivity_0']] = avg_reflectivity
             metadata_chunk.loc[idx, ['label_0']] = label
