@@ -81,8 +81,6 @@ def update_metadata(new_metadata):
 if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
-        
-    # view_sample_images()
     
     num_processes = 16
     chunk_size = 100 * num_processes
@@ -109,6 +107,7 @@ if __name__ == '__main__':
         print(e)
         logging.error(e, exc_info=True)
     
+    # Update metadata
     metadata = pd.read_csv("metadata_temp.csv")
     metadata = metadata[metadata['generated'] != 'Error']
     metadata.reset_index(drop=True, inplace=True)
