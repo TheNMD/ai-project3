@@ -50,16 +50,16 @@ def create_metadata(year):
     metadata['avg_reflectivity_0h'] = np.nan
     metadata['label_0h'] = np.nan
     
-    metadata = metadata.sort_values(by='timestamp_0').reset_index(drop=True)
+    metadata = metadata.sort_values(by='timestamp_0h').reset_index(drop=True)
     metadata.to_csv(f"metadata/metadata_{year}_{month}.csv", index=False)
 
 def update_metadata():
   filenames = sorted(os.listdir("metadata"))
   metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames]
   metadata = pd.concat(metadata_list)
-  metadata = metadata.sort_values(by='timestamp_0').reset_index(drop=True)
+  metadata = metadata.sort_values(by='timestamp_0h').reset_index(drop=True)
   
-  duplicate_mask = metadata.duplicated(subset=['timestamp_0'], keep=False)
+  duplicate_mask = metadata.duplicated(subset=['timestamp_0h'], keep=False)
   duplicate_indices = metadata[duplicate_mask].index.tolist()
   metadata_cleaned = metadata.drop(duplicate_indices).reset_index(drop=True)
   

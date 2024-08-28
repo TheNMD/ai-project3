@@ -27,8 +27,8 @@ def generate_image(metadata_chunk):
             continue
         try:
             img_path = row['path']
-            timestamp = row['timestamp_0']
             radar_range = row['range']
+            timestamp = row['timestamp_0h']
             
             data = pyart.io.read_sigmet(f"{data_path}/{img_path}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)

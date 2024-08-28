@@ -25,7 +25,7 @@ def find_future_images(interval):
     for i in ["120km", "300km"]:
         metadata = pd.read_csv("metadata.csv")
         metadata = (metadata[metadata['range'] == i]).reset_index(drop=True)
-        metadata['timestamp_0'] = pd.to_datetime(metadata['timestamp_0'], format="%Y-%m-%d %H-%M-%S")
+        metadata['timestamp_0h'] = pd.to_datetime(metadata['timestamp_0h'], format="%Y-%m-%d %H-%M-%S")
         
         timestamp_col = f"timestamp_{interval}"
         label_col = f"label_{interval}"
@@ -38,8 +38,8 @@ def find_future_images(interval):
                 continue
             
             interval = int(interval[:-1]) * 3600
-            current_time = row['timestamp_0']
-            time_difference = metadata['timestamp_0'] - current_time
+            current_time = row['timestamp_0h']
+            time_difference = metadata['timestamp_0h'] - current_time
             future_metadata = metadata[(time_difference >= pd.Timedelta(interval - 60, "s")) &
                                        (time_difference <= pd.Timedelta(interval + 600, "s"))].head(1)
             
@@ -47,9 +47,9 @@ def find_future_images(interval):
                 metadata.loc[idx, [timestamp_col]] = "NotAvail"
                 metadata.loc[idx, [label_col]] = "NotAvail"
             else:
-                future_timestamp = future_metadata['timestamp_0'].tolist()[0]
+                future_timestamp = future_metadata['timestamp_0h'].tolist()[0]
                 metadata.loc[idx, [timestamp_col]] = future_timestamp
-                metadata.loc[idx, [label_col]] = metadata.loc[metadata['timestamp_0'] == future_timestamp, 'label_0'].tolist()[0]
+                metadata.loc[idx, [label_col]] = metadata.loc[metadata['timestamp_0h'] == future_timestamp, 'label_0h'].tolist()[0]
             
             # print(f"{current_time} - Done")
 
@@ -58,7 +58,7 @@ def find_future_images(interval):
         sub_metadata += [metadata]
         
     merged_df = pd.concat(sub_metadata, ignore_index=True)
-    merged_df = (merged_df.sort_values(by='timestamp_0')).reset_index(drop=True)
+    merged_df = (merged_df.sort_values(by='timestamp_0h')).reset_index(drop=True)
     merged_df.to_csv(f"metadata_{interval}.csv", index=False)
 
 def update_metadata(intervals):
