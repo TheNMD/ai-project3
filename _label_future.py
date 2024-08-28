@@ -53,7 +53,7 @@ def find_future_images(interval):
             
             # print(f"{current_time} - Done")
 
-        metadata['timestamp_0'] = metadata['timestamp_0'].astype(str).str.replace(':', '-')
+        metadata['timestamp_0h'] = metadata['timestamp_0h'].astype(str).str.replace(':', '-')
         metadata[timestamp_col] = metadata[timestamp_col].astype(str).str.replace(':', '-')
         sub_metadata += [metadata]
         

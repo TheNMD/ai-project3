@@ -45,7 +45,7 @@ def create_metadata(year):
         
         print(f"{timestamp}")
 
-    metadata = pd.DataFrame(list(zip(paths, radar_ranges, timestamps)), columns=['path', 'range', 'timestamp_0'])
+    metadata = pd.DataFrame(list(zip(paths, radar_ranges, timestamps)), columns=['path', 'range', 'timestamp_0h'])
     metadata['generated'] = "False"
     metadata['avg_reflectivity_0h'] = np.nan
     metadata['label_0h'] = np.nan
