@@ -9,3 +9,5 @@ generated = ["True" if file.endswith('.jpg') else "Error" for file in files]
 
 old_metadata.loc[:len(generated) - 1, 'generated'] = generated
 old_metadata.to_csv("metadata_temp.csv", index=False)
+
+print("Done")
