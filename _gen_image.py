@@ -88,8 +88,8 @@ if __name__ == '__main__':
     if not os.path.exists("image/all"):
         os.makedirs("image/all")
     
+    counter = 0
     try:
-        counter = 0
         # Use multiprocessing to iterate over the metadata 
         with mp.Pool(processes=num_processes) as pool:
             metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
