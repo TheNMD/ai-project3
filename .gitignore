@@ -5,10 +5,8 @@ venv/
 data/
 metadata/
 sample_data/
-image/combined
+image/all
 image/combined1
-image/sample_120km
-image/sample_300km
 result/
 server/
 testing/
