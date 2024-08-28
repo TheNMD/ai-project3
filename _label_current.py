@@ -156,7 +156,7 @@ def update_metadata(new_metadata):
 def plot_distribution(radar_range):
     metadata = pd.read_csv("metadata.csv")
     metadata = metadata[metadata['range'] == radar_range]
-    avg_reflectivity_values = metadata['avg_reflectivity_0']
+    avg_reflectivity_values = metadata['avg_reflectivity_0h']
     label_frequency = metadata['label_0h'].value_counts()
     
     # Plot label distribution
@@ -164,10 +164,10 @@ def plot_distribution(radar_range):
     plt.xlabel('Label')
     plt.ylabel('Frequency')
     plt.title(f'Label distribution - {radar_range}')
-    plt.savefig(f'image/label_dist_{radar_range}.png')
+    plt.savefig(f'image/{radar_range}_label_dist.png')
     plt.clf()
     
-    with open(f'image/label_dist_{radar_range}.txt', 'w') as file:
+    with open(f'image/{radar_range}_label_dist.txt', 'w') as file:
         file.write(f"{label_frequency}")
     
     # Plot avg reflectivity distribution
@@ -175,40 +175,40 @@ def plot_distribution(radar_range):
     plt.xlabel('Average Reflectivity')
     plt.ylabel('Frequency')
     plt.title(f'Average Reflectivity distribution - {radar_range}')
-    plt.savefig(f'image/avg_reflectivity_dist_{radar_range}.png')
+    plt.savefig(f'image/{radar_range}_avg_reflectivity_dist.png')
     plt.clf()
     
 if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
     
-    # Label current images
-    num_processes = 32
-    chunk_size = 10 * num_processes 
-    counter = 0
-    try:
-        # Use multiprocessing to iterate over the metadata 
-        with mp.Pool(processes=num_processes) as pool:
-            metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
-            for chunk in metadata_chunks:
-                sub_metadata_chunks = np.array_split(chunk, num_processes)
+    # # Label current images
+    # num_processes = 32
+    # chunk_size = 10 * num_processes 
+    # counter = 0
+    # try:
+    #     # Use multiprocessing to iterate over the metadata 
+    #     with mp.Pool(processes=num_processes) as pool:
+    #         metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
+    #         for chunk in metadata_chunks:
+    #             sub_metadata_chunks = np.array_split(chunk, num_processes)
                 
-                start_time = time.time()
-                results = pool.map(label_image, sub_metadata_chunks)
-                update_metadata(pd.concat(results))
-                end_time = time.time() - start_time
+    #             start_time = time.time()
+    #             results = pool.map(label_image, sub_metadata_chunks)
+    #             update_metadata(pd.concat(results))
+    #             end_time = time.time() - start_time
 
-                counter += 1
-                print(f"### Chunk: {counter} | Time: {end_time} ###")
-    except Exception as e:
-        print(e)
-        logging.error(e, exc_info=True)
+    #             counter += 1
+    #             print(f"### Chunk: {counter} | Time: {end_time} ###")
+    # except Exception as e:
+    #     print(e)
+    #     logging.error(e, exc_info=True)
     
-    # Update metadata
-    metadata = pd.read_csv("metadata_temp.csv")
-    metadata = metadata[metadata['label_0h'] != 'Error']
-    metadata.reset_index(drop=True, inplace=True)
-    metadata.to_csv("metadata.csv", index=False)
+    # # Update metadata
+    # metadata = pd.read_csv("metadata_temp.csv")
+    # metadata = metadata[metadata['label_0h'] != 'Error']
+    # metadata.reset_index(drop=True, inplace=True)
+    # metadata.to_csv("metadata.csv", index=False)
     
     # Plot label and avg reflectivity distribution
     plot_distribution("120km")
