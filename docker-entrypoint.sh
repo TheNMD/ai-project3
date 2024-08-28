@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 _gen_image.py
+python3 _label_current.py
