@@ -28,8 +28,11 @@ def generate_image(metadata_chunk):
             img_path = row['path']
             timestamp = row['timestamp_0']
             
+            print(row['range'])
+            
             data = pyart.io.read_sigmet(f"{data_path}/{img_path}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
+            
             
             if row['range'] == "120km":
                 radar_range = 120000
@@ -58,11 +61,11 @@ def generate_image(metadata_chunk):
             with open(f'image/all/{timestamp}.txt', 'w') as f: 
                 f.write('error')
             logging.error(e, exc_info=True)
-            continue
+            break
 
 def update_metadata():
     old_metadata = pd.read_csv("metadata.csv")
-    old_metadata = old_metadata[['path', 'timestamp_0']]
+    old_metadata = old_metadata[['path', 'range', 'timestamp_0', 'label_0', 'avg_reflectivity_0']]
     
     files = [file for file in os.listdir("image/all")]
     timestamps = [file[:-4] for file in files]
