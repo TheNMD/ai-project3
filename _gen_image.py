@@ -31,7 +31,7 @@ def generate_image(metadata_chunk):
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
             
             if row['range'] == "120km":
-                radar_range = 100000
+                radar_range = 120000
             else:
                 radar_range = 300000
             
