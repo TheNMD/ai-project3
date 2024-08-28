@@ -92,11 +92,11 @@ def calculate_avg_reflectivity(reflectivity):
         label = "clear"
     elif 30 <= avg_reflectivity < 40:
         label = "light_rain"
-    elif 40 <= avg_reflectivity < 47.5:
+    elif 40 <= avg_reflectivity < 45:
         label = "moderate_rain"
-    elif 47.5 <= avg_reflectivity < 55:
+    elif 45 <= avg_reflectivity < 50:
         label = "heavy_rain"
-    elif avg_reflectivity >= 55:
+    elif avg_reflectivity >= 50:
         label = "very_heavy_rain"
         
     return avg_reflectivity, label
@@ -156,16 +156,24 @@ def update_metadata(new_metadata):
 
 def plot_distribution():
     metadata = pd.read_csv("metadata.csv")
-    frequency = metadata['label_0h'].value_counts()
+    avg_reflectivity_values = metadata['avg_reflectivity_0']
+    label_frequency = metadata['label_0h'].value_counts()
     
-    with open('image/label_dist.txt', 'w') as file:
-        file.write(f"{frequency}")
-    
-    plt.bar(frequency.index, frequency.values, color='skyblue', edgecolor='black')
+    plt.bar(label_frequency.index, label_frequency.values, color='skyblue', edgecolor='black')
     plt.xlabel('Label')
     plt.ylabel('Frequency')
     plt.title('Label distribution')
     plt.savefig('image/label_dist.png')
+    plt.clf()
+    
+    with open('image/label_dist.txt', 'w') as file:
+        file.write(f"{label_frequency}")
+    
+    _, _, _ = plt.hist(avg_reflectivity_values, color='skyblue', edgecolor='black')
+    plt.xlabel('Avg Reflectivity')
+    plt.ylabel('Frequency')
+    plt.title('Avg Reflectivity distribution')
+    plt.savefig('image/avg_reflectivity_dist.png')
     plt.clf()
     
 if __name__ == '__main__':
