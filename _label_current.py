@@ -159,6 +159,7 @@ def plot_distribution():
     avg_reflectivity_values = metadata['avg_reflectivity_0']
     label_frequency = metadata['label_0h'].value_counts()
     
+    # Plot label distribution
     plt.bar(label_frequency.index, label_frequency.values, color='skyblue', edgecolor='black')
     plt.xlabel('Label')
     plt.ylabel('Frequency')
@@ -169,6 +170,7 @@ def plot_distribution():
     with open('image/label_dist.txt', 'w') as file:
         file.write(f"{label_frequency}")
     
+    # Plot average reflectivity distribution
     _, _, _ = plt.hist(avg_reflectivity_values, color='skyblue', edgecolor='black')
     plt.xlabel('Avg Reflectivity')
     plt.ylabel('Frequency')
