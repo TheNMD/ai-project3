@@ -24,10 +24,11 @@ def generate_image(metadata_chunk):
     for _, row in metadata_chunk.iterrows():
         if row['generated'] == "True" or row['generated'] == "Error":
             continue
-        
-        timestamp = row['timestamp_0']
         try:
-            data = pyart.io.read_sigmet(f"{data_path}/{row['path']}")
+            img_path = row['path']
+            timestamp = row['timestamp_0']
+            
+            data = pyart.io.read_sigmet(f"{data_path}/{img_path}")
             data.fields['reflectivity']['data'] = data.fields['reflectivity']['data'].astype(np.float16)
             
             if row['range'] == "120km":
@@ -48,7 +49,7 @@ def generate_image(metadata_chunk):
             plt.axis('off')
             plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
             
-            print(f"{timestamp} - Done")
+            # print(f"{timestamp} - Done")
             
             # Close and delete to release memory
             plt.close()
