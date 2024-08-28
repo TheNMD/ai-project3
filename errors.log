@@ -1,0 +1,450 @@
+2024-08-28 02:24:09,710 - ERROR - unpack requires a buffer of 752 bytes
+Traceback (most recent call last):
+  File "/app/_gen_image.py", line 52, in generate_image
+    plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1134, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2164, in print_figure
+    self.figure.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 95, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3154, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py", line 535, in draw
+    return super().draw(renderer=renderer, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 3070, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/feature_artist.py", line 152, in draw
+    geoms = self._feature.intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 305, in intersecting_geometries
+    return super().intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 108, in intersecting_geometries
+    return (geom for geom in self.geometries() if
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 290, in geometries
+    geometries = tuple(shapereader.Reader(path).geometries())
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/io/shapereader.py", line 161, in geometries
+    for shape in self._reader.iterShapes():
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1483, in iterShapes
+    shape = self.__shape(oid=i, bbox=bbox)
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1340, in __shape
+    flat = unpack("<%sd" % (2 * nPoints), f.read(16*nPoints))
+struct.error: unpack requires a buffer of 752 bytes
+2024-08-28 02:24:09,722 - ERROR - unpack requires a buffer of 832 bytes
+Traceback (most recent call last):
+  File "/app/_gen_image.py", line 52, in generate_image
+    plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1134, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2164, in print_figure
+    self.figure.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 95, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3154, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py", line 535, in draw
+    return super().draw(renderer=renderer, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 3070, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/feature_artist.py", line 152, in draw
+    geoms = self._feature.intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 305, in intersecting_geometries
+    return super().intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 108, in intersecting_geometries
+    return (geom for geom in self.geometries() if
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 290, in geometries
+    geometries = tuple(shapereader.Reader(path).geometries())
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/io/shapereader.py", line 161, in geometries
+    for shape in self._reader.iterShapes():
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1483, in iterShapes
+    shape = self.__shape(oid=i, bbox=bbox)
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1340, in __shape
+    flat = unpack("<%sd" % (2 * nPoints), f.read(16*nPoints))
+struct.error: unpack requires a buffer of 832 bytes
+2024-08-28 02:24:09,745 - ERROR - unpack requires a buffer of 752 bytes
+Traceback (most recent call last):
+  File "/app/_gen_image.py", line 52, in generate_image
+    plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1134, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2164, in print_figure
+    self.figure.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 95, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3154, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py", line 535, in draw
+    return super().draw(renderer=renderer, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 3070, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/feature_artist.py", line 152, in draw
+    geoms = self._feature.intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 305, in intersecting_geometries
+    return super().intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 108, in intersecting_geometries
+    return (geom for geom in self.geometries() if
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 290, in geometries
+    geometries = tuple(shapereader.Reader(path).geometries())
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/io/shapereader.py", line 161, in geometries
+    for shape in self._reader.iterShapes():
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1483, in iterShapes
+    shape = self.__shape(oid=i, bbox=bbox)
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1340, in __shape
+    flat = unpack("<%sd" % (2 * nPoints), f.read(16*nPoints))
+struct.error: unpack requires a buffer of 752 bytes
+2024-08-28 02:24:09,746 - ERROR - unpack requires a buffer of 384 bytes
+Traceback (most recent call last):
+  File "/app/_gen_image.py", line 52, in generate_image
+    plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1134, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2164, in print_figure
+    self.figure.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 95, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3154, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py", line 535, in draw
+    return super().draw(renderer=renderer, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 3070, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/feature_artist.py", line 152, in draw
+    geoms = self._feature.intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 305, in intersecting_geometries
+    return super().intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 108, in intersecting_geometries
+    return (geom for geom in self.geometries() if
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 290, in geometries
+    geometries = tuple(shapereader.Reader(path).geometries())
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/io/shapereader.py", line 161, in geometries
+    for shape in self._reader.iterShapes():
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1483, in iterShapes
+    shape = self.__shape(oid=i, bbox=bbox)
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1340, in __shape
+    flat = unpack("<%sd" % (2 * nPoints), f.read(16*nPoints))
+struct.error: unpack requires a buffer of 384 bytes
+2024-08-28 02:24:09,782 - ERROR - unpack requires a buffer of 32 bytes
+Traceback (most recent call last):
+  File "/app/_gen_image.py", line 52, in generate_image
+    plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1134, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2164, in print_figure
+    self.figure.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 95, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3154, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py", line 535, in draw
+    return super().draw(renderer=renderer, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 3070, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/feature_artist.py", line 152, in draw
+    geoms = self._feature.intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 305, in intersecting_geometries
+    return super().intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 108, in intersecting_geometries
+    return (geom for geom in self.geometries() if
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 290, in geometries
+    geometries = tuple(shapereader.Reader(path).geometries())
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/io/shapereader.py", line 161, in geometries
+    for shape in self._reader.iterShapes():
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1483, in iterShapes
+    shape = self.__shape(oid=i, bbox=bbox)
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1319, in __shape
+    record.bbox = _Array('d', unpack("<4d", f.read(32)))
+struct.error: unpack requires a buffer of 32 bytes
+2024-08-28 02:24:09,782 - ERROR - unpack requires a buffer of 256 bytes
+Traceback (most recent call last):
+  File "/app/_gen_image.py", line 52, in generate_image
+    plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1134, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2164, in print_figure
+    self.figure.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 95, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3154, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py", line 535, in draw
+    return super().draw(renderer=renderer, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 3070, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/feature_artist.py", line 152, in draw
+    geoms = self._feature.intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 305, in intersecting_geometries
+    return super().intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 108, in intersecting_geometries
+    return (geom for geom in self.geometries() if
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 290, in geometries
+    geometries = tuple(shapereader.Reader(path).geometries())
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/io/shapereader.py", line 161, in geometries
+    for shape in self._reader.iterShapes():
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1483, in iterShapes
+    shape = self.__shape(oid=i, bbox=bbox)
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1340, in __shape
+    flat = unpack("<%sd" % (2 * nPoints), f.read(16*nPoints))
+struct.error: unpack requires a buffer of 256 bytes
+2024-08-28 02:24:09,801 - ERROR - unpack requires a buffer of 160 bytes
+Traceback (most recent call last):
+  File "/app/_gen_image.py", line 52, in generate_image
+    plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1134, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2164, in print_figure
+    self.figure.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 95, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3154, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py", line 535, in draw
+    return super().draw(renderer=renderer, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 3070, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/feature_artist.py", line 152, in draw
+    geoms = self._feature.intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 305, in intersecting_geometries
+    return super().intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 108, in intersecting_geometries
+    return (geom for geom in self.geometries() if
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 290, in geometries
+    geometries = tuple(shapereader.Reader(path).geometries())
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/io/shapereader.py", line 161, in geometries
+    for shape in self._reader.iterShapes():
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1483, in iterShapes
+    shape = self.__shape(oid=i, bbox=bbox)
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1340, in __shape
+    flat = unpack("<%sd" % (2 * nPoints), f.read(16*nPoints))
+struct.error: unpack requires a buffer of 160 bytes
+2024-08-28 02:24:11,270 - ERROR - unpack requires a buffer of 32 bytes
+Traceback (most recent call last):
+  File "/app/_gen_image.py", line 52, in generate_image
+    plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1134, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2164, in print_figure
+    self.figure.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 95, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3154, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py", line 535, in draw
+    return super().draw(renderer=renderer, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 3070, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/feature_artist.py", line 152, in draw
+    geoms = self._feature.intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 305, in intersecting_geometries
+    return super().intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 108, in intersecting_geometries
+    return (geom for geom in self.geometries() if
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 290, in geometries
+    geometries = tuple(shapereader.Reader(path).geometries())
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/io/shapereader.py", line 161, in geometries
+    for shape in self._reader.iterShapes():
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1483, in iterShapes
+    shape = self.__shape(oid=i, bbox=bbox)
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1319, in __shape
+    record.bbox = _Array('d', unpack("<4d", f.read(32)))
+struct.error: unpack requires a buffer of 32 bytes
+2024-08-28 02:24:11,997 - ERROR - unpack requires a buffer of 105712 bytes
+Traceback (most recent call last):
+  File "/app/_gen_image.py", line 52, in generate_image
+    plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1134, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2164, in print_figure
+    self.figure.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 95, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3154, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py", line 535, in draw
+    return super().draw(renderer=renderer, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 3070, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/feature_artist.py", line 152, in draw
+    geoms = self._feature.intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 305, in intersecting_geometries
+    return super().intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 108, in intersecting_geometries
+    return (geom for geom in self.geometries() if
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 290, in geometries
+    geometries = tuple(shapereader.Reader(path).geometries())
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/io/shapereader.py", line 161, in geometries
+    for shape in self._reader.iterShapes():
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1483, in iterShapes
+    shape = self.__shape(oid=i, bbox=bbox)
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1340, in __shape
+    flat = unpack("<%sd" % (2 * nPoints), f.read(16*nPoints))
+struct.error: unpack requires a buffer of 105712 bytes
+2024-08-28 02:24:12,000 - ERROR - unpack requires a buffer of 912 bytes
+Traceback (most recent call last):
+  File "/app/_gen_image.py", line 52, in generate_image
+    plt.savefig(f"image/all/{timestamp}.jpg", dpi=150, bbox_inches='tight')
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1134, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2164, in print_figure
+    self.figure.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 95, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/figure.py", line 3154, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py", line 535, in draw
+    return super().draw(renderer=renderer, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/axes/_base.py", line 3070, in draw
+    mimage._draw_list_compositing_images(
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/opt/conda/lib/python3.10/site-packages/matplotlib/artist.py", line 72, in draw_wrapper
+    return draw(artist, renderer)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/mpl/feature_artist.py", line 152, in draw
+    geoms = self._feature.intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 305, in intersecting_geometries
+    return super().intersecting_geometries(extent)
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 108, in intersecting_geometries
+    return (geom for geom in self.geometries() if
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/feature/__init__.py", line 290, in geometries
+    geometries = tuple(shapereader.Reader(path).geometries())
+  File "/opt/conda/lib/python3.10/site-packages/cartopy/io/shapereader.py", line 161, in geometries
+    for shape in self._reader.iterShapes():
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1483, in iterShapes
+    shape = self.__shape(oid=i, bbox=bbox)
+  File "/opt/conda/lib/python3.10/site-packages/shapefile.py", line 1340, in __shape
+    flat = unpack("<%sd" % (2 * nPoints), f.read(16*nPoints))
+struct.error: unpack requires a buffer of 912 bytes
