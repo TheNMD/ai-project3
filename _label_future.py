@@ -21,6 +21,7 @@ elif ENV == "colab":
     data_path = "data/NhaBe"     
 
 def find_future_images(interval):
+    interval_num = int(interval[:-1]) * 3600
     sub_metadata = []
     for i in ["120km", "300km"]:
         metadata = pd.read_csv("metadata.csv")
@@ -37,11 +38,10 @@ def find_future_images(interval):
             if type(row[timestamp_col]) is str:
                 continue
             
-            interval = int(interval[:-1]) * 3600
             current_time = row['timestamp_0h']
             time_difference = metadata['timestamp_0h'] - current_time
-            future_metadata = metadata[(time_difference >= pd.Timedelta(interval - 60, "s")) &
-                                       (time_difference <= pd.Timedelta(interval + 600, "s"))].head(1)
+            future_metadata = metadata[(time_difference >= pd.Timedelta(interval_num - 60, "s")) &
+                                       (time_difference <= pd.Timedelta(interval_num + 600, "s"))].head(1)
             
             if future_metadata.empty:
                 metadata.loc[idx, [timestamp_col]] = "NotAvail"
