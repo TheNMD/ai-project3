@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 _train_model.py
+python3 _label_future.py

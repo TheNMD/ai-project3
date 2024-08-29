@@ -79,7 +79,7 @@ if __name__ == '__main__':
     labels_300km = (labels[labels['range'] == '300km']).reset_index(drop=True)
     labels_300km.to_csv("image/labels_300km.csv", index=False)
     
-    intervals = ["0h", "1h", "2h", "3h", "4h", "5h", "6h", "12h", "24h", "48h"]
+    intervals = ["0h", "1h", "2h", "3h", "4h", "5h", "6h"]
     past_image_num = 6 # 6 | 12 | 18
     for interval in intervals:
         split_df("120km", interval, past_image_num)

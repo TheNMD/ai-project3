@@ -91,11 +91,11 @@ def calculate_avg_reflectivity(reflectivity):
         label = "clear"
     elif 30 <= avg_reflectivity < 40:
         label = "light_rain"
-    elif 40 <= avg_reflectivity < 45:
+    elif 40 <= avg_reflectivity < 47.5:
         label = "moderate_rain"
-    elif 45 <= avg_reflectivity < 50:
+    elif 47.5 <= avg_reflectivity < 55:
         label = "heavy_rain"
-    elif avg_reflectivity >= 50:
+    elif avg_reflectivity >= 55:
         label = "very_heavy_rain"
         
     return avg_reflectivity, label
@@ -155,6 +155,8 @@ def update_metadata(new_metadata):
 
 def plot_distribution(radar_range):
     metadata = pd.read_csv("metadata.csv")
+    if radar_range != "full":
+        metadata = metadata[metadata['range'] == radar_range]
     metadata = metadata[metadata['range'] == radar_range]
     avg_reflectivity_values = metadata['avg_reflectivity_0h']
     label_frequency = metadata['label_0h'].value_counts()
@@ -216,6 +218,7 @@ if __name__ == '__main__':
     # Plot label and avg reflectivity distribution
     plot_distribution("120km")
     plot_distribution("300km")
+    plot_distribution("full")
 
 
         

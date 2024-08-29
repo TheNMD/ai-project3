@@ -77,7 +77,7 @@ if __name__ == '__main__':
     print("Ubuntu version: ", platform.release())
     
     # Label future images
-    intervals = ["1h", "2h", "3h", "4h", "5h", "6h", "12h", "24h", "48h"]
+    intervals = ["1h", "2h", "3h", "4h", "5h", "6h"]
     num_processes = len(intervals)
     try:
         # Use multiprocessing to iterate over the metadata

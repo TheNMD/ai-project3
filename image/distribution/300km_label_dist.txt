@@ -1,7 +1,7 @@
 label_0h
 clear              45631
 light_rain         44896
-moderate_rain      22722
-heavy_rain         11725
-very_heavy_rain      864
+moderate_rain      32338
+heavy_rain          2927
+very_heavy_rain       46
 Name: count, dtype: int64
