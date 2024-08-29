@@ -56,7 +56,7 @@ if __name__ == '__main__':
   classes = 5
   sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
   past_image_num = 6 # 0 | 6 | 12 | 18
-  combined_method = "concat" # sum | concat
+  combined_method = "sum" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
   
@@ -93,7 +93,7 @@ if __name__ == '__main__':
   min_epochs = 21 # 0 | 21 | 41 | 61
 
   ## For training loop
-  batch_size = 128 # 32 | 64 | 128 | 256
+  batch_size = 32 # 32 | 64 | 128 | 256
   epochs = 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
