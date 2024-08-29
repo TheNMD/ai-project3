@@ -164,10 +164,10 @@ def plot_distribution(radar_range):
     plt.xlabel('Label')
     plt.ylabel('Frequency')
     plt.title(f'Label distribution - {radar_range}')
-    plt.savefig(f'image/{radar_range}_label_dist.png')
+    plt.savefig(f'image/distribution/{radar_range}_label_dist.png')
     plt.clf()
     
-    with open(f'image/{radar_range}_label_dist.txt', 'w') as file:
+    with open(f'image/distribution/{radar_range}_label_dist.txt', 'w') as file:
         file.write(f"{label_frequency}")
     
     # Plot avg reflectivity distribution
@@ -175,12 +175,15 @@ def plot_distribution(radar_range):
     plt.xlabel('Average Reflectivity')
     plt.ylabel('Frequency')
     plt.title(f'Average Reflectivity distribution - {radar_range}')
-    plt.savefig(f'image/{radar_range}_avg_reflectivity_dist.png')
+    plt.savefig(f'image/distribution/{radar_range}_avg_reflectivity_dist.png')
     plt.clf()
     
 if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
+    
+    if not os.path.exists("image/distribution"):
+        os.makedirs("image/distribution")
     
     # Label current images
     num_processes = 32
