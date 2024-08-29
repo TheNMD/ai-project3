@@ -53,17 +53,6 @@ def split_df(radar_range, interval, past_image_num, seed=42):
     val_set.to_csv(f"image/sets/{radar_range}_{interval}_val.csv", index=False)
     test_set.to_csv(f"image/sets/{radar_range}_{interval}_test.csv", index=False)
 
-def map_label_to_num(df, intervals):
-    mapping = {'clear': 0,
-               'heavy_rain': 1,
-               'light_rain': 2,
-               'moderate_rain': 3,
-               'very_heavy_rain': 4}
-    
-    for interval in intervals: df[interval] = df[interval].map(mapping)
-    
-    return df
-
 if __name__ == '__main__':
     print("Python version: ", sys.version)
     print("Ubuntu version: ", platform.release())
@@ -71,17 +60,25 @@ if __name__ == '__main__':
     if not os.path.exists("image/sets"):
         os.makedirs("image/sets")
     
+    # # Generate label files
+    # labels = pd.read_csv("metadata.csv")[['timestamp_0h', 'range', 'label_0h',
+    #                                       'label_1h', 'label_2h','label_3h',
+    #                                       'label_4h', 'label_5h','label_6h',
+    #                                       'label_12h', 'label_24h', 'label_48h']]
+
+    # labels = labels.rename(columns={'timestamp_0h': 'image_name'})
+    # labels = labels.replace('clear', '0')
+    # labels = labels.replace('heavy_rain', '1')
+    # labels = labels.replace('light_rain', '2')
+    # labels = labels.replace('moderate_rain', '3')
+    # labels = labels.replace('very_heavy_rain', '4')
+    
+    # labels_120km = (labels[labels['range'] == '120km']).reset_index(drop=True)
+    # labels_120km.to_csv("image/labels_120km.csv", index=False)
+    # labels_300km = (labels[labels['range'] == '300km']).reset_index(drop=True)
+    # labels_300km.to_csv("image/labels_300km.csv", index=False)
+    
     intervals = ["0h", "1h", "2h", "3h", "4h", "5h", "6h", "12h", "24h", "48h"]
-        
-    labels = pd.read_csv("metadata.csv").drop(['path', 'generated'], axis=1)
-    labels = map_label_to_num(labels, intervals)
-    labels = labels.rename(columns={'timestamp_0': 'image_name'})
-    
-    labels_120km = (labels[labels['range'] == '120km']).reset_index(drop=True)
-    labels_120km.to_csv("image/sets/labels_120km.csv", index=False)
-    labels_250km = (labels[labels['range'] == '250km']).reset_index(drop=True)
-    labels_250km.to_csv("image/sets/labels_250km.csv", index=False)
-    
     past_image_num = 6 # 6 | 12 | 18
     for interval in intervals:
         split_df("120km", interval, past_image_num)

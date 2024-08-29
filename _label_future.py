@@ -49,7 +49,8 @@ def find_future_images(interval):
             else:
                 future_timestamp = future_metadata['timestamp_0h'].tolist()[0]
                 metadata.loc[idx, [timestamp_col]] = future_timestamp
-                metadata.loc[idx, [label_col]] = metadata.loc[metadata['timestamp_0h'] == future_timestamp, 'label_0h'].tolist()[0]
+                future_label =  metadata.loc[metadata['timestamp_0h'] == future_timestamp, 'label_0h'].tolist()[0]
+                metadata.loc[idx, [label_col]] = future_label
             
             # print(f"{current_time} - Done")
 
@@ -92,7 +93,6 @@ if __name__ == '__main__':
         
     # Update metadata
     update_metadata(intervals)
-
 
         
         

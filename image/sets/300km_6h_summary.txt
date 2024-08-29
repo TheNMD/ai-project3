@@ -1,0 +1,27 @@
+### Train set ###
+label_6h
+0    35796
+2    35766
+3    17996
+1     9246
+4      702
+Name: count, dtype: int64
+
+### Val set ###
+label_6h
+0    4531
+2    4399
+3    2252
+1    1176
+4      80
+Name: count, dtype: int64
+
+### Test set ###
+label_6h
+0    4487
+2    4436
+3    2256
+1    1180
+4      80
+Name: count, dtype: int64
+
