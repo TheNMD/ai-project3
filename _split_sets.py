@@ -63,8 +63,7 @@ if __name__ == '__main__':
     # Generate label files
     labels = pd.read_csv("metadata.csv")[['timestamp_0h', 'range', 'label_0h',
                                           'label_1h', 'label_2h','label_3h',
-                                          'label_4h', 'label_5h','label_6h',
-                                          'label_12h', 'label_24h', 'label_48h']]
+                                          'label_4h', 'label_5h','label_6h']]
 
     labels = labels.rename(columns={'timestamp_0h': 'image_name'})
     labels = labels.replace('clear', '0')
