@@ -40,3 +40,26 @@ Traceback (most recent call last):
   File "/app/_label_current.py", line 26, in calculate_avg_reflectivity
     reflectivity_smaller_than_0 = len([ele for ele in reflectivity if ele < 0]) / len(reflectivity)
 ZeroDivisionError: division by zero
+2024-08-28 23:25:26,024 - ERROR - 'int' object is not subscriptable
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.10/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/opt/conda/lib/python3.10/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/app/_label_future.py", line 40, in find_future_images
+    interval = int(interval[:-1]) * 3600
+TypeError: 'int' object is not subscriptable
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/_label_future.py", line 85, in <module>
+    pool.map(find_future_images, intervals)
+  File "/opt/conda/lib/python3.10/multiprocessing/pool.py", line 367, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "/opt/conda/lib/python3.10/multiprocessing/pool.py", line 774, in get
+    raise self._value
+TypeError: 'int' object is not subscriptable
