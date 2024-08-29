@@ -46,7 +46,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   radar_range = "300km" # 120km | 300km
-  interval = "2h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h | 12h | 24h | 48h
+  interval = "0h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h | 12h | 24h | 48h
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
   model_opt = "pretrained" # pretrained | custom
   classes = 5
   sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
-  past_image_num = 6 # 0 | 6 | 12 | 18
+  past_image_num = 0 # 0 | 6 | 12 | 18
   combined_method = "concat" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
