@@ -80,8 +80,6 @@ if __name__ == '__main__':
   print(f"Stochastic depth: {sdepth}")
   print(f"Past image num: {past_image_num}")
   print(f"Combine method: {combined_method}")
-  if not checkpoint: print(f"Load from checkpoint: {checkpoint}")
-  else: print(f"Load from checkpoint: {checkpoint} [{ckpt_version}]")
 
   if not os.path.exists(f"{result_path}/checkpoint/{radar_range}"):
     os.makedirs(f"{result_path}/checkpoint/{radar_range}/")    
@@ -89,6 +87,7 @@ if __name__ == '__main__':
     os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}")
   if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"):
     os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}")
+  model_path = f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
@@ -148,8 +147,6 @@ if __name__ == '__main__':
     accelerator = 'cpu'
     devices = 'auto'
     strategy = 'auto'
-  
-  model_path = f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"
   
   # Load a checkpoint
   if checkpoint:
