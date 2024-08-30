@@ -6,6 +6,7 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 
 import torch
 import pytorch_lightning as pl
+import pandas as pd
 
 from _init_model import FinetuneModule, plot_loss_acc, plot_cmatrix
 
@@ -172,11 +173,11 @@ if __name__ == '__main__':
       end_time = time.time()
       print(f"Evaluation time: {end_time - start_time} seconds")
       
-      plot_name = {"range": radar_range, "interval": interval, "model": model_name}
-      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, plot_name, save_path, False)
+      result_log = pd.read_csv(f"{save_path}/metrics.csv")
+      test_loss, tess_acc, best_epoch = plot_loss_acc(result_log, monitor_value, min_delta, None)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
-      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list, plot_name, save_path, False)
+      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list, None)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
       
     except Exception as e:
@@ -244,11 +245,13 @@ if __name__ == '__main__':
       test_end_time = time.time() - test_start_time
       print(f"Evaluation time: {test_end_time} seconds")
 
-      plot_name = {"range": radar_range, "interval": interval, "model": model_name}
-      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, plot_name, save_path)
+      image_save_info = {"range": radar_range, "interval": interval, "model": model_name, 'save_path': save_path}
+      
+      result_log = pd.read_csv(f"{save_path}/metrics.csv")
+      test_loss, tess_acc, best_epoch = plot_loss_acc(result_log, monitor_value, min_delta, image_save_info)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
-      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list, plot_name, save_path)
+      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list, image_save_info)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
       
       # Write down hyperparameters and results

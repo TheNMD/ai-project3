@@ -430,14 +430,10 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
     return self.test_loader
 
-def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
-  if not os.path.exists(f"{save_path}/metrics.csv"):
-    return None, None, None
-  
-  log_results = pd.read_csv(f"{save_path}/metrics.csv")
-  train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
+def plot_loss_acc(result_log, monitor_value, min_delta, image_save_info):
+  train_results = result_log[['epoch', 'train_loss', 'train_acc']].dropna()
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
-  val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
+  val_results = result_log[['epoch', 'val_loss', 'val_acc']].dropna()
   
   monitor_result_list = val_results[monitor_value].tolist()
   if monitor_value == "val_loss":
@@ -454,16 +450,16 @@ def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
   
   val_results = val_results.groupby(['epoch'], as_index=False).mean()
   
-  if draw:
+  if image_save_info:
     # Plotting loss
     plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
     plt.plot(val_results['epoch'], val_results['val_loss'], label='val_loss')
     plt.legend()
     plt.xlabel('epoch')
     plt.ylabel('value')
-    plt.title(f"{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}")
+    plt.title(f"{image_save_info['range']}_{image_save_info['interval']}_{image_save_info['model']}")
     plt.legend()
-    plt.savefig(f'{save_path}/graph_loss.png')
+    plt.savefig(f'{image_save_info['save_path']}/graph_loss.png')
 
     plt.clf()
 
@@ -473,12 +469,12 @@ def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
     plt.legend()
     plt.xlabel('epoch')
     plt.ylabel('value')
-    plt.title(f"{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}")
+    plt.title(f"{image_save_info['range']}_{image_save_info['interval']}_{image_save_info['model']}")
     plt.legend()
-    plt.savefig(f'{save_path}/graph_acc.png')
+    plt.savefig(f'{image_save_info['save_path']}/graph_acc.png')
 
-  if "test_loss" in log_results.columns:
-    test_results = log_results[['test_loss', 'test_acc']].dropna()
+  if "test_loss" in result_log.columns:
+    test_results = result_log[['test_loss', 'test_acc']].dropna()
     test_loss = test_results['test_loss'].tolist()
     test_acc = test_results['test_acc'].tolist()
   else:
@@ -487,7 +483,7 @@ def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
     
   return test_loss, test_acc, best_epoch
 
-def plot_cmatrix(labels, predictions, plot_name, save_path, draw=True):
+def plot_cmatrix(labels, predictions, image_save_info=None):
   def calculate_metrics(confusion_matrix):
     classes = confusion_matrix.shape[0]
     precision = np.zeros(classes)
@@ -528,15 +524,15 @@ def plot_cmatrix(labels, predictions, plot_name, save_path, draw=True):
     elif str(predictions[i]) == "4":
         predictions[i] = "very_heavy_rain"
   
-  if draw:
+  if image_save_info:
     _, ax = plt.subplots(figsize=(10.5, 8))
     if "very_heavy_rain" in labels or "very_heavy_rain" in predictions:
       display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain', 'very_heavy_rain']
     else:
       display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain']
     ConfusionMatrixDisplay.from_predictions(labels, predictions, display_labels=display_labels, normalize='true', ax=ax)
-    plt.title(f"{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}")
-    plt.savefig(f'{save_path}/cmatrix.png')
+    plt.title(f"{image_save_info['range']}_{image_save_info['interval']}_{image_save_info['model']}")
+    plt.savefig(f'{image_save_info['save_path']}/cmatrix.png')
 
   cmatrix = confusion_matrix(labels, predictions)
   return calculate_metrics(cmatrix)
