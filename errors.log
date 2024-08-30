@@ -1,0 +1,104 @@
+2024-08-29 22:36:38,540 - INFO - Using 16bit Automatic Mixed Precision (AMP)
+2024-08-29 22:36:38,550 - INFO - GPU available: True (cuda), used: True
+2024-08-29 22:36:38,568 - INFO - TPU available: False, using: 0 TPU cores
+2024-08-29 22:36:38,568 - INFO - IPU available: False, using: 0 IPUs
+2024-08-29 22:36:38,568 - INFO - HPU available: False, using: 0 HPUs
+2024-08-29 22:36:38,570 - INFO - You are using a CUDA device ('NVIDIA RTX A6000') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2024-08-29 22:36:38,733 - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2024-08-29 22:36:38,754 - INFO - 
+  | Name  | Type     | Params
+-----------------------------------
+0 | model | ConvNeXt | 87.6 M
+-----------------------------------
+87.6 M    Trainable params
+0         Non-trainable params
+87.6 M    Total params
+350.434   Total estimated model params size (MB)
+2024-08-29 22:47:10,382 - INFO - Metric val_acc improved. New best score: 0.570
+2024-08-29 22:47:10,385 - INFO - Epoch 0, global step 391: 'val_acc' reached 0.56998 (best 0.56998), saving model to '/app/result/checkpoint/300km/2h/convnext-b-pretrained/version_3/best_model.ckpt' as top 1
+2024-08-29 22:56:58,810 - INFO - Metric val_acc improved by 0.052 >= min_delta = 0.0001. New best score: 0.622
+2024-08-29 22:56:58,812 - INFO - Epoch 0, global step 782: 'val_acc' reached 0.62177 (best 0.62177), saving model to '/app/result/checkpoint/300km/2h/convnext-b-pretrained/version_3/best_model.ckpt' as top 1
+2024-08-29 23:07:00,957 - INFO - Epoch 1, global step 1173: 'val_acc' was not in top 1
+2024-08-29 23:16:34,811 - INFO - Metric val_acc improved by 0.056 >= min_delta = 0.0001. New best score: 0.678
+2024-08-29 23:16:34,813 - INFO - Epoch 1, global step 1564: 'val_acc' reached 0.67804 (best 0.67804), saving model to '/app/result/checkpoint/300km/2h/convnext-b-pretrained/version_3/best_model.ckpt' as top 1
+2024-08-29 23:26:37,482 - INFO - Metric val_acc improved by 0.026 >= min_delta = 0.0001. New best score: 0.704
+2024-08-29 23:26:37,484 - INFO - Epoch 2, global step 1955: 'val_acc' reached 0.70434 (best 0.70434), saving model to '/app/result/checkpoint/300km/2h/convnext-b-pretrained/version_3/best_model.ckpt' as top 1
+2024-08-29 23:36:32,239 - INFO - Metric val_acc improved by 0.008 >= min_delta = 0.0001. New best score: 0.713
+2024-08-29 23:36:32,241 - INFO - Epoch 2, global step 2346: 'val_acc' reached 0.71273 (best 0.71273), saving model to '/app/result/checkpoint/300km/2h/convnext-b-pretrained/version_3/best_model.ckpt' as top 1
+2024-08-29 23:46:54,184 - INFO - Epoch 3, global step 2737: 'val_acc' was not in top 1
+2024-08-29 23:56:38,240 - INFO - Metric val_acc improved by 0.006 >= min_delta = 0.0001. New best score: 0.719
+2024-08-29 23:56:38,241 - INFO - Epoch 3, global step 3128: 'val_acc' reached 0.71857 (best 0.71857), saving model to '/app/result/checkpoint/300km/2h/convnext-b-pretrained/version_3/best_model.ckpt' as top 1
+2024-08-30 00:06:47,971 - INFO - Metric val_acc improved by 0.004 >= min_delta = 0.0001. New best score: 0.723
+2024-08-30 00:06:47,974 - INFO - Epoch 4, global step 3519: 'val_acc' reached 0.72280 (best 0.72280), saving model to '/app/result/checkpoint/300km/2h/convnext-b-pretrained/version_3/best_model.ckpt' as top 1
+2024-08-30 00:16:38,687 - INFO - Metric val_acc improved by 0.002 >= min_delta = 0.0001. New best score: 0.725
+2024-08-30 00:16:38,690 - INFO - Epoch 4, global step 3910: 'val_acc' reached 0.72496 (best 0.72496), saving model to '/app/result/checkpoint/300km/2h/convnext-b-pretrained/version_3/best_model.ckpt' as top 1
+2024-08-30 00:27:00,969 - INFO - Epoch 5, global step 4301: 'val_acc' was not in top 1
+2024-08-30 00:36:49,305 - INFO - Epoch 5, global step 4692: 'val_acc' was not in top 1
+2024-08-30 00:47:13,776 - INFO - Epoch 6, global step 5083: 'val_acc' was not in top 1
+2024-08-30 00:57:22,456 - INFO - Metric val_acc improved by 0.003 >= min_delta = 0.0001. New best score: 0.728
+2024-08-30 00:57:22,458 - INFO - Epoch 6, global step 5474: 'val_acc' reached 0.72824 (best 0.72824), saving model to '/app/result/checkpoint/300km/2h/convnext-b-pretrained/version_3/best_model.ckpt' as top 1
+2024-08-30 01:06:08,276 - INFO - Epoch 7, global step 5865: 'val_acc' was not in top 1
+2024-08-30 01:14:27,637 - INFO - Metric val_acc improved by 0.001 >= min_delta = 0.0001. New best score: 0.729
+2024-08-30 01:14:27,639 - INFO - Epoch 7, global step 6256: 'val_acc' reached 0.72936 (best 0.72936), saving model to '/app/result/checkpoint/300km/2h/convnext-b-pretrained/version_3/best_model.ckpt' as top 1
+2024-08-30 01:22:47,685 - ERROR - DataLoader worker (pid(s) 13855) exited unexpectedly
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1133, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/opt/conda/lib/python3.10/multiprocessing/queues.py", line 113, in get
+    if not self._poll(timeout):
+  File "/opt/conda/lib/python3.10/multiprocessing/connection.py", line 257, in poll
+    return self._poll(timeout)
+  File "/opt/conda/lib/python3.10/multiprocessing/connection.py", line 424, in _poll
+    r = wait([self], timeout)
+  File "/opt/conda/lib/python3.10/multiprocessing/connection.py", line 931, in wait
+    ready = selector.select(timeout)
+  File "/opt/conda/lib/python3.10/selectors.py", line 416, in select
+    fd_event_list = self._selector.poll(timeout)
+  File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/_utils/signal_handling.py", line 66, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 13855) is killed by signal: Bus error. It is possible that dataloader's workers are out of shared memory. Please try to raise your shared memory limit.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/_train_model.py", line 220, in <module>
+    trainer.fit(module)
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 544, in fit
+    call._call_and_handle_interrupt(
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 580, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 987, in _run
+    results = self._run_stage()
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1033, in _run_stage
+    self.fit_loop.run()
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/loops/fit_loop.py", line 205, in run
+    self.advance()
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/loops/fit_loop.py", line 363, in advance
+    self.epoch_loop.run(self._data_fetcher)
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/loops/training_epoch_loop.py", line 141, in run
+    self.on_advance_end(data_fetcher)
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/loops/training_epoch_loop.py", line 295, in on_advance_end
+    self.val_loop.run()
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 182, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 128, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 133, in __next__
+    batch = super().__next__()
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 60, in __next__
+    batch = next(self.iterator)
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+  File "/opt/conda/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+  File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1329, in _next_data
+    idx, data = self._get_data()
+  File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1295, in _get_data
+    success, data = self._try_get_data()
+  File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1146, in _try_get_data
+    raise RuntimeError(f'DataLoader worker (pid(s) {pids_str}) exited unexpectedly') from e
+RuntimeError: DataLoader worker (pid(s) 13855) exited unexpectedly
