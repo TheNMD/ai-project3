@@ -501,9 +501,9 @@ def plot_cmatrix(labels, predictions, image_save_info=None):
         
     return precision, recall, f1
 
-  mapping = {'0': 'clear', '1': 'heavy_rain', '2': 'light_rain', '3': 'moderate_rain', '4': 'very_heavy_rain'}
-  labels_str = [mapping[str(label)] for label in labels]
-  predictions_str = [mapping[str(prediction)] for prediction in predictions]
+  num_to_str = {'0': 'clear', '1': 'heavy_rain', '2': 'light_rain', '3': 'moderate_rain', '4': 'very_heavy_rain'}
+  labels_str = [num_to_str[str(label)] for label in labels]
+  predictions_str = [num_to_str[str(prediction)] for prediction in predictions]
   
   if image_save_info:
     _, ax = plt.subplots(figsize=(10.5, 8))
