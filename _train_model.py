@@ -72,7 +72,7 @@ if __name__ == '__main__':
   classes = 5
   sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
   past_image_num = 0 # 0 | 6 | 12 | 18
-  combined_method = "concat" # sum | concat
+  combined_method = "sum" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
   
@@ -94,13 +94,14 @@ if __name__ == '__main__':
   print(f"Scheduler: {scheduler_name}\n")
 
   ## For training loop
-  batch_size = 32 # 32 | 64 | 128 | 256
-  epochs = 1
+  batch_size = 128 # 32 | 64 | 128 | 256
+  epochs = 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
+  print(f"Epoch ratio: {epoch_ratio}")
   print(f"Label smoothing: {label_smoothing}\n")
 
   ## For callbacks
@@ -132,6 +133,11 @@ if __name__ == '__main__':
   loop_settings = {'batch_size': batch_size, 
                    'epochs': epochs,
                    'label_smoothing': label_smoothing}
+  
+  callback_settings = {'monitor_value': monitor_value, 
+                       'patience': patience,
+                       'min_delta': min_delta,
+                       'min_epochs': min_epochs}
   
   if num_gpus > 1:
     accelerator = 'gpu'
@@ -264,15 +270,16 @@ if __name__ == '__main__':
       # Write down hyperparameters and results
       with open(f"{save_path}/notes.txt", 'w') as file:
         file.write('### Hyperparameters ###\n')
-        file.write(f'model_settings = {model_settings}\n')
-        file.write(f'optimizer_settings = {optimizer_settings}\n')
-        file.write(f'loop_settings {loop_settings}\n\n')
+        file.write(f'Model settings: {model_settings}\n')
+        file.write(f'Optimizer settings: {optimizer_settings}\n')
+        file.write(f'Loop settings: {loop_settings}\n')
+        file.write(f'Callback settings: {callback_settings}\n\n')
 
         file.write('### Results ###\n')
         file.write(f"Test loss: {test_loss}\n")
         file.write(f"Test accuracy: {tess_acc}\n")
-        file.write(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}\n")
-        file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
+        file.write(f"Precision: {precision}\nRecall: {recall}\nF1: {f1}\n")
+        file.write(f"Best epoch [{monitor_value}]: {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
         file.write(f"Version: {new_version}\n")
         
