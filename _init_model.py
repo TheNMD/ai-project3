@@ -31,7 +31,7 @@ elif ENV == "colab":
   image_path = "image"
   result_path = "drive/MyDrive/Coding/result"
 
-def load_model(model_name, model_opt, classes, sdepth, past_image_num, combined_method, save_path):
+def load_model(model_name, model_opt, classes, sdepth, past_image_num, combined_method, save_path=None):
   def add_sdepth(model_name, model, drop_prob):
     if drop_prob == 0: return model
     if model_name == "convnext":
