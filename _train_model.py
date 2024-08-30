@@ -23,7 +23,22 @@ elif ENV == "colab":
       zip_ref.extractall()
   image_path = "image"
   result_path = "drive/MyDrive/Coding/result"
+
+def check_version(model_path):
+  versions = [folder for folder in os.listdir(model_path) if os.path.isdir(f'{model_path}/{folder}')]
+  if len(versions) == 0:
+    new_version = "version_0"
+  else:
+    latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
+    new_version = f"version_{latest_version + 1}"
+  print(f"Version: {new_version}")
+  save_path = f"{model_path}/{new_version}"
+  if not os.path.exists(f"{save_path}"):
+    os.makedirs(f"{save_path}")
     
+  return new_version, save_path
+
+
 if __name__ == '__main__':
   print("Python version: ", sys.version)
   print("Ubuntu version: ", platform.release())
@@ -90,7 +105,7 @@ if __name__ == '__main__':
   monitor_value = "val_acc" # val_acc | val_loss
   patience = 22
   min_delta = 1e-4 # 1e-4 | 5e-4
-  min_epochs = 21 # 0 | 21 | 41 | 61
+  min_epochs = 41 # 0 | 21 | 41 | 61
 
   ## For training loop
   batch_size = 128 # 32 | 64 | 128 | 256
@@ -135,39 +150,13 @@ if __name__ == '__main__':
     strategy = 'auto'
   
   model_path = f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"
-  versions = [folder for folder in os.listdir(model_path) if os.path.isdir(f'{model_path}/{folder}')]
-  if len(versions) == 0:
-    new_version = "version_0"
-  else:
-    latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
-    new_version = f"version_{latest_version + 1}"
-  save_path = f"{model_path}/{new_version}"
-  if not os.path.exists(f"{save_path}"):
-    os.makedirs(f"{save_path}")
   
-  # Logger
-  logger = pl.loggers.CSVLogger(save_dir=f"{result_path}/checkpoint/{radar_range}/{interval}",
-                                name=f"{model_name}-{model_opt}",
-                                version=new_version,)
-
-  # Callbacks
-  if monitor_value == "val_acc": monitor_mode = "max"
-  elif monitor_value == "val_loss": monitor_mode = "min" 
-  
-  early_stopping_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
-                                                       mode='max',
-                                                       patience=patience,
-                                                       min_delta=min_delta,
-                                                       verbose=True,)
-
-  checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
-                                                     mode=monitor_mode,
-                                                     save_top_k=1,
-                                                     filename='best_model',
-                                                     dirpath=save_path,
-                                                     verbose=True,)
-  
+  # Load a checkpoint
   if checkpoint:
+    save_path = f"{model_path}/{ckpt_version}"
+    print(f"Checkpoint version: {ckpt_version}")
+    
+    # Init module and trainer
     module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{ckpt_version}/best_model.ckpt", 
                                                       model_settings=model_settings,
                                                       optimizer_settings=optimizer_settings, 
@@ -179,7 +168,6 @@ if __name__ == '__main__':
                          logger=False,
                          enable_checkpointing=False)
     
-    save_path = f"{model_path}/{ckpt_version}"
     try:
       # Evaluation
       start_time = time.time()
@@ -196,8 +184,35 @@ if __name__ == '__main__':
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
+  
+  # Train a new model
+  else:
+    new_version, save_path = check_version(model_path)
+    print(f"New version: {new_version}")
     
-  else:    
+    # Logger
+    logger = pl.loggers.CSVLogger(save_dir=f"{result_path}/checkpoint/{radar_range}/{interval}",
+                                  name=f"{model_name}-{model_opt}",
+                                  version=new_version,)
+
+    # Callbacks
+    if monitor_value == "val_acc": monitor_mode = "max"
+    elif monitor_value == "val_loss": monitor_mode = "min" 
+    
+    early_stopping_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
+                                                         mode=monitor_mode,
+                                                         patience=patience,
+                                                         min_delta=min_delta,
+                                                         verbose=True,)
+
+    checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
+                                                       mode=monitor_mode,
+                                                       save_top_k=1,
+                                                       filename='best_model',
+                                                       dirpath=save_path,
+                                                       verbose=True,)
+    
+    # Init module and trainer
     module = FinetuneModule(model_settings=model_settings, 
                             optimizer_settings=optimizer_settings, 
                             loop_settings=loop_settings,
@@ -214,8 +229,8 @@ if __name__ == '__main__':
                          log_every_n_steps=50,    # log train_loss and train_acc every n batches
                          precision=16)            # use mixed precision to speed up training
     
+    # Training loop
     try:
-      # Training loop
       train_start_time = time.time()
       trainer.fit(module)
       train_end_time = time.time() - train_start_time
@@ -251,10 +266,12 @@ if __name__ == '__main__':
         file.write(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}\n")
         file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
+        file.write(f"Version: {new_version}\n")
+        
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
-      if os.path.exists(f'{save_path}'):
-        shutil.rmtree(f'{save_path}')
+      # if os.path.exists(f'{save_path}'):
+      #   shutil.rmtree(f'{save_path}')
 
   
