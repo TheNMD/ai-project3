@@ -31,7 +31,7 @@ def check_version(model_path):
   else:
     latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
     new_version = f"version_{latest_version + 1}"
-  print(f"Version: {new_version}")
+    
   save_path = f"{model_path}/{new_version}"
   if not os.path.exists(f"{save_path}"):
     os.makedirs(f"{save_path}")
