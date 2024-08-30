@@ -62,7 +62,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   radar_range = "300km" # 120km | 300km
-  interval = "1h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h
+  interval = "0h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
   model_opt = "pretrained" # pretrained | custom
   classes = 5
   sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
-  past_image_num = 6 # 0 | 6 | 12 | 18
+  past_image_num = 0 # 0 | 6 | 12 | 18
   combined_method = "concat" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
@@ -81,14 +81,6 @@ if __name__ == '__main__':
   print(f"Stochastic depth: {sdepth}")
   print(f"Past image num: {past_image_num}")
   print(f"Combine method: {combined_method}")
-
-  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}"):
-    os.makedirs(f"{result_path}/checkpoint/{radar_range}/")    
-  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}"):
-    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}")
-  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"):
-    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}")
-  model_path = f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
@@ -101,21 +93,26 @@ if __name__ == '__main__':
   print(f"Weight decay: {weight_decay}")
   print(f"Scheduler: {scheduler_name}\n")
 
-  ## For callbacks
-  monitor_value = "val_acc" # val_acc | val_loss
-  patience = 22
-  min_delta = 1e-4 # 1e-4 | 5e-4
-  min_epochs = 41 # 0 | 21 | 41 | 61
-
   ## For training loop
-  batch_size = 128 # 32 | 64 | 128 | 256
-  epochs = 200
+  batch_size = 32 # 32 | 64 | 128 | 256
+  epochs = 1
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
   print(f"Label smoothing: {label_smoothing}\n")
+
+  ## For callbacks
+  monitor_value = "val_acc" # val_acc | val_loss
+  patience = 22
+  min_delta = 1e-4 # 1e-4 | 5e-4
+  min_epochs = 41 # 0 | 21 | 41 | 61
+
+  print(f"Monitor value: {monitor_value}")
+  print(f"Patience: {patience}")
+  print(f"Min delta: {min_delta}")
+  print(f"Min epoch: {min_epochs}\n")
 
   # Combine all settings
   model_settings = {'radar_range': radar_range,
@@ -149,6 +146,14 @@ if __name__ == '__main__':
     devices = 'auto'
     strategy = 'auto'
   
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/")    
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}")
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}")
+  model_path = f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"
+  
   # Load a checkpoint
   if checkpoint:
     save_path = f"{model_path}/{ckpt_version}"
@@ -173,11 +178,13 @@ if __name__ == '__main__':
       end_time = time.time()
       print(f"Evaluation time: {end_time - start_time} seconds")
       
+      # image_save_info = {"range": radar_range, "interval": interval, "model": model_name, 'save_path': save_path}
+      
       result_log = pd.read_csv(f"{save_path}/metrics.csv")
-      test_loss, tess_acc, best_epoch = plot_loss_acc(result_log, monitor_value, min_delta, None)
+      test_loss, tess_acc, best_epoch = plot_loss_acc(result_log, monitor_value, min_delta)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
-      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list, None)
+      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
       
     except Exception as e:

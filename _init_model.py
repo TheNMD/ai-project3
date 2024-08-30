@@ -430,7 +430,7 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
     return self.test_loader
 
-def plot_loss_acc(result_log, monitor_value, min_delta, image_save_info):
+def plot_loss_acc(result_log, monitor_value, min_delta, image_save_info=None):
   train_results = result_log[['epoch', 'train_loss', 'train_acc']].dropna()
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
   val_results = result_log[['epoch', 'val_loss', 'val_acc']].dropna()
