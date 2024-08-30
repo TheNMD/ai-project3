@@ -498,44 +498,20 @@ def plot_cmatrix(labels, predictions, image_save_info=None):
         precision[i] = tp / (tp + fp) if tp + fp != 0 else 0
         recall[i] = tp / (tp + fn) if tp + fn != 0 else 0
         f1[i] = 2 * precision[i] * recall[i] / (precision[i] + recall[i]) if precision[i] + recall[i] != 0 else 0
+        
     return precision, recall, f1
 
-  for i in range(len(labels)):
-    if str(labels[i]) == "0":
-        labels[i] = "clear"
-    elif str(labels[i]) == "1":
-        labels[i] = "heavy_rain"
-    elif str(labels[i]) == "2":
-        labels[i] = "light_rain"
-    elif str(labels[i]) == "3":
-        labels[i] = "moderate_rain"
-    elif str(labels[i]) == "4":
-        labels[i] = "very_heavy_rain"
-        
-  for i in range(len(predictions)):
-    if str(predictions[i]) == "0":
-        predictions[i] = "clear"
-    elif str(predictions[i]) == "1":
-        predictions[i] = "heavy_rain"
-    elif str(predictions[i]) == "2":
-        predictions[i] = "light_rain"
-    elif str(predictions[i]) == "3":
-        predictions[i] = "moderate_rain"
-    elif str(predictions[i]) == "4":
-        predictions[i] = "very_heavy_rain"
+  mapping = {'0': 'clear', '1': 'heavy_rain', '2': 'light_rain', '3': 'moderate_rain', '4': 'very_heavy_rain'}
+  labels_str = [mapping[str(label)] for label in labels]
+  predictions_str = [mapping[str(prediction)] for prediction in predictions]
   
   if image_save_info:
     _, ax = plt.subplots(figsize=(10.5, 8))
-    if "very_heavy_rain" in labels or "very_heavy_rain" in predictions:
-      display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain', 'very_heavy_rain']
-    else:
-      display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain']
-    ConfusionMatrixDisplay.from_predictions(labels, predictions, display_labels=display_labels, normalize='true', ax=ax)
+    ConfusionMatrixDisplay.from_predictions(labels_str, predictions_str, normalize='true', ax=ax)
     plt.title(f"{image_save_info['range']}_{image_save_info['interval']}_{image_save_info['model']}")
     plt.savefig(f'{image_save_info['save_path']}/cmatrix.png')
 
-  cmatrix = confusion_matrix(labels, predictions)
-  return calculate_metrics(cmatrix)
+  return calculate_metrics(confusion_matrix(labels_str, predictions_str))
     
 
   
