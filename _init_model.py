@@ -459,7 +459,7 @@ def plot_loss_acc(result_log, monitor_value, min_delta, image_save_info=None):
     plt.ylabel('value')
     plt.title(f"{image_save_info['range']}_{image_save_info['interval']}_{image_save_info['model']}")
     plt.legend()
-    plt.savefig(f'{image_save_info['save_path']}/graph_loss.png')
+    plt.savefig(f"{image_save_info['save_path']}/graph_loss.png")
 
     plt.clf()
 
@@ -471,7 +471,7 @@ def plot_loss_acc(result_log, monitor_value, min_delta, image_save_info=None):
     plt.ylabel('value')
     plt.title(f"{image_save_info['range']}_{image_save_info['interval']}_{image_save_info['model']}")
     plt.legend()
-    plt.savefig(f'{image_save_info['save_path']}/graph_acc.png')
+    plt.savefig(f"{image_save_info['save_path']}/graph_acc.png")
 
   if "test_loss" in result_log.columns:
     test_results = result_log[['test_loss', 'test_acc']].dropna()
@@ -509,7 +509,7 @@ def plot_cmatrix(labels, predictions, image_save_info=None):
     _, ax = plt.subplots(figsize=(10.5, 8))
     ConfusionMatrixDisplay.from_predictions(labels_str, predictions_str, normalize='true', ax=ax)
     plt.title(f"{image_save_info['range']}_{image_save_info['interval']}_{image_save_info['model']}")
-    plt.savefig(f'{image_save_info['save_path']}/cmatrix.png')
+    plt.savefig(f"{image_save_info['save_path']}/cmatrix.png")
 
   return calculate_metrics(confusion_matrix(labels_str, predictions_str))
     
