@@ -6,6 +6,8 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 
 import torch
 import pytorch_lightning as pl
+import pandas as pd
+
 from _init_model import FinetuneModule, plot_loss_acc, plot_cmatrix
 
 # Set ENV to be 'local', 'server' or 'colab'
@@ -23,7 +25,21 @@ elif ENV == "colab":
       zip_ref.extractall()
   image_path = "image"
   result_path = "drive/MyDrive/Coding/result"
+
+def check_version(model_path):
+  versions = [folder for folder in os.listdir(model_path) if os.path.isdir(f'{model_path}/{folder}')]
+  if len(versions) == 0:
+    new_version = "version_0"
+  else:
+    latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
+    new_version = f"version_{latest_version + 1}"
     
+  save_path = f"{model_path}/{new_version}"
+  if not os.path.exists(f"{save_path}"):
+    os.makedirs(f"{save_path}")
+    
+  return new_version, save_path
+
 if __name__ == '__main__':
   print("Python version: ", sys.version)
   print("Ubuntu version: ", platform.release())
@@ -45,8 +61,8 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  radar_range = "250km" # 100km | 250km
-  interval = 3600 # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
+  radar_range = "300km" # 120km | 300km
+  interval = "3h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -56,22 +72,15 @@ if __name__ == '__main__':
   classes = 5
   sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
   past_image_num = 6 # 0 | 6 | 12 | 18
-  combined_method = "concat" # sum | concat
+  combined_method = "sum" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
   
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_opt}")
   print(f"Stochastic depth: {sdepth}")
-  if not checkpoint: print(f"Load from checkpoint: {checkpoint}")
-  else: print(f"Load from checkpoint: {checkpoint} [{ckpt_version}]")
-
-  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}"):
-    os.makedirs(f"{result_path}/checkpoint/{radar_range}/")    
-  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}"):
-    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}")
-  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"):
-    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}")
+  print(f"Past image num: {past_image_num}")
+  print(f"Combine method: {combined_method}")
 
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
@@ -84,21 +93,27 @@ if __name__ == '__main__':
   print(f"Weight decay: {weight_decay}")
   print(f"Scheduler: {scheduler_name}\n")
 
-  ## For callbacks
-  monitor_value = "val_acc" # val_acc | val_loss
-  patience = 22
-  min_delta = 1e-4 # 1e-4 | 5e-4
-  min_epochs = 21 # 0 | 21 | 41 | 61
-
   ## For training loop
   batch_size = 128 # 32 | 64 | 128 | 256
-  epochs = 150     # 150 | 200
+  epochs = 200
   epoch_ratio = 0.5 # Check val every percentage of an epoch
   label_smoothing = 0.1
   
   print(f"Batch size: {batch_size}")
   print(f"Epoch: {epochs}")
+  print(f"Epoch ratio: {epoch_ratio}")
   print(f"Label smoothing: {label_smoothing}\n")
+
+  ## For callbacks
+  monitor_value = "val_acc" # val_acc | val_loss
+  patience = 22
+  min_delta = 1e-4 # 1e-4 | 5e-4
+  min_epochs = 41 # 0 | 21 | 41 | 61
+
+  print(f"Monitor value: {monitor_value}")
+  print(f"Patience: {patience}")
+  print(f"Min delta: {min_delta}")
+  print(f"Min epoch: {min_epochs}\n")
 
   # Combine all settings
   model_settings = {'radar_range': radar_range,
@@ -119,6 +134,11 @@ if __name__ == '__main__':
                    'epochs': epochs,
                    'label_smoothing': label_smoothing}
   
+  callback_settings = {'monitor_value': monitor_value, 
+                       'patience': patience,
+                       'min_delta': min_delta,
+                       'min_epochs': min_epochs}
+  
   if num_gpus > 1:
     accelerator = 'gpu'
     devices = 2
@@ -132,40 +152,20 @@ if __name__ == '__main__':
     devices = 'auto'
     strategy = 'auto'
   
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/")    
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}")
+  if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"):
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}")
   model_path = f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"
-  versions = [folder for folder in os.listdir(model_path) if os.path.isdir(f'{model_path}/{folder}')]
-  if len(versions) == 0:
-    new_version = "version_0"
-  else:
-    latest_version = sorted([int(version.split('_')[1]) for version in versions])[-1]
-    new_version = f"version_{latest_version + 1}"
-  save_path = f"{model_path}/{new_version}"
-  if not os.path.exists(f"{save_path}"):
-    os.makedirs(f"{save_path}")
   
-  # Logger
-  logger = pl.loggers.CSVLogger(save_dir=f"{result_path}/checkpoint/{radar_range}/{interval}",
-                                name=f"{model_name}-{model_opt}",
-                                version=new_version,)
-
-  # Callbacks
-  if monitor_value == "val_acc": monitor_mode = "max"
-  elif monitor_value == "val_loss": monitor_mode = "min" 
-  
-  early_stopping_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
-                                                       mode='max',
-                                                       patience=patience,
-                                                       min_delta=min_delta,
-                                                       verbose=True,)
-
-  checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
-                                                     mode=monitor_mode,
-                                                     save_top_k=1,
-                                                     filename='best_model',
-                                                     dirpath=save_path,
-                                                     verbose=True,)
-  
+  # Load a checkpoint
   if checkpoint:
+    save_path = f"{model_path}/{ckpt_version}"
+    print(f"Checkpoint version: {ckpt_version}")
+    
+    # Init module and trainer
     module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{ckpt_version}/best_model.ckpt", 
                                                       model_settings=model_settings,
                                                       optimizer_settings=optimizer_settings, 
@@ -177,7 +177,6 @@ if __name__ == '__main__':
                          logger=False,
                          enable_checkpointing=False)
     
-    save_path = f"{model_path}/{ckpt_version}"
     try:
       # Evaluation
       start_time = time.time()
@@ -185,17 +184,47 @@ if __name__ == '__main__':
       end_time = time.time()
       print(f"Evaluation time: {end_time - start_time} seconds")
       
-      plot_name = {"range": radar_range, "interval": interval, "model": model_name}
-      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, plot_name, save_path)
+      # image_save_info = {"range": radar_range, "interval": interval, "model": model_name, 'save_path': save_path}
+      
+      result_log = pd.read_csv(f"{save_path}/metrics.csv")
+      test_loss, tess_acc, best_epoch = plot_loss_acc(result_log, monitor_value, min_delta)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
-      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list, plot_name, save_path)
+      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
+      
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)
+  
+  # Train a new model
+  else:
+    new_version, save_path = check_version(model_path)
+    print(f"New version: {new_version}")
     
-  else:    
+    # Logger
+    logger = pl.loggers.CSVLogger(save_dir=f"{result_path}/checkpoint/{radar_range}/{interval}",
+                                  name=f"{model_name}-{model_opt}",
+                                  version=new_version,)
+
+    # Callbacks
+    if monitor_value == "val_acc": monitor_mode = "max"
+    elif monitor_value == "val_loss": monitor_mode = "min" 
+    
+    early_stopping_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
+                                                         mode=monitor_mode,
+                                                         patience=patience,
+                                                         min_delta=min_delta,
+                                                         verbose=True,)
+
+    checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
+                                                       mode=monitor_mode,
+                                                       save_top_k=1,
+                                                       filename='best_model',
+                                                       dirpath=save_path,
+                                                       verbose=True,)
+    
+    # Init module and trainer
     module = FinetuneModule(model_settings=model_settings, 
                             optimizer_settings=optimizer_settings, 
                             loop_settings=loop_settings,
@@ -212,8 +241,8 @@ if __name__ == '__main__':
                          log_every_n_steps=50,    # log train_loss and train_acc every n batches
                          precision=16)            # use mixed precision to speed up training
     
+    # Training loop
     try:
-      # Training loop
       train_start_time = time.time()
       trainer.fit(module)
       train_end_time = time.time() - train_start_time
@@ -229,26 +258,31 @@ if __name__ == '__main__':
       test_end_time = time.time() - test_start_time
       print(f"Evaluation time: {test_end_time} seconds")
 
-      plot_name = {"range": radar_range, "interval": interval, "model": model_name}
-      test_loss, tess_acc, best_epoch = plot_loss_acc(monitor_value, min_delta, plot_name, save_path)
+      image_save_info = {"range": radar_range, "interval": interval, "model": model_name, 'save_path': save_path}
+      
+      result_log = pd.read_csv(f"{save_path}/metrics.csv")
+      test_loss, tess_acc, best_epoch = plot_loss_acc(result_log, monitor_value, min_delta, image_save_info)
       print(f"Best epoch [{monitor_value}]: {best_epoch}")
       
-      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list, plot_name, save_path)
+      precision, recall, f1 = plot_cmatrix(module_test.label_list, module_test.pred_list, image_save_info)
       print(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}")
       
       # Write down hyperparameters and results
       with open(f"{save_path}/notes.txt", 'w') as file:
         file.write('### Hyperparameters ###\n')
-        file.write(f'model_settings = {model_settings}\n')
-        file.write(f'optimizer_settings = {optimizer_settings}\n')
-        file.write(f'loop_settings {loop_settings}\n\n')
+        file.write(f'Model settings: {model_settings}\n')
+        file.write(f'Optimizer settings: {optimizer_settings}\n')
+        file.write(f'Loop settings: {loop_settings}\n')
+        file.write(f'Callback settings: {callback_settings}\n\n')
 
         file.write('### Results ###\n')
         file.write(f"Test loss: {test_loss}\n")
         file.write(f"Test accuracy: {tess_acc}\n")
-        file.write(f"Precision:{precision}\nRecall: {recall}\nF1: {f1}\n")
-        file.write(f"Best epoch ({monitor_value}): {best_epoch}\n")
+        file.write(f"Precision: {precision}\nRecall: {recall}\nF1: {f1}\n")
+        file.write(f"Best epoch [{monitor_value}]: {best_epoch}\n")
         file.write(f"Training time: {train_end_time} seconds\n")
+        file.write(f"Version: {new_version}\n")
+        
     except Exception as e:
       print(e)
       logging.error(e, exc_info=True)

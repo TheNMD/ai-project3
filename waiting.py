@@ -1,6 +1,4 @@
 import time
 
-# Sleep for 10 minutes
-time.sleep(600)
-
-#
+# Sleep for 100 minutes
+time.sleep(6000)

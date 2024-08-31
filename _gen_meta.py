@@ -28,32 +28,38 @@ def create_metadata(year):
     
     paths = []
     timestamps = []
+    radar_ranges = []
     for day in sorted(os.listdir(f"{data_path}/{year}/{month}")):
       for file in sorted(os.listdir(f"{data_path}/{year}/{month}/{day}")):
         path =  f"{year}/{month}/{day}/{file}"
         paths += [path]
         
         data = pyart.io.read_sigmet(f"{data_path}/{path}")
+        radar_range = data.range['data'][-1]
+        if radar_range > 120000:
+            radar_ranges += ["300km"]
+        else:
+            radar_ranges += ["120km"]
         timestamp = str(pyart.util.datetime_from_radar(data)).replace(':', '-')
         timestamps += [timestamp]
         
         print(f"{timestamp}")
 
-    metadata = pd.DataFrame(list(zip(paths, timestamps)), columns=['path', 'timestamp_0'])
+    metadata = pd.DataFrame(list(zip(paths, radar_ranges, timestamps)), columns=['path', 'range', 'timestamp_0h'])
     metadata['generated'] = "False"
-    metadata['label_0'] = np.nan
-    metadata['avg_reflectivity_0'] = np.nan
+    metadata['avg_reflectivity_0h'] = np.nan
+    metadata['label_0h'] = np.nan
     
-    metadata = metadata.sort_values(by='timestamp_0').reset_index(drop=True)
+    metadata = metadata.sort_values(by='timestamp_0h').reset_index(drop=True)
     metadata.to_csv(f"metadata/metadata_{year}_{month}.csv", index=False)
 
 def update_metadata():
   filenames = sorted(os.listdir("metadata"))
   metadata_list = [pd.read_csv(f"metadata/{name}") for name in filenames]
   metadata = pd.concat(metadata_list)
-  metadata = metadata.sort_values(by='timestamp_0').reset_index(drop=True)
+  metadata = metadata.sort_values(by='timestamp_0h').reset_index(drop=True)
   
-  duplicate_mask = metadata.duplicated(subset=['timestamp_0'], keep=False)
+  duplicate_mask = metadata.duplicated(subset=['timestamp_0h'], keep=False)
   duplicate_indices = metadata[duplicate_mask].index.tolist()
   metadata_cleaned = metadata.drop(duplicate_indices).reset_index(drop=True)
   

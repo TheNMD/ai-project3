@@ -31,7 +31,7 @@ elif ENV == "colab":
   image_path = "image"
   result_path = "drive/MyDrive/Coding/result"
 
-def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path):
+def load_model(model_name, model_opt, classes, sdepth, past_image_num, combined_method, save_path=None):
   def add_sdepth(model_name, model, drop_prob):
     if drop_prob == 0: return model
     if model_name == "convnext":
@@ -64,18 +64,21 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       # with open('result/pretrained/vit_large.pkl', 'wb') as f: pickle.dump(model, f)
       # with open('result/pretrained/vit_large.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
+    
+    # Change input to accept n-channel images
+    if combined_method == "concat":
+      old_conv = model.patch_embed.proj
+      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
+                                out_channels=old_conv.out_channels, 
+                                kernel_size=old_conv.kernel_size, 
+                                stride=old_conv.stride)
+      model.patch_embed.proj = new_conv
     # Change output to 5 weather classes
     num_feature = model.head.in_features
     model.head = torch.nn.Linear(in_features=num_feature, out_features=classes)
     model.head.weight.data.mul_(0.001)
+    # Add stochastic depth
     # model = add_sdepth(name, model, sdepth)
-    # Change input to accept n-channel images
-    old_conv = model.patch_embed.proj
-    new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
-                               out_channels=old_conv.out_channels, 
-                               kernel_size=old_conv.kernel_size, 
-                               stride=old_conv.stride)
-    model.patch_embed.proj = new_conv
   
   elif name == "swin":
     if size == "s":
@@ -87,18 +90,21 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       # model = timm.create_model('swin_base_patch4_window7_224.ms_in22k_ft_in1k', pretrained=is_pretrained)
       # with open('result/pretrained/swin_base.pkl', 'wb') as f: pickle.dump(model, f)
       with open('result/pretrained/swin_base.pkl', 'rb') as f: model = pickle.load(f)
+    
+    # Change input to accept n-channel images
+    if combined_method == "concat":
+      old_conv = model.patch_embed.proj
+      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
+                                out_channels=old_conv.out_channels, 
+                                kernel_size=old_conv.kernel_size, 
+                                stride=old_conv.stride)
+      model.patch_embed.proj = new_conv
     # Change output to 5 weather classes
     num_feature = model.head.fc.in_features
     model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=5)
     model.head.fc.weight.data.mul_(0.001)
+    # Add stochastic depth
     # model = add_sdepth(name, model, sdepth)
-    # Change input to accept n-channel images
-    old_conv = model.patch_embed.proj
-    new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
-                               out_channels=old_conv.out_channels, 
-                               kernel_size=old_conv.kernel_size, 
-                               stride=old_conv.stride)
-    model.patch_embed.proj = new_conv
   
   elif name == "effnetv2":
     if size == "s":
@@ -110,20 +116,22 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       # model = timm.create_model('tf_efficientnetv2_m.in21k', pretrained=is_pretrained)
       # with open('result/pretrained/effnetv2_medium.pkl', 'wb') as f: pickle.dump(model, f)
       with open('result/pretrained/effnetv2_medium.pkl', 'rb') as f: model = pickle.load(f)
+    # Change input to accept n-channel images
+    if combined_method == "concat":
+      old_conv = model.conv_stem
+      from timm.layers.conv2d_same import Conv2dSame
+      new_conv = Conv2dSame(in_channels=(past_image_num + 1) * 3, 
+                            out_channels=old_conv.out_channels, 
+                            kernel_size=old_conv.kernel_size, 
+                            stride=old_conv.stride,
+                            bias=old_conv.bias)
+      model.conv_stem = new_conv
     # Change output to 5 weather classes
     num_feature = model.classifier.in_features
     model.classifier = torch.nn.Linear(in_features=num_feature, out_features=5)
     model.classifier.weight.data.mul_(0.001)
+    # Add stochastic depth
     # model = add_sdepth(name, model, sdepth)
-    # Change input to accept n-channel images
-    old_conv = model.conv_stem
-    from timm.layers.conv2d_same import Conv2dSame
-    new_conv = Conv2dSame(in_channels=(past_image_num + 1) * 3, 
-                          out_channels=old_conv.out_channels, 
-                          kernel_size=old_conv.kernel_size, 
-                          stride=old_conv.stride,
-                          bias=old_conv.bias)
-    model.conv_stem = new_conv
   
   elif name == "convnext":
     if size == "s":
@@ -141,23 +149,30 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, save_path
       # with open('result/pretrained/convnext_large.pkl', 'wb') as f: pickle.dump(model, f)
       with open('result/pretrained/convnext_large.pkl', 'rb') as f: model = pickle.load(f)
       train_size, test_size = 224, 224
+    
+    # Change input to accept n-channel images
+    if combined_method == "concat":
+      old_conv = model.stem._modules['0']
+      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
+                                 out_channels=old_conv.out_channels, 
+                                 kernel_size=old_conv.kernel_size, 
+                                 stride=old_conv.stride)
+      model.stem._modules['0'] = new_conv
+    # TODO Change output to multi-label
     # Change output to 5 weather classes
     num_feature = model.head.fc.in_features
     model.head.fc = torch.nn.Linear(in_features=num_feature, out_features=classes)
     model.head.fc.weight.data.mul_(0.001)
+    # Add stochastic depth
     model = add_sdepth(name, model, sdepth)
-    # Change input to accept n-channel images
-    old_conv = model.stem._modules['0']
-    new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
-                               out_channels=old_conv.out_channels, 
-                               kernel_size=old_conv.kernel_size, 
-                               stride=old_conv.stride)
-    model.stem._modules['0'] = new_conv
   
   if save_path:
     with open(f'{save_path}/architecture.txt', 'w') as f:
       f.write("### Summary ###\n")
-      f.write(f"{torchsummary.summary(model, ((past_image_num + 1) * 3, train_size, train_size))}\n\n")
+      if combined_method == "concat":
+        f.write(f"{torchsummary.summary(model, ((past_image_num + 1) * 3, train_size, train_size))}\n\n")
+      else:
+        f.write(f"{torchsummary.summary(model, (3, train_size, train_size))}\n\n")
       f.write("### Full ###\n")
       f.write(str(model))
 
@@ -205,14 +220,14 @@ class CustomImageDataset(Dataset):
         
         # Sum
         if self.combined_method == "sum":        
-          images = torch.stack(images, dim=0)
+          images = torch.stack(img_list, dim=0)
           if self.past_image_num > 0:
-              images = torch.sum(images, dim=0)
-              mean = torch.mean(images)
-              std = torch.std(images)
-              images = (images - mean) / std
+            images = torch.sum(images, dim=0)
+            mean = torch.mean(images)
+            std = torch.std(images)
+            images = (images - mean) / std
           else:
-              images = torch.squeeze(images, dim=0)
+            images = torch.squeeze(images, dim=0)
         # Concat
         elif self.combined_method == "concat": 
           images = torch.cat(tuple(img_list), dim=0)
@@ -263,7 +278,7 @@ def load_data(radar_range, interval, set_name, image_size,
   full_image_list = pd.read_csv(f"image/labels_{radar_range}.csv")
   full_image_list = full_image_list['image_name'].reset_index(drop=True)
   dataset = CustomImageDataset(img_labels=label_file, 
-                               img_dir="image/combined", 
+                               img_dir="image/all", 
                                transform=transforms,
                                past_image_num=past_image_num,
                                combined_method=combined_method,
@@ -288,9 +303,6 @@ class FinetuneModule(pl.LightningModule):
     self.sdepth = model_settings['sdepth']
     self.past_image_num = model_settings['past_image_num']
     self.combined_method = model_settings['combined_method']
-    self.model, image_size = load_model(self.model_name, self.model_opt, 
-                                        self.classes, self.sdepth, self.past_image_num, 
-                                        save_path)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
@@ -301,6 +313,11 @@ class FinetuneModule(pl.LightningModule):
     self.epochs = loop_settings['epochs']
     self.label_smoothing = loop_settings['label_smoothing']
 
+    self.model, image_size = load_model(self.model_name, self.model_opt, 
+                                        self.classes, self.sdepth, 
+                                        self.past_image_num, self.combined_method,
+                                        save_path)
+    
     self.train_loader = load_data(self.radar_range, self.interval, 
                                   "train", image_size['train_size'], 
                                   self.past_image_num, self.combined_method,
@@ -414,14 +431,10 @@ class FinetuneModule(pl.LightningModule):
   def test_dataloader(self):
     return self.test_loader
 
-def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
-  if not os.path.exists(f"{save_path}/metrics.csv"):
-    return None, None, None
-  
-  log_results = pd.read_csv(f"{save_path}/metrics.csv")
-  train_results = log_results[['epoch', 'train_loss', 'train_acc']].dropna()
+def plot_loss_acc(result_log, monitor_value, min_delta, image_save_info=None):
+  train_results = result_log[['epoch', 'train_loss', 'train_acc']].dropna()
   train_results = train_results.groupby(['epoch'], as_index=False).mean()
-  val_results = log_results[['epoch', 'val_loss', 'val_acc']].dropna()
+  val_results = result_log[['epoch', 'val_loss', 'val_acc']].dropna()
   
   monitor_result_list = val_results[monitor_value].tolist()
   if monitor_value == "val_loss":
@@ -438,16 +451,16 @@ def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
   
   val_results = val_results.groupby(['epoch'], as_index=False).mean()
   
-  if draw:
+  if image_save_info:
     # Plotting loss
     plt.plot(train_results['epoch'], train_results['train_loss'], label='train_loss')
     plt.plot(val_results['epoch'], val_results['val_loss'], label='val_loss')
     plt.legend()
     plt.xlabel('epoch')
     plt.ylabel('value')
-    plt.title(f"{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}")
+    plt.title(f"{image_save_info['range']}_{image_save_info['interval']}_{image_save_info['model']}")
     plt.legend()
-    plt.savefig(f'{save_path}/graph_loss.png')
+    plt.savefig(f"{image_save_info['save_path']}/graph_loss.png")
 
     plt.clf()
 
@@ -457,12 +470,12 @@ def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
     plt.legend()
     plt.xlabel('epoch')
     plt.ylabel('value')
-    plt.title(f"{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}")
+    plt.title(f"{image_save_info['range']}_{image_save_info['interval']}_{image_save_info['model']}")
     plt.legend()
-    plt.savefig(f'{save_path}/graph_acc.png')
+    plt.savefig(f"{image_save_info['save_path']}/graph_acc.png")
 
-  if "test_loss" in log_results.columns:
-    test_results = log_results[['test_loss', 'test_acc']].dropna()
+  if "test_loss" in result_log.columns:
+    test_results = result_log[['test_loss', 'test_acc']].dropna()
     test_loss = test_results['test_loss'].tolist()
     test_acc = test_results['test_acc'].tolist()
   else:
@@ -471,7 +484,7 @@ def plot_loss_acc(monitor_value, min_delta, plot_name, save_path, draw=True):
     
   return test_loss, test_acc, best_epoch
 
-def plot_cmatrix(labels, predictions, plot_name, save_path, draw=True):
+def plot_cmatrix(labels, predictions, image_save_info=None):
   def calculate_metrics(confusion_matrix):
     classes = confusion_matrix.shape[0]
     precision = np.zeros(classes)
@@ -486,44 +499,20 @@ def plot_cmatrix(labels, predictions, plot_name, save_path, draw=True):
         precision[i] = tp / (tp + fp) if tp + fp != 0 else 0
         recall[i] = tp / (tp + fn) if tp + fn != 0 else 0
         f1[i] = 2 * precision[i] * recall[i] / (precision[i] + recall[i]) if precision[i] + recall[i] != 0 else 0
+        
     return precision, recall, f1
 
-  for i in range(len(labels)):
-    if str(labels[i]) == "0":
-        labels[i] = "clear"
-    elif str(labels[i]) == "1":
-        labels[i] = "heavy_rain"
-    elif str(labels[i]) == "2":
-        labels[i] = "light_rain"
-    elif str(labels[i]) == "3":
-        labels[i] = "moderate_rain"
-    elif str(labels[i]) == "4":
-        labels[i] = "very_heavy_rain"
-        
-  for i in range(len(predictions)):
-    if str(predictions[i]) == "0":
-        predictions[i] = "clear"
-    elif str(predictions[i]) == "1":
-        predictions[i] = "heavy_rain"
-    elif str(predictions[i]) == "2":
-        predictions[i] = "light_rain"
-    elif str(predictions[i]) == "3":
-        predictions[i] = "moderate_rain"
-    elif str(predictions[i]) == "4":
-        predictions[i] = "very_heavy_rain"
+  num_to_str = {'0': 'clear', '1': 'heavy_rain', '2': 'light_rain', '3': 'moderate_rain', '4': 'very_heavy_rain'}
+  labels_str = [num_to_str[str(label)] for label in labels]
+  predictions_str = [num_to_str[str(prediction)] for prediction in predictions]
   
-  if draw:
+  if image_save_info:
     _, ax = plt.subplots(figsize=(10.5, 8))
-    if "very_heavy_rain" in labels or "very_heavy_rain" in predictions:
-      display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain', 'very_heavy_rain']
-    else:
-      display_labels = ['clear', 'heavy_rain', 'light_rain', 'moderate_rain']
-    ConfusionMatrixDisplay.from_predictions(labels, predictions, display_labels=display_labels, normalize='true', ax=ax)
-    plt.title(f"{plot_name['range']}_{plot_name['interval']}_{plot_name['model']}")
-    plt.savefig(f'{save_path}/cmatrix.png')
+    ConfusionMatrixDisplay.from_predictions(labels_str, predictions_str, normalize='true', ax=ax)
+    plt.title(f"{image_save_info['range']}_{image_save_info['interval']}_{image_save_info['model']}")
+    plt.savefig(f"{image_save_info['save_path']}/cmatrix.png")
 
-  cmatrix = confusion_matrix(labels, predictions)
-  return calculate_metrics(cmatrix)
+  return calculate_metrics(confusion_matrix(labels_str, predictions_str))
     
 
   

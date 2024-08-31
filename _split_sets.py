@@ -17,15 +17,9 @@ elif ENV == "colab":
     # %cd drive/MyDrive/Coding/
     data_path = "data/NhaBe"
 
-# clear = 0
-# heavy_rain = 1
-# light_rain = 2
-# moderate_rain = 3
-# very_heavy_rain = 4
-
 def split_df(radar_range, interval, past_image_num, seed=42):
-    metadata = pd.read_csv(f"image/labels_{radar_range}.csv")
-    full_set = metadata[['image_name', 'range', f'label_{interval}']]
+    labels = pd.read_csv(f"image/labels_{radar_range}.csv")
+    full_set = labels[['image_name', 'range', f'label_{interval}']]
     full_set = full_set[past_image_num:]
     full_set = full_set[full_set[f'label_{interval}'] != 'NotAvail']
     full_set = full_set.sample(frac=1, random_state=seed).reset_index(drop=True)
@@ -66,10 +60,27 @@ if __name__ == '__main__':
     if not os.path.exists("image/sets"):
         os.makedirs("image/sets")
     
-    # 0 | 3600 | 7200 | 10800 | 14400 | 18000 | 21600 | 43200
-    interval = 10800 
-    # 6 | 12 | 18
-    past_image_num = 6
-    split_df("100km", interval, past_image_num)
-    split_df("250km", interval, past_image_num)
+    # Generate label files
+    labels = pd.read_csv("metadata.csv")[['timestamp_0h', 'range', 'label_0h',
+                                          'label_1h', 'label_2h','label_3h',
+                                          'label_4h', 'label_5h','label_6h']]
+
+    labels = labels.rename(columns={'timestamp_0h': 'image_name'})
+    labels = labels.replace('clear', '0')
+    labels = labels.replace('heavy_rain', '1')
+    labels = labels.replace('light_rain', '2')
+    labels = labels.replace('moderate_rain', '3')
+    labels = labels.replace('very_heavy_rain', '4')
+    labels['image_name'] = labels['image_name'].astype(str) + ".jpg"
+    
+    labels_120km = (labels[labels['range'] == '120km']).reset_index(drop=True)
+    labels_120km.to_csv("image/labels_120km.csv", index=False)
+    labels_300km = (labels[labels['range'] == '300km']).reset_index(drop=True)
+    labels_300km.to_csv("image/labels_300km.csv", index=False)
+    
+    intervals = ["0h", "1h", "2h", "3h", "4h", "5h", "6h"]
+    past_image_num = 6 # 6 | 12 | 18
+    for interval in intervals:
+        split_df("120km", interval, past_image_num)
+        split_df("300km", interval, past_image_num)
         
