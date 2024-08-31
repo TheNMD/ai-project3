@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 find_num_workers.py
+python3 _train_model.py
