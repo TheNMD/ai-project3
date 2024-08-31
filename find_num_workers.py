@@ -92,18 +92,19 @@ dataset = CustomImageDataset(img_labels=label_file,
                              past_image_num=6,
                              full_image_list=full_image_list)
 
-for num in [2, 4, 6, 8, 10]:
+for num in [2, 4, 6, 8, 10, 12, 14, 16]:
     start_time = time.time()
     dataloader = torch.utils.data.DataLoader(dataset, 
-                                             batch_size=32, 
+                                             batch_size=128, 
                                              shuffle=True, 
                                              num_workers=num)
 
     for batch_idx, (inputs, targets) in enumerate(dataloader):
-        # print(f'Batch {batch_idx + 1}')
-        # print(f'Inputs shape: {inputs.shape}')
-        # print(f'Targets shape: {targets.shape}')
-        pass
+        print(f'Number of workers: {num} | Batch {batch_idx + 1}')
     
     end_time = time.time() - start_time
+    
     print(f"Number of workers: {num} | Time: {end_time}s")
+    with open('num_worker_results.txt', 'a') as file:
+        file.write(f"Number of workers: {num} | Time: {end_time}s\n")
+    
