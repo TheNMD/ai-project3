@@ -92,10 +92,10 @@ dataset = CustomImageDataset(img_labels=label_file,
                              past_image_num=6,
                              full_image_list=full_image_list)
 
-for num in [2, 4, 6, 8, 10, 12, 14, 16]:
+for num in [2, 4, 6, 8, 10]:
     start_time = time.time()
     dataloader = torch.utils.data.DataLoader(dataset, 
-                                             batch_size=128, 
+                                             batch_size=32, 
                                              shuffle=True, 
                                              num_workers=num)
 
