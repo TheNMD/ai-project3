@@ -89,7 +89,7 @@ full_image_list = full_image_list[full_image_list['range'] == "300km"]['image_na
 dataset = CustomImageDataset(img_labels=label_file, 
                              img_dir="image/all", 
                              transform=transforms,
-                             past_image_num=6,
+                             past_image_num=0,
                              full_image_list=full_image_list)
 
 for num in [2, 4, 6, 8, 10, 12, 14, 16]:
@@ -100,11 +100,12 @@ for num in [2, 4, 6, 8, 10, 12, 14, 16]:
                                              num_workers=num)
 
     for batch_idx, (inputs, targets) in enumerate(dataloader):
-        print(f'Number of workers: {num} | Batch {batch_idx + 1}')
+        # print(f'Number of workers: {num} | Batch {batch_idx + 1}')
+        pass
     
     end_time = time.time() - start_time
     
     print(f"Number of workers: {num} | Time: {end_time}s")
-    with open('num_worker_results.txt', 'a') as file:
+    with open('testing_results.txt', 'a') as file:
         file.write(f"Number of workers: {num} | Time: {end_time}s\n")
     
