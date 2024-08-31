@@ -1,0 +1,8 @@
+Number of workers: 2 | Time: 956.2405610084534s
+Number of workers: 4 | Time: 483.8692488670349s
+Number of workers: 6 | Time: 335.56664752960205s
+Number of workers: 8 | Time: 275.52561020851135s
+Number of workers: 10 | Time: 235.68010544776917s
+Number of workers: 12 | Time: 199.03127431869507s
+Number of workers: 14 | Time: 179.32544255256653s
+Number of workers: 16 | Time: 167.07830452919006s
