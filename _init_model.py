@@ -241,7 +241,7 @@ class CustomImageDataset(Dataset):
 
 def load_data(radar_range, interval, set_name, image_size, 
               past_image_num, combined_method, 
-              batch_size, shuffle, num_workers=8):
+              batch_size, shuffle, num_workers=16):
   def median_blur(image, kernel_size=5):
       pil_image = v2.functional.to_pil_image(image)
       blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
