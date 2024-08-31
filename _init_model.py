@@ -241,7 +241,7 @@ class CustomImageDataset(Dataset):
 
 def load_data(radar_range, interval, set_name, image_size, 
               past_image_num, combined_method, 
-              batch_size, shuffle, num_workers=16):
+              batch_size, shuffle, num_workers=8):
   def median_blur(image, kernel_size=5):
       pil_image = v2.functional.to_pil_image(image)
       blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
@@ -303,10 +303,6 @@ class FinetuneModule(pl.LightningModule):
     self.sdepth = model_settings['sdepth']
     self.past_image_num = model_settings['past_image_num']
     self.combined_method = model_settings['combined_method']
-    self.model, image_size = load_model(self.model_name, self.model_opt, 
-                                        self.classes, self.sdepth, 
-                                        self.past_image_num, self.combined_method,
-                                        save_path)
 
     self.optimizer_name = optimizer_settings['optimizer_name']
     self.learning_rate = optimizer_settings['learning_rate']
@@ -317,6 +313,11 @@ class FinetuneModule(pl.LightningModule):
     self.epochs = loop_settings['epochs']
     self.label_smoothing = loop_settings['label_smoothing']
 
+    self.model, image_size = load_model(self.model_name, self.model_opt, 
+                                        self.classes, self.sdepth, 
+                                        self.past_image_num, self.combined_method,
+                                        save_path)
+    
     self.train_loader = load_data(self.radar_range, self.interval, 
                                   "train", image_size['train_size'], 
                                   self.past_image_num, self.combined_method,
