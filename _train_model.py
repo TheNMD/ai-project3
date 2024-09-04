@@ -62,7 +62,7 @@ if __name__ == '__main__':
   # Hyperparameters
   ## For model
   radar_range = "120km" # 120km | 300km
-  interval = "2h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h
+  interval = "3h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h
   # convnext-s | convnext-b | convnext-l 
   # vit-s      | vit-b      | vit-l 
   # swin-s     | swin-b 
@@ -72,7 +72,7 @@ if __name__ == '__main__':
   classes = 5
   sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
   past_image_num = 6 # 0 | 6 | 12 | 18
-  combined_method = "concat" # sum | concat
+  combined_method = "sum" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
   
