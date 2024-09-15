@@ -8,6 +8,8 @@ logging.basicConfig(filename='errors.log', level=logging.ERROR,
 import pyart
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+import distinctipy
 
 def check_inside_polygon(point, polygon):
     x, y = point
@@ -73,47 +75,52 @@ def plot_map(save_name):
         data = data.astype(int)
         data = data[::-1]
 
-    plt.imshow(data, cmap="hsv", interpolation='nearest')
+    colors = distinctipy.get_colors(100)
+    cmap = ListedColormap(colors)
+    
+    plt.imshow(data, cmap=cmap, interpolation='nearest')
     plt.colorbar()
     plt.savefig(f"coordinate/{save_name}.png")
 
 if __name__ == '__main__':
     radar_range = 300000
     
-    data = pyart.io.read_sigmet("sample_data/2022-09-23 14-50-10")
+    # data = pyart.io.read_sigmet("sample_data/2022-09-23 14-50-10")
 
-    grid_data = pyart.map.grid_from_radars(data, 
-                                           grid_shape=(1, 500, 500),
-                                           grid_limits=((0, 1), (-radar_range, radar_range), 
-                                                                (-radar_range, radar_range)))
+    # grid_data = pyart.map.grid_from_radars(data, 
+    #                                        grid_shape=(1, 500, 500),
+    #                                        grid_limits=((0, 1), (-radar_range, radar_range), 
+    #                                                             (-radar_range, radar_range)))
 
-    longitude_list = np.array(grid_data.point_longitude['data'][0]).flatten()
-    latitude_list = np.array(grid_data.point_latitude['data'][0]).flatten()
-    coordinate_list = np.array([[longitude_list[i], latitude_list[i]] for i in range(len(longitude_list))])
+    # longitude_list = np.array(grid_data.point_longitude['data'][0]).flatten()
+    # latitude_list = np.array(grid_data.point_latitude['data'][0]).flatten()
+    # coordinate_list = np.array([[longitude_list[i], latitude_list[i]] for i in range(len(longitude_list))])
     
-    num_processes = 16
-    try:
-        with mp.Pool(processes=num_processes) as pool:
-            start_time = time.time()
-            results = pool.map(check_inside_province, np.array_split(coordinate_list, num_processes))
-            results = np.array([ele for sublist in results for ele in sublist]).reshape(500, 500)
-            results = map_str_to_num(results)
-            end_time = time.time() - start_time
-    except Exception as e:
-        print(e)
-        logging.error(e, exc_info=True)
+    # num_processes = 16
+    # try:
+    #     with mp.Pool(processes=num_processes) as pool:
+    #         start_time = time.time()
+    #         results = pool.map(check_inside_province, np.array_split(coordinate_list, num_processes))
+    #         results = np.array([ele for sublist in results for ele in sublist]).reshape(500, 500)
+    #         results = map_str_to_num(results)
+    #         end_time = time.time() - start_time
+    # except Exception as e:
+    #     print(e)
+    #     logging.error(e, exc_info=True)
     
-    print(f"Time: {end_time}")
+    # print(f"Time: {end_time}")
     
     if radar_range == 120000:
         save_name = "provinces_120km"
     elif radar_range == 300000:
         save_name = "provinces_300km"
-        
-    with open(f"coordinate/{save_name}.pkl", "wb") as f:
-        pickle.dump(results, f)
     
     plot_map(save_name)
+    
+    # with open(f"coordinate/{save_name}.pkl", "wb") as f:
+    #     pickle.dump(results, f)
+    
+    
 
 
         

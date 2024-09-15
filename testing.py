@@ -1,13 +1,20 @@
-import os, pickle
 import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.colors import ListedColormap
 import distinctipy
 
+# Generate 50 distinct colors
+colors = distinctipy.get_colors(100)
 
-with open('coordinate/provinces_300km.pkl', 'rb') as file:
-    data = pickle.load(file)
-    data = data.astype(int)
-    data = data[::-1]
+# Create the colormap
+cmap = ListedColormap(colors)
 
-plt.imshow(data, cmap="hsv", interpolation='nearest')
+# Create some example data
+data = np.random.rand(10, 10)
+
+# Plot with the custom colormap
+plt.imshow(data, cmap=cmap)
 plt.colorbar()
-plt.savefig("testing/test_coordinate.png")
+plt.title('Custom Colormap with 50 Colors')
+
+plt.savefig("test.jpg")
