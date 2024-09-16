@@ -1,4 +1,4 @@
-import os, json, time, pickle
+import os, json, time, pickle, random
 import multiprocessing as mp
 import warnings, logging
 warnings.filterwarnings('ignore')
@@ -54,13 +54,13 @@ def check_inside_province(coordinate_list):
                     province_list.insert(0, most_likely_province)
                 break
         else:
-            result += ["NotAvailable"]
+            result += ["other"]
     return result
 
 def map_str_to_num(data):
     provinces = [file[:-5] for file in os.listdir("coordinate/provinces") if file.endswith('.json')]
     provinces = {text: index for index, text in enumerate(provinces)}
-    provinces['NotAvailable'] = -1
+    provinces['other'] = -1
 
     print(provinces)
 
@@ -70,35 +70,39 @@ def map_str_to_num(data):
             
     return data
 
-def plot_map(save_name):
-    with open(f'coordinate/provinces_{save_name}.pkl', 'rb') as file:
-        data = pickle.load(file)
-        data = data.astype(int)
-        data = data[::-1]
-    
+def plot_map():
     province_list = list_all_provinces()
     name_list = [ele['name'] for ele in province_list]
 
     num_provinces = len(name_list)
     num_colors = num_provinces + 1
     colors = distinctipy.get_colors(num_colors, colorblind_type="Deuteranomaly")
+    random.shuffle(colors)
     cmap = ListedColormap(colors)
-
-    fig, ax = plt.subplots(figsize=(15, 13))
-    plt.imshow(data, cmap=cmap, interpolation='nearest')
-    plt.title(f'Province map for Vietnam and Cambodia - {save_name}', fontsize=25)
-    plt.axis('off')
     
-    # Make tick at the center of color
-    ticks = np.linspace(-1, num_provinces - 1, 2 * num_colors + 1)[1::2]
-    labels = ["-1 - NotAvailable"] + [f"{i} - {name_list[i]}" for i in range(num_provinces)]
-    cbar = plt.colorbar(ticks=ticks)
-    cbar.ax.set_yticklabels(labels, fontsize=11)
+    for save_name in ["120km", "300km"]:
+        with open(f'coordinate/provinces_{save_name}.pkl', 'rb') as file:
+            data = pickle.load(file)
+            data = data.astype(int)
+            data = data[::-1]
         
-    plt.savefig(f"coordinate/provinces_{save_name}.png")
+        fig, ax = plt.subplots(figsize=(15, 13))
+        plt.imshow(data, cmap=cmap, interpolation='nearest')
+        plt.title(f'Province map for Vietnam and Cambodia - {save_name}', fontsize=25)
+        plt.axis('off')
+        
+        # Make tick at the center of color
+        ticks = np.linspace(-1, num_provinces - 1, 2 * num_colors + 1)[1::2]
+        labels = ["-1 - other"] + [f"{i} - {name_list[i]}" for i in range(num_provinces)]
+        cbar = plt.colorbar(ticks=ticks)
+        cbar.ax.set_yticklabels(labels, fontsize=11)
+            
+        plt.savefig(f"coordinate/provinces_{save_name}.png")
+        
+        plt.close()
 
 if __name__ == '__main__':
-    radar_range = 300000 # 120000 | 300000
+    radar_range = 120000 # 120000 | 300000
     
     if radar_range == 120000:
         save_name = "120km"
@@ -132,7 +136,7 @@ if __name__ == '__main__':
     #     print(e)
     #     logging.error(e, exc_info=True)
             
-    plot_map(save_name)
+    plot_map()
     
 # {'an_giang':       0,  'bac_lieu':     1,  'ben_tre':         2,  'binh_duong':   3,  'binh_phuoc':     4, 
 #  'binh_thuan':     5,  'brvt':         6,  'can_tho':         7,  'ca_mau':       8,  'dak_lak':        9, 
@@ -144,7 +148,7 @@ if __name__ == '__main__':
 #  'pursat':         35, 'ratanakiri':   36, 'siem_reap':       37, 'soc_trang':    38, 'stung_treng':    39,
 #  'svay_rieng':     40, 'takeo':        41, 'tay_ninh':        42, 'tbong_khmum':  43, 'tien_giang':     44,
 #  'tra_vinh':       45, 'vinh_long':    46, 
-#  'NotAvailable':   -1}
+#  'other':   -1}
 
 
 
