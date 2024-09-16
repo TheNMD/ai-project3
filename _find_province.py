@@ -9,6 +9,7 @@ import pyart
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
+import matplotlib as mpl
 import distinctipy
 
 def check_inside_polygon(point, polygon):
@@ -30,14 +31,14 @@ def check_inside_polygon(point, polygon):
 
 def list_all_provinces():
     province_list = []
-    provinces = [file[:-5] for file in os.listdir("coordinate/provinces") if file.endswith('.json')]
+    provinces = sorted([file[:-5] for file in os.listdir("coordinate/provinces") if file.endswith('.json')])
 
     for province in provinces:  
         with open(f'coordinate/provinces/{province}.json', 'r') as file:
             data = json.load(file)
 
         province_border = data['coordinates'][0][0]
-        province_list += [(province, province_border)]
+        province_list += [{'name': province, 'border': province_border}]
     
     return province_list
 
@@ -46,8 +47,8 @@ def check_inside_province(coordinate_list):
     result = []
     for coordinate in coordinate_list:
         for i in range(len(province_list)):
-            if check_inside_polygon(coordinate, province_list[i][1]):
-                result += [province_list[i][0]]
+            if check_inside_polygon(coordinate, province_list[i]['border']):
+                result += [province_list[i]['name']]
                 if i != 0:
                     most_likely_province = province_list.pop(i)
                     province_list.insert(0, most_likely_province)
@@ -75,14 +76,29 @@ def plot_map(save_name):
         data = data.astype(int)
         data = data[::-1]
     
-    colors = distinctipy.get_colors(50)
+    province_list = list_all_provinces()
+    name_list = [ele['name'] for ele in province_list]
+
+    num_provinces = len(name_list)
+    num_colors = num_provinces + 1
+    colors = distinctipy.get_colors(num_colors, colorblind_type="Deuteranomaly")
     cmap = ListedColormap(colors)
-    
+
+    fig, ax = plt.subplots(figsize=(15, 13))
     plt.imshow(data, cmap=cmap, interpolation='nearest')
+    plt.title(f'Province map for Vietnam and Cambodia - {save_name}', fontsize=25)
+    plt.axis('off')
+    
+    # Make tick at the center of color
+    ticks = np.linspace(-1, num_provinces - 1, 2 * num_colors + 1)[1::2]
+    labels = ["-1 - NotAvailable"] + [f"{i} - {name_list[i]}" for i in range(num_provinces)]
+    cbar = plt.colorbar(ticks=ticks)
+    cbar.ax.set_yticklabels(labels, fontsize=11)
+        
     plt.savefig(f"coordinate/provinces_{save_name}.png")
 
 if __name__ == '__main__':
-    radar_range = 120000 # 120000 | 300000
+    radar_range = 300000 # 120000 | 300000
     
     if radar_range == 120000:
         save_name = "120km"
@@ -118,14 +134,17 @@ if __name__ == '__main__':
             
     plot_map(save_name)
     
-# {'an_giang': 0, 'bac_lieu': 1, 'ben_tre': 2, 'binh_duong': 3, 'binh_phuoc': 4, 'binh_thuan': 5, 'brvt': 6, 
-#  'can_tho': 7, 'ca_mau': 8, 'dak_lak': 9, 'dak_nong': 10, 'dong_nai': 11, 'dong_thap': 12, 'gia_lai': 13, 
-#  'hau_giang': 14, 'ho_chi_minh': 15, 'kampong_cham': 16, 'kampong_chhnang': 17, 'kampong_speu': 18, 
-#  'kampong_thom': 19, 'kampot': 20, 'kandal': 21, 'kep': 22, 'khanh_hoa': 23, 'kien_giang': 24, 'koh_kong': 25, 
-#  'kratie': 26, 'lam_dong': 27, 'long_an': 28, 'mondulkiri': 29, 'ninh_thuan': 30, 'phu_yen': 31, 
-#  'preah_sihanouk': 32, 'preah_vihear': 33, 'prey_veng': 34, 'pursat': 35, 'ratanakiri': 36, 'siem_reap': 37, 
-#  'soc_trang': 38, 'stung_treng': 39, 'svay_rieng': 40, 'takeo': 41, 'tay_ninh': 42, 'tbong_khmum': 43, 
-#  'tien_giang': 44, 'tra_vinh': 45, 'vinh_long': 46, 'NotAvailable': -1}
+# {'an_giang':       0,  'bac_lieu':     1,  'ben_tre':         2,  'binh_duong':   3,  'binh_phuoc':     4, 
+#  'binh_thuan':     5,  'brvt':         6,  'can_tho':         7,  'ca_mau':       8,  'dak_lak':        9, 
+#  'dak_nong':       10, 'dong_nai':     11, 'dong_thap':       12, 'gia_lai':      13, 'hau_giang':      14, 
+#  'ho_chi_minh':    15, 'kampong_cham': 16, 'kampong_chhnang': 17, 'kampong_speu': 18, 'kampong_thom':   19, 
+#  'kampot':         20, 'kandal':       21, 'kep':             22, 'khanh_hoa':    23, 'kien_giang':     24, 
+#  'koh_kong':       25, 'kratie':       26, 'lam_dong':        27, 'long_an':      28, 'mondulkiri':     29, 
+#  'ninh_thuan':     30, 'phu_yen':      31, 'preah_sihanouk':  32, 'preah_vihear': 33, 'prey_veng':      34, 
+#  'pursat':         35, 'ratanakiri':   36, 'siem_reap':       37, 'soc_trang':    38, 'stung_treng':    39,
+#  'svay_rieng':     40, 'takeo':        41, 'tay_ninh':        42, 'tbong_khmum':  43, 'tien_giang':     44,
+#  'tra_vinh':       45, 'vinh_long':    46, 
+#  'NotAvailable':   -1}
 
 
 
