@@ -79,9 +79,11 @@ if __name__ == '__main__':
       # Use multiprocessing to iterate over the metadata 
       with mp.Pool(processes=num_processes) as pool:
         start_time = time.time()
+        
         pool.map(create_metadata, years)
-        end_time = time.time() - start_time
         update_metadata()
+        
+        end_time = time.time() - start_time
         print(f"Time: {end_time}")
   except Exception as e:
       print(e)

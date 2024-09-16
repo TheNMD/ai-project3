@@ -196,14 +196,14 @@ if __name__ == '__main__':
         with mp.Pool(processes=num_processes) as pool:
             metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
             for chunk in metadata_chunks:
-                sub_metadata_chunks = np.array_split(chunk, num_processes)
-                
                 start_time = time.time()
+                
+                sub_metadata_chunks = np.array_split(chunk, num_processes)
                 results = pool.map(label_image, sub_metadata_chunks)
                 update_metadata(pd.concat(results))
-                end_time = time.time() - start_time
-
                 counter += 1
+                
+                end_time = time.time() - start_time
                 print(f"### Chunk: {counter} | Time: {end_time} ###")
     except Exception as e:
         print(e)
