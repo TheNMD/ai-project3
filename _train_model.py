@@ -53,7 +53,7 @@ if __name__ == '__main__':
     device = torch.device("cpu")
     num_gpus = 0
     print("Only Torch CPU is available\n")
-     
+
   if not os.path.exists("result"):
     os.makedirs("result")
     os.makedirs("result/checkpoint")
@@ -61,18 +61,18 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  radar_range = "120km" # 120km | 300km
-  interval = "3h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h
-  # convnext-s | convnext-b | convnext-l 
-  # vit-s      | vit-b      | vit-l 
-  # swin-s     | swin-b 
+  radar_range = "300km" # 120km | 300km
+  interval = "2h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h
+  # convnext-s | convnext-b | convnext-l
+  # vit-s      | vit-b      | vit-l
+  # swin-s     | swin-b
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-b"
+  model_name = "convnext-s"
   model_opt = "pretrained" # pretrained | custom
   classes = 5
-  sdepth = 0.2 # 0.0 | 0.1 | 0.2 | 0.3
-  past_image_num = 6 # 0 | 6 | 12 | 18
-  combined_method = "concat" # sum | concat
+  sdepth = 0.1 # 0.0 | 0.1 | 0.2 | 0.3
+  past_image_num = 0 # 0 | 6 | 12 | 18
+  combined_method = "sum" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
   
@@ -85,8 +85,8 @@ if __name__ == '__main__':
   ## For optimizer & scheduler
   optimizer_name = "adamw"  # adam | adamw | sgd
   learning_rate = 5e-5      # 1e-3 | 1e-4  | 5e-5
-  weight_decay = 1e-8       # 0    | 1e-8 
-  scheduler_name = "cd"     # none | cd    | cdwr  
+  weight_decay = 1e-8       # 0    | 1e-8
+  scheduler_name = "cd"     # none | cd    | cdwr
   
   print(f"Optimizer: {optimizer_name}")
   print(f"Learning rate: {learning_rate}")
@@ -118,23 +118,23 @@ if __name__ == '__main__':
   # Combine all settings
   model_settings = {'radar_range': radar_range,
                     'interval': interval,
-                    'model_name': model_name, 
+                    'model_name': model_name,
                     'model_opt': model_opt,
                     'classes': classes,
                     'sdepth': sdepth,
                     'past_image_num': past_image_num,
                     'combined_method': combined_method}
   
-  optimizer_settings = {'optimizer_name': optimizer_name, 
+  optimizer_settings = {'optimizer_name': optimizer_name,
                         'learning_rate': learning_rate,
-                        'weight_decay': weight_decay, 
+                        'weight_decay': weight_decay,
                         'scheduler_name': scheduler_name}
   
-  loop_settings = {'batch_size': batch_size, 
+  loop_settings = {'batch_size': batch_size,
                    'epochs': epochs,
                    'label_smoothing': label_smoothing}
   
-  callback_settings = {'monitor_value': monitor_value, 
+  callback_settings = {'monitor_value': monitor_value,
                        'patience': patience,
                        'min_delta': min_delta,
                        'min_epochs': min_epochs}
@@ -153,7 +153,7 @@ if __name__ == '__main__':
     strategy = 'auto'
   
   if not os.path.exists(f"{result_path}/checkpoint/{radar_range}"):
-    os.makedirs(f"{result_path}/checkpoint/{radar_range}/")    
+    os.makedirs(f"{result_path}/checkpoint/{radar_range}/")
   if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}"):
     os.makedirs(f"{result_path}/checkpoint/{radar_range}/{interval}")
   if not os.path.exists(f"{result_path}/checkpoint/{radar_range}/{interval}/{model_name}-{model_opt}"):

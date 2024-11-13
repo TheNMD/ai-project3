@@ -86,7 +86,7 @@ def plot_province_map():
     cmap = ListedColormap(colors)
     
     for save_name in ["120km", "300km"]:
-        if os.path.exists(f'coordinate/provinces_{save_name}.pkl'): 
+        if os.path.exists(f'coordinate/provinces_{save_name}.pkl'):
             with open(f'coordinate/provinces_{save_name}.pkl', 'rb') as file:
                 data = pickle.load(file)
                 data = data.astype(int)
@@ -120,30 +120,32 @@ if __name__ == '__main__':
     data = pyart.io.read_sigmet(f"sample_data/{file_name}")
     grid_data = pyart.map.grid_from_radars(data, 
                                            grid_shape=(1, 500, 500),
-                                           grid_limits=((0, 1), (-radar_range, radar_range), 
+                                           grid_limits=((0, 1), (-radar_range, radar_range),
                                                                 (-radar_range, radar_range)))
 
     longitude_list = np.array(grid_data.point_longitude['data'][0]).flatten()
     latitude_list = np.array(grid_data.point_latitude['data'][0]).flatten()
-    coordinate_list = np.array([[longitude_list[i], latitude_list[i]] for i in range(len(longitude_list))])
-    
-    num_processes = 16
-    try:
-        with mp.Pool(processes=num_processes) as pool:
-            start_time = time.time()
+    coordinate_list = np.column_stack((longitude_list, latitude_list))
+    print(len(coordinate_list))
+    # print(coordinate_list.reshape(500, 500))
+    print(f"Matrix size: {coordinate_list.size}")
+    # num_processes = 16
+    # try:
+    #     with mp.Pool(processes=num_processes) as pool:
+    #         start_time = time.time()
             
-            results = pool.map(check_inside_province, np.array_split(coordinate_list, num_processes))
-            results = np.array([ele for sublist in results for ele in sublist]).reshape(500, 500)
-            with open(f"coordinate/provinces_{save_name}.pkl", "wb") as f:
-                pickle.dump(results, f)
+    #         results = pool.map(check_inside_province, np.array_split(coordinate_list, num_processes))
+    #         results = np.array([ele for sublist in results for ele in sublist]).reshape(500, 500)
+    #         with open(f"coordinate/provinces_{save_name}.pkl", "wb") as f:
+    #             pickle.dump(results, f)
                 
-            end_time = time.time() - start_time
-            print(f"Time: {end_time}")
-    except Exception as e:
-        print(e)
-        logging.error(e, exc_info=True)
+    #         end_time = time.time() - start_time
+    #         print(f"Time: {end_time}")
+    # except Exception as e:
+    #     print(e)
+    #     logging.error(e, exc_info=True)
             
-    plot_province_map()
+    # plot_province_map()
 
 
 

@@ -94,9 +94,9 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, combined_
     # Change input to accept n-channel images
     if combined_method == "concat":
       old_conv = model.patch_embed.proj
-      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
-                                out_channels=old_conv.out_channels, 
-                                kernel_size=old_conv.kernel_size, 
+      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3,
+                                out_channels=old_conv.out_channels,
+                                kernel_size=old_conv.kernel_size,
                                 stride=old_conv.stride)
       model.patch_embed.proj = new_conv
     # Change output to 5 weather classes
@@ -153,9 +153,9 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, combined_
     # Change input to accept n-channel images
     if combined_method == "concat":
       old_conv = model.stem._modules['0']
-      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3, 
-                                 out_channels=old_conv.out_channels, 
-                                 kernel_size=old_conv.kernel_size, 
+      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3,
+                                 out_channels=old_conv.out_channels,
+                                 kernel_size=old_conv.kernel_size,
                                  stride=old_conv.stride)
       model.stem._modules['0'] = new_conv
     # TODO Change output to multi-label
@@ -239,8 +239,8 @@ class CustomImageDataset(Dataset):
         past_images = self.full_image_list[idx - self.past_image_num : idx].tolist()
         return past_images
 
-def load_data(radar_range, interval, set_name, image_size, 
-              past_image_num, combined_method, 
+def load_data(radar_range, interval, set_name, image_size,
+              past_image_num, combined_method,
               batch_size, shuffle, num_workers=8):
   def median_blur(image, kernel_size=5):
       pil_image = v2.functional.to_pil_image(image)
@@ -251,7 +251,7 @@ def load_data(radar_range, interval, set_name, image_size,
   # TODO Add more preprocessing methods
   if set_name == "train":
     transforms = v2.Compose([
-                              v2.ToImage(), 
+                              v2.ToImage(),
                               v2.Resize((image_size, image_size)),
                             #  v2.RandomErasing(p=0.25, value=255),
                             #  v2.RandAugment(num_ops=2, magnitude=round(random.gauss(9, 0.5)), fill=255),
@@ -259,34 +259,34 @@ def load_data(radar_range, interval, set_name, image_size,
                               v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                               v2.ToDtype(torch.float32, scale=True),
-                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
+                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632],
                                            std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                             ])
     
   elif set_name == "val" or set_name == "test":
     transforms = v2.Compose([
-                              v2.ToImage(), 
+                              v2.ToImage(),
                               v2.Resize((image_size, image_size)),
                               v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                               v2.ToDtype(torch.float32, scale=True),
-                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632], 
+                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632],
                                            std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
                             ])
   
   label_file = pd.read_csv(f"image/sets/{radar_range}_{interval}_{set_name}.csv")
   full_image_list = pd.read_csv(f"image/labels_{radar_range}.csv")
   full_image_list = full_image_list['image_name'].reset_index(drop=True)
-  dataset = CustomImageDataset(img_labels=label_file, 
-                               img_dir="image/all", 
+  dataset = CustomImageDataset(img_labels=label_file,
+                               img_dir="image/all",
                                transform=transforms,
                                past_image_num=past_image_num,
                                combined_method=combined_method,
                                full_image_list=full_image_list)
   
-  dataloader = torch.utils.data.DataLoader(dataset, 
-                                           batch_size=batch_size, 
-                                           shuffle=shuffle, 
+  dataloader = torch.utils.data.DataLoader(dataset,
+                                           batch_size=batch_size,
+                                           shuffle=shuffle,
                                            num_workers=num_workers)
   
   return dataloader
@@ -313,8 +313,8 @@ class FinetuneModule(pl.LightningModule):
     self.epochs = loop_settings['epochs']
     self.label_smoothing = loop_settings['label_smoothing']
 
-    self.model, image_size = load_model(self.model_name, self.model_opt, 
-                                        self.classes, self.sdepth, 
+    self.model, image_size = load_model(self.model_name, self.model_opt,
+                                        self.classes, self.sdepth,
                                         self.past_image_num, self.combined_method,
                                         save_path)
     

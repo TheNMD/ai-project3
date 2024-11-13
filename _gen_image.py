@@ -2,7 +2,7 @@ import os, sys, platform, time
 import multiprocessing as mp
 import warnings, logging
 warnings.filterwarnings('ignore')
-logging.basicConfig(filename='errors.log', level=logging.ERROR, 
+logging.basicConfig(filename='errors.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 import pyart
@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 ENV = "server".lower()
 
 if ENV == "local" or ENV == "server":
-  data_path = "data"
+    data_path = "data"
 elif ENV == "colab":
     from google.colab import drive
     drive.mount('/content/drive')
