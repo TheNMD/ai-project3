@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 ENV = "server".lower()
 
 if ENV == "local" or ENV == "server":
-  data_path = "data"
+    data_path = "data"
 elif ENV == "colab":
     from google.colab import drive
     drive.mount('/content/drive')
@@ -100,8 +100,8 @@ def calculate_avg_reflectivity(reflectivity):
         
     return avg_reflectivity, label
 
-def label_image(metadata_chunk):    
-    for idx, row in metadata_chunk.iterrows():   
+def label_image(metadata_chunk):
+    for idx, row in metadata_chunk.iterrows():
         if type(row['label_0h']) is str:
             continue
         try:
@@ -117,11 +117,11 @@ def label_image(metadata_chunk):
             else:
                 radar_range = 300000
                 
-            grid_data = pyart.map.grid_from_radars(data,
-                                                    grid_shape=(1, 500, 500),
-                                                    grid_limits=((0, 1), 
-                                                                 (-radar_range, radar_range), 
-                                                                 (-radar_range, radar_range)),)
+            grid_data = pyart.map.grid_from_radars(
+                data,
+                grid_shape=(1, 500, 500),
+                grid_limits=((0, 1), (-radar_range, radar_range), (-radar_range, radar_range)),
+            )
             
             reflectivity = np.array(grid_data.fields['reflectivity']['data'].compressed())
             avg_reflectivity, label = calculate_avg_reflectivity(reflectivity)
@@ -151,7 +151,7 @@ def update_metadata(new_metadata):
     updated_metadata.loc[new_metadata.index, 'avg_reflectivity_0h'] = new_metadata['avg_reflectivity_0h'].tolist()
     updated_metadata.loc[new_metadata.index, 'label_0h'] = new_metadata['label_0h'].tolist()
     
-    updated_metadata.to_csv("metadata_temp.csv", index=False)        
+    updated_metadata.to_csv("metadata_temp.csv", index=False)
 
 def plot_distribution(radar_range):
     metadata = pd.read_csv("metadata.csv")
@@ -189,10 +189,10 @@ if __name__ == '__main__':
     
     # Label current images
     num_processes = 32
-    chunk_size = 10 * num_processes 
+    chunk_size = 10 * num_processes
     counter = 0
     try:
-        # Use multiprocessing to iterate over the metadata 
+        # Use multiprocessing to iterate over the metadata
         with mp.Pool(processes=num_processes) as pool:
             metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
             for chunk in metadata_chunks:

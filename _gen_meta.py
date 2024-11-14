@@ -76,7 +76,7 @@ if __name__ == '__main__':
     os.makedirs("metadata")
   
   try:
-      # Use multiprocessing to iterate over the metadata 
+      # Use multiprocessing to iterate over the metadata
       with mp.Pool(processes=num_processes) as pool:
         start_time = time.time()
         

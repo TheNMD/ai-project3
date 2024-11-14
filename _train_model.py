@@ -71,8 +71,8 @@ if __name__ == '__main__':
   model_opt = "pretrained" # pretrained | custom
   classes = 5
   sdepth = 0.1 # 0.0 | 0.1 | 0.2 | 0.3
-  past_image_num = 0 # 0 | 6 | 12 | 18
-  combined_method = "sum" # sum | concat
+  past_image_num = 6 # 0 | 6 | 12 | 18
+  combined_method = "concat" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
   
@@ -116,28 +116,36 @@ if __name__ == '__main__':
   print(f"Min epoch: {min_epochs}\n")
 
   # Combine all settings
-  model_settings = {'radar_range': radar_range,
-                    'interval': interval,
-                    'model_name': model_name,
-                    'model_opt': model_opt,
-                    'classes': classes,
-                    'sdepth': sdepth,
-                    'past_image_num': past_image_num,
-                    'combined_method': combined_method}
+  model_settings = {
+    'radar_range': radar_range,
+    'interval': interval,
+    'model_name': model_name,
+    'model_opt': model_opt,
+    'classes': classes,
+    'sdepth': sdepth,
+    'past_image_num': past_image_num,
+    'combined_method': combined_method
+  }
   
-  optimizer_settings = {'optimizer_name': optimizer_name,
-                        'learning_rate': learning_rate,
-                        'weight_decay': weight_decay,
-                        'scheduler_name': scheduler_name}
+  optimizer_settings = {
+    'optimizer_name': optimizer_name,
+    'learning_rate': learning_rate,
+    'weight_decay': weight_decay,
+    'scheduler_name': scheduler_name
+  }
   
-  loop_settings = {'batch_size': batch_size,
-                   'epochs': epochs,
-                   'label_smoothing': label_smoothing}
+  loop_settings = {
+    'batch_size': batch_size,
+    'epochs': epochs,
+    'label_smoothing': label_smoothing
+  }
   
-  callback_settings = {'monitor_value': monitor_value,
-                       'patience': patience,
-                       'min_delta': min_delta,
-                       'min_epochs': min_epochs}
+  callback_settings = {
+    'monitor_value': monitor_value,
+    'patience': patience,
+    'min_delta': min_delta,
+    'min_epochs': min_epochs
+  }
   
   if num_gpus > 1:
     accelerator = 'gpu'
@@ -166,16 +174,20 @@ if __name__ == '__main__':
     print(f"Checkpoint version: {ckpt_version}")
     
     # Init module and trainer
-    module_test = FinetuneModule.load_from_checkpoint(f"{model_path}/{ckpt_version}/best_model.ckpt", 
-                                                      model_settings=model_settings,
-                                                      optimizer_settings=optimizer_settings, 
-                                                      loop_settings=loop_settings)
+    module_test = FinetuneModule.load_from_checkpoint(
+      f"{model_path}/{ckpt_version}/best_model.ckpt",
+      model_settings=model_settings,
+      optimizer_settings=optimizer_settings,
+      loop_settings=loop_settings
+    )
 
-    trainer = pl.Trainer(accelerator=accelerator, 
-                         devices=devices, 
-                         strategy=strategy,
-                         logger=False,
-                         enable_checkpointing=False)
+    trainer = pl.Trainer(
+      accelerator=accelerator,
+      devices=devices,
+      strategy=strategy,
+      logger=False,
+      enable_checkpointing=False
+    )
     
     try:
       # Evaluation
@@ -209,37 +221,45 @@ if __name__ == '__main__':
 
     # Callbacks
     if monitor_value == "val_acc": monitor_mode = "max"
-    elif monitor_value == "val_loss": monitor_mode = "min" 
+    elif monitor_value == "val_loss": monitor_mode = "min"
     
-    early_stopping_callback = pl.callbacks.EarlyStopping(monitor=monitor_value,
-                                                         mode=monitor_mode,
-                                                         patience=patience,
-                                                         min_delta=min_delta,
-                                                         verbose=True,)
+    early_stopping_callback = pl.callbacks.EarlyStopping(
+      monitor=monitor_value,
+      mode=monitor_mode,
+      patience=patience,
+      min_delta=min_delta,
+      verbose=True,
+    )
 
-    checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor=monitor_value,
-                                                       mode=monitor_mode,
-                                                       save_top_k=1,
-                                                       filename='best_model',
-                                                       dirpath=save_path,
-                                                       verbose=True,)
+    checkpoint_callback = pl.callbacks.ModelCheckpoint(
+      monitor=monitor_value,
+      mode=monitor_mode,
+      save_top_k=1,
+      filename='best_model',
+      dirpath=save_path,
+      verbose=True,
+    )
     
     # Init module and trainer
-    module = FinetuneModule(model_settings=model_settings, 
-                            optimizer_settings=optimizer_settings, 
-                            loop_settings=loop_settings,
-                            save_path=save_path)
+    module = FinetuneModule(
+      model_settings=model_settings,
+      optimizer_settings=optimizer_settings,
+      loop_settings=loop_settings,
+      save_path=save_path
+    )
 
-    trainer = pl.Trainer(accelerator=accelerator, 
-                         devices=devices, 
-                         strategy=strategy,
-                         max_epochs=epochs,
-                         min_epochs=min_epochs,
-                         logger=logger,
-                         callbacks=[early_stopping_callback, checkpoint_callback],
-                         val_check_interval=epoch_ratio,
-                         log_every_n_steps=50,    # log train_loss and train_acc every n batches
-                         precision=16)            # use mixed precision to speed up training
+    trainer = pl.Trainer(
+      accelerator=accelerator,
+      devices=devices,
+      strategy=strategy,
+      max_epochs=epochs,
+      min_epochs=min_epochs,
+      logger=logger,
+      callbacks=[early_stopping_callback, checkpoint_callback],
+      val_check_interval=epoch_ratio,
+      log_every_n_steps=50,    # log train_loss and train_acc every n batches
+      precision=16             # use mixed precision to speed up training
+    )
     
     # Training loop
     try:
@@ -249,10 +269,12 @@ if __name__ == '__main__':
       print(f"Training time: {train_end_time} seconds")
       
       # Evaluation
-      module_test = FinetuneModule.load_from_checkpoint(f"{save_path}/best_model.ckpt", 
-                                                        model_settings=model_settings,
-                                                        optimizer_settings=optimizer_settings, 
-                                                        loop_settings=loop_settings)
+      module_test = FinetuneModule.load_from_checkpoint(
+        f"{save_path}/best_model.ckpt",
+        model_settings=model_settings,
+        optimizer_settings=optimizer_settings,
+        loop_settings=loop_settings
+      )
       test_start_time = time.time()
       trainer.test(module_test)
       test_end_time = time.time() - test_start_time

@@ -153,10 +153,12 @@ def load_model(model_name, model_opt, classes, sdepth, past_image_num, combined_
     # Change input to accept n-channel images
     if combined_method == "concat":
       old_conv = model.stem._modules['0']
-      new_conv = torch.nn.Conv2d(in_channels=(past_image_num + 1) * 3,
-                                 out_channels=old_conv.out_channels,
-                                 kernel_size=old_conv.kernel_size,
-                                 stride=old_conv.stride)
+      new_conv = torch.nn.Conv2d(
+        in_channels=(past_image_num + 1) * 3,
+        out_channels=old_conv.out_channels,
+        kernel_size=old_conv.kernel_size,
+        stride=old_conv.stride
+      )
       model.stem._modules['0'] = new_conv
     # TODO Change output to multi-label
     # Change output to 5 weather classes
@@ -239,9 +241,11 @@ class CustomImageDataset(Dataset):
         past_images = self.full_image_list[idx - self.past_image_num : idx].tolist()
         return past_images
 
-def load_data(radar_range, interval, set_name, image_size,
-              past_image_num, combined_method,
-              batch_size, shuffle, num_workers=8):
+def load_data(
+  radar_range, interval, set_name, image_size,
+  past_image_num, combined_method,
+  batch_size, shuffle, num_workers=8
+  ):
   def median_blur(image, kernel_size=5):
       pil_image = v2.functional.to_pil_image(image)
       blurred_img = cv.medianBlur(np.array(pil_image), kernel_size)
@@ -259,8 +263,10 @@ def load_data(radar_range, interval, set_name, image_size,
                               v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                               v2.ToDtype(torch.float32, scale=True),
-                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632],
-                                           std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
+                              v2.Normalize(
+                                mean=[0.9844, 0.9930, 0.9632],
+                                std=[0.0641, 0.0342, 0.1163]
+                              ), # mean and std of Nha Be dataset
                             ])
     
   elif set_name == "val" or set_name == "test":
@@ -270,24 +276,30 @@ def load_data(radar_range, interval, set_name, image_size,
                               v2.Lambda(lambda image: median_blur(image, kernel_size=5)),
                               v2.Lambda(lambda image: v2.functional.autocontrast(image)),
                               v2.ToDtype(torch.float32, scale=True),
-                              v2.Normalize(mean=[0.9844, 0.9930, 0.9632],
-                                           std=[0.0641, 0.0342, 0.1163]), # mean and std of Nha Be dataset
+                              v2.Normalize(
+                                mean=[0.9844, 0.9930, 0.9632],
+                                std=[0.0641, 0.0342, 0.1163]
+                              ), # mean and std of Nha Be dataset
                             ])
   
   label_file = pd.read_csv(f"image/sets/{radar_range}_{interval}_{set_name}.csv")
   full_image_list = pd.read_csv(f"image/labels_{radar_range}.csv")
   full_image_list = full_image_list['image_name'].reset_index(drop=True)
-  dataset = CustomImageDataset(img_labels=label_file,
-                               img_dir="image/all",
-                               transform=transforms,
-                               past_image_num=past_image_num,
-                               combined_method=combined_method,
-                               full_image_list=full_image_list)
+  dataset = CustomImageDataset(
+    img_labels=label_file,
+    img_dir="image/all",
+    transform=transforms,
+    past_image_num=past_image_num,
+    combined_method=combined_method,
+    full_image_list=full_image_list
+  )
   
-  dataloader = torch.utils.data.DataLoader(dataset,
-                                           batch_size=batch_size,
-                                           shuffle=shuffle,
-                                           num_workers=num_workers)
+  dataloader = torch.utils.data.DataLoader(
+    dataset,
+    batch_size=batch_size,
+    shuffle=shuffle,
+    num_workers=num_workers
+  )
   
   return dataloader
 
@@ -318,18 +330,24 @@ class FinetuneModule(pl.LightningModule):
                                         self.past_image_num, self.combined_method,
                                         save_path)
     
-    self.train_loader = load_data(self.radar_range, self.interval, 
-                                  "train", image_size['train_size'], 
-                                  self.past_image_num, self.combined_method,
-                                  self.batch_size, True)
-    self.val_loader   = load_data(self.radar_range, self.interval, 
-                                  "val", image_size['test_size'], 
-                                  self.past_image_num, self.combined_method,
-                                  self.batch_size, False)
-    self.test_loader  = load_data(self.radar_range, self.interval, 
-                                  "test", image_size['test_size'], 
-                                  self.past_image_num, self.combined_method,
-                                  self.batch_size, False)
+    self.train_loader = load_data(
+      self.radar_range, self.interval,
+      "train", image_size['train_size'],
+      self.past_image_num, self.combined_method,
+      self.batch_size, True
+    )
+    self.val_loader   = load_data(
+      self.radar_range, self.interval,
+      "val", image_size['test_size'],
+      self.past_image_num, self.combined_method,
+      self.batch_size, False
+    )
+    self.test_loader  = load_data(
+      self.radar_range, self.interval,
+      "test", image_size['test_size'],
+      self.past_image_num, self.combined_method,
+      self.batch_size, False
+    )
     
     self.label_list = []
     self.pred_list = []
@@ -411,14 +429,18 @@ class FinetuneModule(pl.LightningModule):
     
     elif self.scheduler_name == "cd":
       # Cosine decay
-      scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 
-                                                             T_max=5)
+      scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer,
+        T_max=5
+      )
       
     elif self.scheduler_name == "cdwr":
       # Cosine decay warm restart
-      scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 
-                                                                       T_0=int(len(self.train_loader) * 0.4), 
-                                                                       T_mult=1) 
+      scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
+        optimizer,
+        T_0=int(len(self.train_loader) * 0.4),
+        T_mult=1
+      )
 
     return {"optimizer": optimizer, "lr_scheduler": scheduler}
 

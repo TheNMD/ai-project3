@@ -10,7 +10,7 @@ import pandas as pd
 ENV = "server".lower()
 
 if ENV == "local" or ENV == "server":
-  data_path = "data"
+    data_path = "data"
 elif ENV == "colab":
     from google.colab import drive
     drive.mount('/content/drive')
@@ -61,9 +61,11 @@ if __name__ == '__main__':
         os.makedirs("image/sets")
     
     # Generate label files
-    labels = pd.read_csv("metadata.csv")[['timestamp_0h', 'range', 'label_0h',
-                                          'label_1h', 'label_2h','label_3h',
-                                          'label_4h', 'label_5h','label_6h']]
+    labels = pd.read_csv("metadata.csv")[[
+            'timestamp_0h', 'range', 'label_0h',
+            'label_1h', 'label_2h','label_3h',
+            'label_4h', 'label_5h','label_6h'
+        ]]
 
     labels = labels.rename(columns={'timestamp_0h': 'image_name'})
     labels = labels.replace('clear', '0')

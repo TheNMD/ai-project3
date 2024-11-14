@@ -21,7 +21,7 @@ elif ENV == "colab":
     # %cd drive/MyDrive/Coding/
     data_path = "data/NhaBe"
 
-def generate_image(metadata_chunk):    
+def generate_image(metadata_chunk):
     for idx, row in metadata_chunk.iterrows():
         if row['generated'] == "True" or row['generated'] == "Error":
             continue
@@ -39,11 +39,11 @@ def generate_image(metadata_chunk):
             else:
                 radar_range = 300000
             
-            grid_data = pyart.map.grid_from_radars(data,
-                                                   grid_shape=(1, 500, 500),
-                                                   grid_limits=((0, 1), 
-                                                                (-radar_range, radar_range), 
-                                                                (-radar_range, radar_range)),)
+            grid_data = pyart.map.grid_from_radars(
+                data,
+                grid_shape=(1, 500, 500),
+                grid_limits=((0, 1), (-radar_range, radar_range), (-radar_range, radar_range)),
+            )
 
             display = pyart.graph.GridMapDisplay(grid_data)
             display.plot_grid('reflectivity', cmap='pyart_HomeyerRainbow', colorbar_flag=False)
@@ -76,7 +76,7 @@ def update_metadata(new_metadata):
     
     updated_metadata.loc[new_metadata.index, 'generated'] = new_metadata['generated'].tolist()
     
-    updated_metadata.to_csv("metadata_temp.csv", index=False)   
+    updated_metadata.to_csv("metadata_temp.csv", index=False)
 
 if __name__ == '__main__':
     print("Python version: ", sys.version)
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     
     counter = 0
     try:
-        # Use multiprocessing to iterate over the metadata 
+        # Use multiprocessing to iterate over the metadata
         with mp.Pool(processes=num_processes) as pool:
             metadata_chunks = pd.read_csv("metadata.csv", chunksize=chunk_size)
             for chunk in metadata_chunks:
@@ -102,7 +102,7 @@ if __name__ == '__main__':
                 counter += 1
                 
                 end_time = time.time() - start_time
-                print(f"### Chunk: {counter} | Time: {end_time} ###")    
+                print(f"### Chunk: {counter} | Time: {end_time} ###")
     except Exception as e:
         print(e)
         logging.error(e, exc_info=True)

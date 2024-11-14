@@ -13,12 +13,12 @@ import pandas as pd
 ENV = "server".lower()
 
 if ENV == "local" or ENV == "server":
-  data_path = "data"
+    data_path = "data"
 elif ENV == "colab":
     from google.colab import drive
     drive.mount('/content/drive')
     # %cd drive/MyDrive/Coding/
-    data_path = "data/NhaBe"     
+    data_path = "data/NhaBe"
 
 def find_future_images(interval):
     interval_num = int(interval[:-1]) * 3600
@@ -40,8 +40,10 @@ def find_future_images(interval):
             
             current_time = row['timestamp_0h']
             time_difference = metadata['timestamp_0h'] - current_time
-            future_metadata = metadata[(time_difference >= pd.Timedelta(interval_num - 60, "s")) &
-                                       (time_difference <= pd.Timedelta(interval_num + 600, "s"))].head(1)
+            future_metadata = metadata[
+                (time_difference >= pd.Timedelta(interval_num - 60, "s")) &
+                (time_difference <= pd.Timedelta(interval_num + 600, "s"))
+            ].head(1)
             
             if future_metadata.empty:
                 metadata.loc[idx, [timestamp_col]] = "NotAvail"
