@@ -61,7 +61,7 @@ if __name__ == '__main__':
   
   # Hyperparameters
   ## For model
-  radar_range = "300km" # 120km | 300km
+  radar_range = "120km" # 120km | 300km
   interval = "2h" # 0h | 1h | 2h | 3h | 4h | 5h | 6h
   # convnext-s | convnext-b | convnext-l
   # vit-s      | vit-b      | vit-l
