@@ -67,15 +67,16 @@ if __name__ == '__main__':
   # vit-s      | vit-b      | vit-l
   # swin-s     | swin-b
   # effnetv2-s | effnetv2-m
-  model_name = "convnext-l"
+  model_name = "convnext-s"
   model_opt = "pretrained" # pretrained | custom
   classes = 5
-  sdepth = 0.3 # 0.0 | 0.1 | 0.2 | 0.3
+  sdepth = 0.1 # 0.0 | 0.1 | 0.2 | 0.3
   past_image_num = 6 # 0 | 6 | 12 | 18
   combined_method = "concat" # sum | concat
   checkpoint = False
   ckpt_version = "version_0"
   
+  print(f"Range: {radar_range}")
   print(f"Interval: {interval}")
   print(f"Model: {model_name}-{model_opt}")
   print(f"Stochastic depth: {sdepth}")
